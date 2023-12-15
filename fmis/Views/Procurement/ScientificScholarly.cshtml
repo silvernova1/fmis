@@ -181,7 +181,7 @@
 
                         <div class="grid-item" style="margin-left:150px;">
                             <h5 class="TimesNewRoman" style="font-weight:bold; white-space: nowrap;">ATTY. JO DAVID Z. BORCES</h5>
-                            <p class="TimesNewRoman">Member (DOH Union Rep)</p>
+                            <p class="TimesNewRoman">Member</p>
                         </div>
                         <div class="grid-item">
                             <h5 class="TimesNewRoman" style="font-weight:bold">DR. SOPHIA M. MANCAO</h5>
@@ -201,7 +201,10 @@
                     </div>
                     <br />
                     <div class="col-md-12 bg-light text-right">
-                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="submit" class="btn btn-xs btn-primary"> <i class="ace-icon fa fa-check-square-o"></i> Save</button>
+                        <a class="btn btn-xs btn-success" target="_blank" href="@Url.Action("PrintScientificScholarly","Procurement",new { id = "" })" data-bs-toggle="print" title="Print">
+                            <i class="ace-icon fa fa-file-pdf-o"></i> Print to PDF
+                        </a>
                     </div>
                 </div>
             </form>

@@ -219,10 +219,14 @@
                     </div>
                     <br />
                     <div class="col-md-12 bg-light text-right">
-                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="submit" class="btn btn-xs btn-primary"> <i class="ace-icon fa fa-check-square-o"></i> Save</button>
+                        <a class="btn btn-xs btn-success" target="_blank" href="@Url.Action("PrintDirectContracting","Procurement",new { id = "" })" data-bs-toggle="print" title="Print">
+                            <i class="ace-icon fa fa-file-pdf-o"></i> Print to PDF
+                        </a>
                     </div>
                 </div>
             </form>
+          
         </div>
     </div>
 </div>
