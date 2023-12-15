@@ -10,6 +10,8 @@ namespace fmis.Models.pr
 
         public string Prno { get; set; }
 
+        public string UserId { get; set; }
+
         public DateTime PrnoDate { get; set; }
 
         [Column(TypeName = "decimal(18, 2)")]
@@ -24,6 +26,8 @@ namespace fmis.Models.pr
         public string RequestedBy { get; set; }
 
         public string RecoApproval { get; set; }
+
+        public string Rmop { get; set; }
 
         public virtual List<PrItems> PrItems { get; set; }
     }

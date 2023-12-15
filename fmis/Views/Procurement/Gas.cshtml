@@ -1,16 +1,16 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewData["Title"] = "Procurement (SUPPLIER)";
+    ViewData["Title"] = "Procurement (RECOMMENDATION (GOODS AND SERVICES))";
 }
 
 <br />
 <div class="card border-primary text-left" style="width: 65%;">
     <div class="card-header">
         <ul class="nav nav-tabs card-header-tabs">
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" asp-controller="Procurement" asp-action="Print">SUPPLIER</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link" asp-controller="Procurement" asp-action="Gas">RECOMMENDATION (GOODS AND SERVICES)</a>
             </li>
             <li class="nav-item">
@@ -26,18 +26,18 @@
     </div>
     <div class="card-body tab-content">
         <div role="tabpanel" class="tab-pane active" id="tab1">
-            <h5 class="card-title">List of Supplier</h5>
-            <select type="text" id="supplier" asp-items="@ViewBag.Supplier">
-                <option value="">Select Supplier</option>
-            </select>
-        </div>
-        <div role="tabpanel" class="tab-pane" id="tab2">
-            <h5 class="card-title">Card Title for Tab 2</h5>
-            <p class="card-text">Some content for tab 2.</p>
-        </div>
-        <div role="tabpanel" class="tab-pane" id="tab3">
-            <h5 class="card-title">Card Title for Tab 3</h5>
-            <p class="card-text">Some content for tab 3.</p>
+            <div class="row">
+                <div class="col-md-2">
+                    <h5 class="card-title">Pr No.</h5>
+                    <select type="text" id="gas" asp-items="@ViewBag.PrId" style="width: 150px;">
+                        <option value="">Select Pr</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <h5 class="card-title">Date</h5>
+                    <input type="date" id="date">
+                </div>
+            </div>
         </div>
         <br />
         <a id="printButton" class="btn btn-xs btn-primary btn-edit" target="_blank">
@@ -49,13 +49,15 @@
 <script>
     $(document).ready(function () {
         $("#printButton").click(function () {
-            var supplierValue = $("#supplier").val();
+            var gasValue = $("#gas").val();
+            var dateValue = $("#date").val();
 
             $.ajax({
                 type: "POST",
-                url: "@Url.Action("PrintPu","Procurement")",
+                url: "@Url.Action("PrintRecommendationGoods","Procurement")",
                 data: {
-                    supplierValue: supplierValue
+                    gasValue: gasValue,
+                    dateValue: dateValue
                 },
                 success: function (data) {
                     var newTab = window.open();

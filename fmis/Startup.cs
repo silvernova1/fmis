@@ -59,9 +59,15 @@ namespace fmis
 
             services.Configure<FormOptions>(options =>
             {
-                options.ValueCountLimit = 5000;
+                options.ValueCountLimit = 10000;
             });
 
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30); // Set an appropriate timeout
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
 
             services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
             services.AddTransient<EmailService>();

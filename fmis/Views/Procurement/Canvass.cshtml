@@ -35,30 +35,41 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="" style="font-weight:bold">RPQ NO. </label>
-                                        <input type="text" class="form-control" id="rpqNo" name="rpqNo" required>
+                                        <input type="text" class="form-control" id="rpqNo" name="RpqNo" required>
                                     </div>
                                     <div class="form-group">
                                         <label style="font-weight:bold">RPQ DATE</label>
-                                        <input type="text" class="form-control" id="rpqDate" name="rpqDate" required>
+                                        <input type="text" class="form-control" id="rpqDate" name="RpqDate" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="" style="font-weight:bold"> ITEM/DESCRIPTION: </label>
-                                        <input type="text" class="form-control" id="itemDesc" name="itemDesc" required>
+                                        <input type="text" class="form-control" id="itemDesc" name="ItemDesc" required>
                                     </div>
                                 </div>
 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="Date" style="font-weight:bold"> PR NO.  </label>
-                                        <input type="text" class="form-control" id="prNo" name="prNo">
+                                        <label for="" style="font-weight:bold"> PR NO  </label>
+                                        <select class="form-control" id="prNo" name="PrNo" asp-items="ViewBag.Pr">
+                                            <option value="">Select Pr No.</option>
+                                        </select>
                                     </div>
                                     <div class="form-group">
-                                        <label style="font-weight:bold">PR DATE: </label>
-                                        <input type="text" class="form-control" id="prDate" name="prDate">
+                                        <label for="" style="font-weight:bold"> PR DATE </label>
+                                        <input type="text" class="form-control" id="prDate" name="PrDate" readonly>
                                     </div>
                                     <div class="form-group">
                                         <label for="" style="font-weight:bold">RMOP</label>
-                                        <input type="text" class="form-control" id="rmop" name="rmop" required>
+                                        <select class="form-control" id="rmop" name="Rmop">
+                                            <option value="AGENCY TO AGENCY">AGENCY TO AGENCY</option>
+                                            <option value="DIRECT CONTRACTING (DRUGS AND MEDS)">DIRECT CONTRACTING (DRUGS AND MEDS)</option>
+                                            <option value="EMERGENCY CASES (DRUGS AND MEDS)">EMERGENCY CASES (DRUGS AND MEDS)</option>
+                                            <option value="LEASE OF VENUE (GOODS)">LEASE OF VENUE (GOODS)</option>
+                                            <option value="PUBLIC BIDDING (GOODS AND EQUIPMENT)">PUBLIC BIDDING (GOODS AND EQUIPMENT)</option>
+                                            <option value="PS-DBM">PS-DBM</option>
+                                            <option value="SCIENTIFIC SCHOLARLY">SCIENTIFIC SCHOLARLY</option>
+                                            <option value="SMALL VALUE PROCUREMENT (GOODS AND EQUIPMENT)">SMALL VALUE PROCUREMENT (GOODS AND EQUIPMENT)</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -162,6 +173,22 @@
 <script>
     var itemId;
     $(document).ready(function () {
+
+        $("#prNo").change(function () {
+            var selectedPrNo = $(this).val();
+            $.ajax({
+                url: '@Url.Action("GetDate", "Procurement")',
+                type: 'GET',
+                data: { prNo: selectedPrNo },
+                success: function (result) {
+                    $("#prDate").val(result);
+                },
+                error: function () {
+                    console.log('Error fetching date');
+                }
+            });
+        });
+
         $(".btn-edit").click(function () {
             itemId = $(this).data("id");
 
@@ -170,25 +197,10 @@
                 url: '@Url.Action("GetCanvass", "Procurement")',
                 data: { id: itemId },
                 success: function (data) {
-
-                    var rpqDate = new Date(data.rpqDate);
-                    var formattedRpq = rpqDate.toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric'
-                    });
-                    $("#rpqDate").val(formattedRpq);
-
-                    var prDate = new Date(data.prDate);
-                    var formattedPr = prDate.toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric'
-                    });
-                    $("#prDate").val(formattedPr);
-
                     $("#rpqNo").val(data.rpqNo);
+                    $("#rpqDate").val(data.rpqDate);
                     $("#prNo").val(data.prNo);
+                    $("#prDate").val(data.prDate);
                     $("#itemDesc").val(data.itemDesc);
                     $("#rmop").val(data.rmop);
                     $("#editModal").modal("show");

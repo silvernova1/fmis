@@ -36,6 +36,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using iTextSharp.tool.xml;
 using Microsoft.EntityFrameworkCore.Storage;
+using fmis.Models.pr;
+using System.Net.NetworkInformation;
 
 namespace fmis.Controllers.Procurement
 {
@@ -68,6 +70,12 @@ namespace fmis.Controllers.Procurement
 
 
                     _context.PuChecklist.Add(puChecklist);
+                    _context.SaveChanges();
+
+                    var pr = _context.Pr.FirstOrDefault(x => x.Id == Convert.ToInt32(puChecklist.Prno));
+
+                    pr.Rmop = "Checklist 1";
+                    _context.Pr.Update(pr);
                     _context.SaveChanges();
 
 
@@ -440,9 +448,11 @@ namespace fmis.Controllers.Procurement
             {
                 if (model.BacNo != null)
                 {
-                    _context.Add(model);
-                    _context.SaveChanges();
+                    var userId = _context.Pr.FirstOrDefault(x=>x.Id == Convert.ToInt32(model.PrNoOne)).UserId;
+					model.UserId = userId;
 
+					_context.Add(model);
+                    _context.SaveChanges();
                     return Json(new { success = true });
                 }
             }
@@ -469,7 +479,9 @@ namespace fmis.Controllers.Procurement
             {
                 if (model.BacNo != null)
                 {
-                    _context.Add(model);
+					var userId = _context.Pr.FirstOrDefault(x => x.Id == Convert.ToInt32(model.PrNoOne)).UserId;
+					model.UserId = userId;
+					_context.Add(model);
                     _context.SaveChanges();
 
                     return Json(new { success = true, message = "RMOP DIRECT CONTRACTING (DRUGS AND MEDS) saved successfully." });
@@ -500,7 +512,9 @@ namespace fmis.Controllers.Procurement
             {
                 if (model.BacNo != null)
                 {
-                    _context.Add(model);
+					var userId = _context.Pr.FirstOrDefault(x => x.Id == Convert.ToInt32(model.PrNoOne)).UserId;
+					model.UserId = userId;
+					_context.Add(model);
                     _context.SaveChanges();
 
                     return Json(new { success = true });
@@ -531,7 +545,10 @@ namespace fmis.Controllers.Procurement
             {
                 if (model.BacNo != null)
                 {
-                    _context.Add(model);
+					var userId = _context.Pr.FirstOrDefault(x => x.Id == Convert.ToInt32(model.PrNoOne)).UserId;
+					model.UserId = userId;
+
+					_context.Add(model);
                     _context.SaveChanges();
 
                     return Json(new { success = true });
@@ -560,7 +577,10 @@ namespace fmis.Controllers.Procurement
             {
                 if (model.BacNo != null)
                 {
-                    _context.Add(model);
+					var userId = _context.Pr.FirstOrDefault(x => x.Id == Convert.ToInt32(model.PrNoOne)).UserId;
+					model.UserId = userId;
+
+					_context.Add(model);
                     _context.SaveChanges();
 
                     return Json(new { success = true });
@@ -589,7 +609,10 @@ namespace fmis.Controllers.Procurement
             {
                 if (model.BacNo != null)
                 {
-                    _context.Add(model);
+					var userId = _context.Pr.FirstOrDefault(x => x.Id == Convert.ToInt32(model.PrNoOne)).UserId;
+					model.UserId = userId;
+
+					_context.Add(model);
                     _context.SaveChanges();
 
                     return Json(new { success = true });
@@ -620,7 +643,10 @@ namespace fmis.Controllers.Procurement
             {
                 if (model.BacNo != null)
                 {
-                    _context.Add(model);
+					var userId = _context.Pr.FirstOrDefault(x => x.Id == Convert.ToInt32(model.PrNoOne)).UserId;
+					model.UserId = userId;
+
+					_context.Add(model);
                     _context.SaveChanges();
 
                     return Json(new { success = true });
@@ -650,7 +676,10 @@ namespace fmis.Controllers.Procurement
             {
                 if (model.BacNo != null)
                 {
-                    _context.Add(model);
+					var userId = _context.Pr.FirstOrDefault(x => x.Id == Convert.ToInt32(model.PrNoOne)).UserId;
+					model.UserId = userId;
+
+					_context.Add(model);
                     _context.SaveChanges();
 
                     return Json(new { success = true });
@@ -670,6 +699,7 @@ namespace fmis.Controllers.Procurement
             ViewBag.filter = new FilterSidebar("Procurement", "LogBook", "Canvass");
 
             var canvass = _context.Canvass.ToList();
+            PrDdl();
 
             return View(canvass);
         }
@@ -694,7 +724,25 @@ namespace fmis.Controllers.Procurement
         public IActionResult GetCanvass(int id)
         {
             var item = _context.Canvass.Find(id);
-            return Json(item);
+            if (item != null)
+            {
+                string formattedRpqDate = item.RpqDate.ToString("MMM d, yyyy");
+                string formattedPrDate = item.PrDate.ToString("MMM d, yyyy");
+
+                var result = new
+                {
+                    RpqNo = item.RpqNo,
+                    RpqDate = formattedRpqDate,
+                    PrNo = item.PrNo,
+                    PrDate = formattedPrDate,
+                    ItemDesc = item.ItemDesc,
+                    Rmop = item.Rmop
+                };
+
+                return Json(result);
+            }
+
+            return NotFound();
         }
 
         [HttpPost]
@@ -734,6 +782,7 @@ namespace fmis.Controllers.Procurement
             ViewBag.filter = new FilterSidebar("Procurement", "LogBook", "Abstract");
             PrWithDate();
             CanvassWithDate();
+            CanvassDropDown();
 
             return View(_context.Abstract.ToList());
         }
@@ -810,14 +859,15 @@ namespace fmis.Controllers.Procurement
         public IActionResult PurchaseOrder()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "LogBook", "PurchaseOrder");
-            PrDropDownList();
+            PrDdl();
+            AbstractDropDown();
 
             return View(_context.Po.ToList());
         }
 
-        public JsonResult GetDate(int prNo)
+        public JsonResult GetDate(string prNo)
         {
-            var date = _context.Pr.FirstOrDefault(x => x.Id == prNo)?.PrnoDate;
+            var date = _context.Pr.FirstOrDefault(x => x.Prno == prNo)?.PrnoDate;
 
             if (date != null)
             {
@@ -836,6 +886,7 @@ namespace fmis.Controllers.Procurement
             {
                 if(!String.IsNullOrEmpty(model.PoNo))
                 {
+
                     _context.Po.Add(model);
                     _context.SaveChanges();
 
@@ -856,6 +907,7 @@ namespace fmis.Controllers.Procurement
 
                 var result = new
                 {
+                    AbstractNo = item.AbstractNo,
                     PoNo = item.PoNo,
                     PoDate = formattedPoDate,
                     PrNo = item.PrNo,
@@ -908,7 +960,7 @@ namespace fmis.Controllers.Procurement
         public IActionResult Twg()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "LogBook", "Twg");
-            PrDropDownList();
+            PrDdl();
 
             return View(_context.Twg.ToList());
         }
@@ -943,7 +995,7 @@ namespace fmis.Controllers.Procurement
                     TwgNo = item.TwgNo,
                     TwgDate = formattedTwgDate,
                     Recommendation = item.Recommendation,
-                    Prno = item.Prno,
+                    PrNo = item.Prno,
                     PrDate = formattedPrDate,
                     ReceivedBy = item.ReceivedBy
                 };
@@ -1099,43 +1151,89 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
+        public IActionResult Stepper()
+        {
+            ViewBag.Step1Status = "completed";
+            ViewBag.Step2Status = "completed";
+            return View();
+        }
 
 
 
+        [HttpPost]
+        public async Task<IActionResult> PingIpAddress(string ipAddress)
+        {
+            var result = await PingIpAsync(ipAddress);
+
+            return Json(result);
+        }
+
+        private async Task<string> PingIpAsync(string ipAddress)
+        {
+            using (var ping = new Ping())
+            {
+                try
+                {
+                    var reply = await ping.SendPingAsync(ipAddress);
+                    return $"Ping successful. Roundtrip time: {reply.RoundtripTime} ms";
+                }
+                catch (PingException ex)
+                {
+                    return $"Ping failed. Exception: {ex.Message}";
+                }
+            }
+        }
+
+
+        #region DROPDOWN LIST
         private void CanvassWithDate()
         {
             ViewBag.CanvassWithDate = new SelectList((from c in _context.Canvass.Where(x => x.RpqNo != null).ToList()
-                                                 select new
-                                                 {
-                                                     CanvassDate = c.RpqNo + " - " + c.RpqDate.ToString("M-d-yyyy")
-                                                 }),
+                                                      select new
+                                                      {
+                                                          CanvassDate = c.RpqNo + " / " + c.RpqDate.ToString("M-d-yyyy")
+                                                      }),
                                      "CanvassDate",
                                      "CanvassDate",
-                                     null);;
+                                     null); ;
 
         }
 
         private void PrWithDate()
         {
             ViewBag.PrWithDate = new SelectList((from pr in _context.Pr.Where(x => x.Prno != null).ToList()
-                                           select new
-                                           {
-                                               PrWithDate = pr.Prno + " - " + pr.PrnoDate.ToString("M-d-yyyy")
-                                           }),
+                                                 select new
+                                                 {
+                                                     PrWithDate = pr.Prno + " / " + pr.PrnoDate.ToString("M-d-yyyy")
+                                                 }),
                                      "PrWithDate",
                                      "PrWithDate",
                                      null);
 
         }
 
+        private void PrDdl()
+        {
+            ViewBag.Pr = new SelectList((from pr in _context.Pr.Where(x => x.Prno != null).ToList()
+                                           select new
+                                           {
+                                               Id = pr.Id,
+                                               Prno = pr.Prno
+                                           }),
+                                     "Prno",
+                                     "Prno",
+                                     null);
+
+        }
+
         private void PrDropDownList()
         {
-            ViewBag.PrId = new SelectList((from pr in _context.Pr.Where(x=>x.Prno != null).ToList()
-                                              select new
-                                              {
-                                                  Id = pr.Id,
-                                                  Prno = pr.Prno
-                                              }),
+            ViewBag.PrId = new SelectList((from pr in _context.Pr.Where(x => x.Prno != null).ToList()
+                                           select new
+                                           {
+                                               Id = pr.Id,
+                                               Prno = pr.Prno
+                                           }),
                                      "Id",
                                      "Prno",
                                      null);
@@ -1145,16 +1243,45 @@ namespace fmis.Controllers.Procurement
         private void BacResNoDownList()
         {
             ViewBag.BacResNo = new SelectList((from bcn in _context.BacResNo.ToList()
-                                           select new
-                                           {
-                                               Id = bcn.Id,
-                                               BacResNo = bcn.BacResNumber
-                                           }),
+                                               select new
+                                               {
+                                                   Id = bcn.Id,
+                                                   BacResNo = bcn.BacResNumber
+                                               }),
                                      "Id",
                                      "BacResNo",
                                      null);
 
         }
+
+        private void CanvassDropDown()
+        {
+            ViewBag.Canvass = new SelectList((from c in _context.Canvass.ToList()
+                                               select new
+                                               {
+                                                   Id = c.Id,
+                                                   RpqNo = c.RpqNo
+                                               }),
+                                     "RpqNo",
+                                     "RpqNo",
+                                     null);
+
+        }
+
+        private void AbstractDropDown()
+        {
+            ViewBag.Abstract = new SelectList((from a in _context.Abstract.ToList()
+                                              select new
+                                              {
+                                                  Id = a.Id,
+                                                  AbstractNo = a.AbstractNo
+                                              }),
+                                     "AbstractNo",
+                                     "AbstractNo",
+                                     null);
+
+        }
+        #endregion
 
         //PRINT
         #region
@@ -1162,16 +1289,64 @@ namespace fmis.Controllers.Procurement
         public IActionResult Print()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Recommendation", "Print");
+            SupplierDdl();
+
+            return View();
+        }
+        [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
+        public IActionResult Gas()
+        {
+            ViewBag.filter = new FilterSidebar("Procurement", "Recommendation", "Print");
+            PrDropDownList();
+
+            return View();
+        }
+        [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
+        public IActionResult Medicine()
+        {
+            ViewBag.filter = new FilterSidebar("Procurement", "Recommendation", "Print");
+            PrDropDownList();
+
+            return View();
+        }
+        [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
+        public IActionResult TwgGoods()
+        {
+            ViewBag.filter = new FilterSidebar("Procurement", "Recommendation", "Print");
+            PrDropDownList();
+
+            return View();
+        }
+        [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
+        public IActionResult TwgMedicine()
+        {
+            ViewBag.filter = new FilterSidebar("Procurement", "Recommendation", "Print");
+            PrDropDownList();
 
             return View();
         }
         #endregion
 
+        private void SupplierDdl()
+        {
+            ViewBag.Supplier = new SelectList((from supplier in _context.Supplier.ToList()
+                                               select new
+                                               {
+                                                   Id = supplier.Id,
+                                                   SupName = supplier.SupplierName
+                                               }),
+                                     "Id",
+                                     "SupName",
+                                     null);
+
+        }
 
         //PRINT PU
         #region
-        public IActionResult PrintPu(string[] token, int id)
+        public IActionResult PrintPu(int supplierValue)
         {
+            var supName = _context.Supplier.FirstOrDefault(x => x.Id == supplierValue).SupplierName;
+            var supAddress = _context.Supplier.FirstOrDefault(x => x.Id == supplierValue).SupplierAddress;
             using (MemoryStream stream = new System.IO.MemoryStream())
             {
                 Document doc = new iTextSharp.text.Document(PageSize.A4);
@@ -1179,6 +1354,8 @@ namespace fmis.Controllers.Procurement
                 PdfWriter writer = PdfWriter.GetInstance(doc, stream);
                 doc.Open();
 
+
+                
 
                 // Method to add centered paragraph with bold text
                 void AddCenteredParagraph(PdfPCell cell, string text, bool isBold = false)
@@ -1238,9 +1415,9 @@ namespace fmis.Controllers.Procurement
 
                     AddCenteredParagraph(cell, "\n");
                     AddCenteredParagraph(cell, "With Notice of Award and Contract with");
-                    AddCenteredParagraph(cell, "REYNA's THE HAVEN AND GARDENS FOOD");
-                    AddCenteredParagraph(cell, "CATERING SERVICES, INC.");
-                    AddCenteredParagraph(cell, "Located at New Calceta St., Cogon District,");
+                    AddCenteredParagraph(cell, supName);
+                    //AddCenteredParagraph(cell, supAddress);
+                    AddCenteredParagraph(cell, "Located at " + supAddress + ",");
                     AddCenteredParagraph(cell, "Tagbiliran City 6300 Bohol");
                     AddCenteredParagraph(cell, "\n");
                     AddCenteredParagraph(cell, "\n");
@@ -1268,15 +1445,21 @@ namespace fmis.Controllers.Procurement
                 AddCrossLayout();
 
                 doc.Close();
-                return File(stream.ToArray(), "application/pdf");
+                //return File(stream.ToArray(), "application/pdf");
+
+                byte[] pdfBytes = stream.ToArray();
+                string base64Pdf = Convert.ToBase64String(pdfBytes);
+
+                return Json(new { pdf = base64Pdf });
             }
         }
         #endregion
 
         //PRINT RECOMMENDATION GOODS
         #region
-        public IActionResult PrintRecommendationGoods(string[] token, int id)
+        public IActionResult PrintRecommendationGoods(int gasValue, DateTime dateValue)
         {
+            var prNo = _context.Pr.FirstOrDefault(x => x.Id == gasValue).Prno;
             using (MemoryStream stream = new System.IO.MemoryStream())
             {
                 Document doc = new iTextSharp.text.Document(PageSize.A4);
@@ -1364,7 +1547,7 @@ namespace fmis.Controllers.Procurement
                     AddCenteredParagraph(cell, "\n");
                     AddCenteredParagraph(cell, "\n");
               
-                    AddCenteredParagraph(cell, "PR NO: ___________________" + "                      " + "DATE:___________", alignLeft: true, leftMargin: 7, isBold: true);
+                    AddCenteredParagraph(cell, "PR NO:" + prNo + "                      " + "DATE:" + dateValue.ToString("MMM d, yyyy"), alignLeft: true, leftMargin: 7, isBold: true);
                     AddCenteredParagraph(cell, "MEMO TO: BAC SECRETARIAT", alignLeft: true, leftMargin: 7, isBold: true);
                     AddCenteredParagraph(cell, "FINDINGS:", alignLeft: true, leftMargin: 7, isBold: true);
                     AddCenteredParagraph(cell, "\n");
@@ -1394,15 +1577,19 @@ namespace fmis.Controllers.Procurement
                 AddCrossLayout();
 
                 doc.Close();
-                return File(stream.ToArray(), "application/pdf");
+                byte[] pdfBytes = stream.ToArray();
+                string base64Pdf = Convert.ToBase64String(pdfBytes);
+
+                return Json(new { pdf = base64Pdf });
             }
         }
         #endregion
 
         //PRINT RECOMMENDATION MEDS
         #region
-        public IActionResult PrintRecommendationMeds(string[] token, int id)
+        public IActionResult PrintRecommendationMeds(int gasValue, DateTime dateValue)
         {
+            var prNo = _context.Pr.FirstOrDefault(x => x.Id == gasValue).Prno;
             using (MemoryStream stream = new System.IO.MemoryStream())
             {
                 Document doc = new iTextSharp.text.Document(PageSize.A4);
@@ -1488,7 +1675,7 @@ namespace fmis.Controllers.Procurement
                     AddCenteredParagraph(cell, "BIDS and AWARDS COMMITEE", isBold: true);
                     AddCenteredParagraph(cell, "\n");
                     AddCenteredParagraph(cell, "\n");
-                    AddCenteredParagraph(cell, "PR NO: ___________________" + "                      " + "DATE:___________", alignLeft: true, leftMargin: 10f, isBold:true) ;
+                    AddCenteredParagraph(cell, "PR NO: " + prNo + "                      " + "DATE: " + dateValue.ToString("MMM d, yyyy"), alignLeft: true, leftMargin: 10f, isBold:true) ;
                     AddCenteredParagraph(cell, "MEMO TO: BAC SECRETARIAT", alignLeft: true, leftMargin: 10f, isBold: true);
                     AddCenteredParagraph(cell, "FINDINGS:", alignLeft: true, leftMargin: 10f, isBold: true);
                     AddCenteredParagraph(cell, "\n");
@@ -1519,15 +1706,19 @@ namespace fmis.Controllers.Procurement
                 AddCrossLayout();
 
                 doc.Close();
-                return File(stream.ToArray(), "application/pdf");
+                byte[] pdfBytes = stream.ToArray();
+                string base64Pdf = Convert.ToBase64String(pdfBytes);
+
+                return Json(new { pdf = base64Pdf });
             }
         }
         #endregion
 
         //PRINT TWG GOODS
         #region
-        public IActionResult PrintTWGGoods(string[] token, int id)
+        public IActionResult PrintTWGGoods(int gasValue, DateTime dateValue)
         {
+            var prNo = _context.Pr.FirstOrDefault(x => x.Id == gasValue).Prno;
             using (MemoryStream stream = new System.IO.MemoryStream())
             {
                 Document doc = new iTextSharp.text.Document(PageSize.A4);
@@ -1609,7 +1800,7 @@ namespace fmis.Controllers.Procurement
                     AddCenteredParagraph(cell, "CENTER for HEALTH DEVELOPMENT", isBold: true);
                     AddCenteredParagraph(cell, "BIDS and AWARDS COMMITEE", isBold: true);
                     AddCenteredParagraph(cell, "\n");
-                    AddCenteredParagraph(cell, "PR NO: ___________________" + "                      " + "DATE:___________", alignLeft: true, leftMargin: 7, isBold: true);
+                    AddCenteredParagraph(cell, "PR NO: " + prNo + "                      " + "DATE: " + dateValue.ToString("MMM d, yyyy"), alignLeft: true, leftMargin: 7, isBold: true);
                     AddCenteredParagraph(cell, "MEMO TO: TWG for GOODS", alignLeft: true, leftMargin: 7, isBold: true);
                     AddCenteredParagraph(cell, "FINDINGS:" + "                      "+ "Supplier submitted counter offers", alignLeft: true, leftMargin: 7, isBold: true);
                     AddCenteredParagraph(cell, "RECOMMENDATION" + "     Evaluate quotations as to comppliance", alignLeft: true, leftMargin: 7, isBold: true);
@@ -1640,15 +1831,20 @@ namespace fmis.Controllers.Procurement
                 AddCrossLayout();
 
                 doc.Close();
-                return File(stream.ToArray(), "application/pdf");
+                byte[] pdfBytes = stream.ToArray();
+                string base64Pdf = Convert.ToBase64String(pdfBytes);
+
+                return Json(new { pdf = base64Pdf });
+                //return File(stream.ToArray(), "application/pdf");
             }
         }
         #endregion
 
         //PRINT TWG GOODS
         #region
-        public IActionResult PrintTWGMeds(string[] token, int id)
+        public IActionResult PrintTWGMeds(int gasValue, DateTime dateValue)
         {
+            var prNo = _context.Pr.FirstOrDefault(x => x.Id == gasValue).Prno;
             using (MemoryStream stream = new System.IO.MemoryStream())
             {
                 Document doc = new iTextSharp.text.Document(PageSize.A4);
@@ -1730,7 +1926,7 @@ namespace fmis.Controllers.Procurement
                     AddCenteredParagraph(cell, "CENTER for HEALTH DEVELOPMENT", isBold: true);
                     AddCenteredParagraph(cell, "BIDS and AWARDS COMMITEE", isBold: true);
                     AddCenteredParagraph(cell, "\n");
-                    AddCenteredParagraph(cell, "PR NO: ___________________" + "                      " + "DATE:___________", alignLeft: true, leftMargin: 7, isBold: true);
+                    AddCenteredParagraph(cell, "PR NO: " + prNo + "                      " + "DATE: " + dateValue.ToString("MMM d, yyyy"), alignLeft: true, leftMargin: 7, isBold: true);
                     AddCenteredParagraph(cell, "MEMO TO: TWG For DRUGS/MEDICINE, MEDICAL", alignLeft: true, leftMargin: 7, isBold: true);
                     AddCenteredParagraph(cell, "                    & DENTAL SUPPLIES/MATERIALS,", alignLeft: true, leftMargin: 7, isBold: true);
                     AddCenteredParagraph(cell, "                    REAGENTS AND ACTIVE INGREDIENTS,", alignLeft: true, leftMargin: 7, isBold: true);
@@ -1764,7 +1960,11 @@ namespace fmis.Controllers.Procurement
                 AddCrossLayout();
 
                 doc.Close();
-                return File(stream.ToArray(), "application/pdf");
+                byte[] pdfBytes = stream.ToArray();
+                string base64Pdf = Convert.ToBase64String(pdfBytes);
+
+                return Json(new { pdf = base64Pdf });
+                //return File(stream.ToArray(), "application/pdf");
             }
         }
         #endregion
@@ -1837,7 +2037,7 @@ namespace fmis.Controllers.Procurement
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync("Scheme4");
-            return RedirectToAction("Login", "App");
+            return RedirectToAction("Login", "Procurement");
         }
         #endregion
 
@@ -1872,8 +2072,12 @@ namespace fmis.Controllers.Procurement
 
             await HttpContext.SignInAsync("Scheme4", principal1);
         }
-        #endregion
+		#endregion
+
+		#region COOKIES
+		public string UserId { get { return User.FindFirstValue(ClaimTypes.Name); } }
+		#endregion
 
 
-    }
+	}
 }

@@ -51,14 +51,14 @@
 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="" style="font-weight:bold"> PRNO </label>
-                                        <select class="form-control" id="prNo" name="PrNo" asp-items="ViewBag.PrId">
-                                            <option value="">Select Pr No.</option>
+                                        <label for="" style="font-weight:bold"> PR NO  </label>
+                                        <select class="form-control" id="prNo" name="PrNo" asp-items="ViewBag.Pr">
+                                            <option>Select Pr No</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <label for="" style="font-weight:bold">  DATE. </label>
-                                        <input type="text" class="form-control" id="prDate" name="PrDate" readonly>
+                                        <label for="" style="font-weight:bold"> PR DATE </label>
+                                        <input type="text" class="form-control" id="prDate" name="prDate" readonly>
                                     </div>
                                     <div class="form-group">
                                         <label for="" style="font-weight:bold"> RECEIVED BY  </label>
@@ -147,7 +147,7 @@
         else
         {
             <tr>
-                <td colspan="6">
+                <td colspan="7">
                     <div class="alert alert-danger">
                         No data found.
                     </div>
@@ -158,7 +158,6 @@
 </table>
 
 @await Html.PartialAsync("_AddTwg")
-
 
 <script>
 

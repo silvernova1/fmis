@@ -34,31 +34,46 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
+                                        <label for="" style="font-weight:bold"> ABSTRACT NO. </label>
+                                        <select class="form-control" id="abstractNo" name="AbstractNo" asp-items="ViewBag.Abstract">
+                                            <option>Select Abstract</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
                                         <label for="" style="font-weight:bold"> PO NO. </label>
-                                        <input type="text" class="form-control" id="poNo" name="poNo">
+                                        <input type="text" class="form-control" id="poNo" name="PoNo">
                                     </div>
                                     <div class="form-group">
                                         <label for="" style="font-weight:bold">  PO DATE </label>
-                                        <input type="text" class="form-control" id="poDate" name="poDate">
+                                        <input type="text" class="form-control" id="poDate" name="PoDate">
                                     </div>
                                     <div class="form-group">
                                         <label for="" style="font-weight:bold">SUPPLIER </label>
-                                        <input type="text" class="form-control" id="supplier" name="supplier">
+                                        <input type="text" class="form-control" id="supplier" name="Supplier">
                                     </div>
                                     <div class="form-group">
                                         <label for="" style="font-weight:bold">  AMOUNT </label>
-                                        <input type="text" class="form-control" id="amount" name="amount">
+                                        <input type="text" class="form-control" id="amount" name="Amount">
                                     </div>
                                     <div class="form-group">
                                         <label for="" style="font-weight:bold">  RMOP </label>
-                                        <input type="text" class="form-control" id="rmop" name="rmop">
+                                        <select class="form-control" id="rmop" name="Rmop">
+                                            <option value="AGENCY TO AGENCY">AGENCY TO AGENCY</option>
+                                            <option value="DIRECT CONTRACTING (DRUGS AND MEDS)">DIRECT CONTRACTING (DRUGS AND MEDS)</option>
+                                            <option value="EMERGENCY CASES (DRUGS AND MEDS)">EMERGENCY CASES (DRUGS AND MEDS)</option>
+                                            <option value="LEASE OF VENUE (GOODS)">LEASE OF VENUE (GOODS)</option>
+                                            <option value="PUBLIC BIDDING (GOODS AND EQUIPMENT)">PUBLIC BIDDING (GOODS AND EQUIPMENT)</option>
+                                            <option value="PS-DBM">PS-DBM</option>
+                                            <option value="SCIENTIFIC SCHOLARLY">SCIENTIFIC SCHOLARLY</option>
+                                            <option value="SMALL VALUE PROCUREMENT (GOODS AND EQUIPMENT)">SMALL VALUE PROCUREMENT (GOODS AND EQUIPMENT)</option>
+                                        </select>
                                     </div>
                                 </div>
 
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="" style="font-weight:bold"> PR NO  </label>
-                                        <select class="form-control" id="prNo" name="prNo" asp-items="ViewBag.PrId">
+                                        <select class="form-control" id="prNo" name="PrNo" asp-items="ViewBag.Pr">
                                             <option>Select Pr No</option>
                                         </select>
                                     </div>
@@ -68,11 +83,11 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="" style="font-weight:bold"> DESCRIPTION </label>
-                                        <textarea class="form-control" id="description" name="description" ></textarea>
+                                        <textarea class="form-control" id="description" name="Description" ></textarea>
                                     </div>
                                     <div class="form-group">
                                         <label for="" style="font-weight:bold">REMARKS</label>
-                                        <input type="text" class="form-control" id="remarks" name="remarks">
+                                        <input type="text" class="form-control" id="remarks" name="Remarks">
                                     </div>
                                 </div>
                             </div>
@@ -98,6 +113,9 @@
 <table class="table table-hover" style="width: 900px">
     <thead>
         <tr>
+            <th>
+                ABSTRACT NO.
+            </th>
             <th>
                PO NO.
             </th>
@@ -137,15 +155,18 @@
             {
                 <tr>
                     <td>
-                        @item.PoNo
+                        @item.AbstractNo
                     </td>
                     <td>
+                        @item.PoNo
+                    </td>
+                    <td style="width: 150px">
                         @item.PoDate.ToString("MMM d, yyyy")
                     </td>
                     <td>
                         @item.PrNo
                     </td>
-                    <td>
+                    <td style="width: 150px">
                         @item.PrDate.ToString("MMM d, yyyy")
                     </td>
                     <td>
@@ -174,7 +195,7 @@
         else
         {
             <tr>
-                <td colspan="10">
+                <td colspan="11">
                     <div class="alert alert-danger">
                         No data found.
                     </div>
@@ -199,6 +220,7 @@
                 url: '@Url.Action("GetPo", "Procurement")',
                 data: { id: itemId },
                 success: function (data) {
+                    $("#abstractNo").val(data.abstractNo);
                     $("#poNo").val(data.poNo);
                     $("#poDate").val(data.poDate);
                     $("#prNo").val(data.prNo);
@@ -222,6 +244,7 @@
             e.preventDefault();
             var newData = {
                 Id: itemId,
+                AbstractNo: $("#abstractNo").val(),
                 PoNo: $("#poNo").val(),
                 PoDate: $("#poDate").val(),
                 PrNo: $("#prNo").val(),

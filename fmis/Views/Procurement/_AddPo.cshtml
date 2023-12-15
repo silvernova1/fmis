@@ -25,6 +25,12 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
+                                        <label for="" style="font-weight:bold"> ABSTRACT NO. </label>
+                                        <select class="form-control" name="AbstractNo" asp-items="ViewBag.Abstract">
+                                            <option value="">Select Abstract No.</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
                                         <label for="" style="font-weight:bold"> PO NO. </label>
                                         <input type="text" class="form-control" name="PoNo" required>
                                     </div>
@@ -42,14 +48,23 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="" style="font-weight:bold">  RMOP </label>
-                                        <input type="text" class="form-control" name="Rmop" required>
+                                        <select class="form-control" name="Rmop">
+                                            <option value="AGENCY TO AGENCY">AGENCY TO AGENCY</option>
+                                            <option value="DIRECT CONTRACTING (DRUGS AND MEDS)">DIRECT CONTRACTING (DRUGS AND MEDS)</option>
+                                            <option value="EMERGENCY CASES (DRUGS AND MEDS)">EMERGENCY CASES (DRUGS AND MEDS)</option>
+                                            <option value="LEASE OF VENUE (GOODS)">LEASE OF VENUE (GOODS)</option>
+                                            <option value="PUBLIC BIDDING (GOODS AND EQUIPMENT)">PUBLIC BIDDING (GOODS AND EQUIPMENT)</option>
+                                            <option value="PS-DBM">PS-DBM</option>
+                                            <option value="SCIENTIFIC SCHOLARLY">SCIENTIFIC SCHOLARLY</option>
+                                            <option value="SMALL VALUE PROCUREMENT (GOODS AND EQUIPMENT)">SMALL VALUE PROCUREMENT (GOODS AND EQUIPMENT)</option>
+                                        </select>
                                     </div>
                                 </div>
 
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="" style="font-weight:bold"> PR NO  </label>
-                                        <select class="form-control" name="PrNo" id="PrNo" asp-items="ViewBag.PrId">
+                                        <select class="form-control" name="PrNo" id="PrNo" asp-items="ViewBag.Pr">
                                             <option value="">Select Pr No.</option>
                                         </select>
                                     </div>
