@@ -3,4 +3,109 @@
     ViewData["Title"] = "Procurement";
 }
 
-<h1>Hello World!</h1>
+
+
+
+@model string
+
+<style>
+    .pingResult {
+        height: 100px;
+        overflow-y: auto;
+    }
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>IP Address</th>
+                        <th>Action</th>
+                        <th>Ping Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>192.168.110.17</td>
+                        <td>
+                            <form method="post" action="@Url.Action("PingIpAddress")" class="pingForm">
+                                <input type="hidden" name="ipAddress" value="192.168.110.17" />
+                                <button type="submit" class="startPingButton">Ping AGAWN</button>
+                            </form>
+                        </td>
+                        <td class="pingResult" data-ip="192.168.110.17">
+                            <pre></pre>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>192.168.110.18</td>
+                        <td>
+                            <form method="post" action="@Url.Action("PingIpAddress")" class="pingForm">
+                                <input type="hidden" name="ipAddress" value="192.168.110.18" />
+                                <button type="submit" class="startPingButton">Ping JONDY</button>
+                            </form>
+                        </td>
+                        <td class="pingResult" data-ip="192.168.110.18">
+                            <pre></pre>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('.pingForm').submit(function (event) {
+            event.preventDefault();
+            var form = $(this);
+            var button = form.find('.startPingButton');
+            var resultCell = form.closest('tr').find('.pingResult pre');
+            var ipAddress = form.find('input[name="ipAddress"]').val();
+
+            var isPinging = button.data('isPinging') || false;
+
+            if (!isPinging) {
+                button.text('Stop Continuous Ping');
+                button.data('isPinging', true);
+                updatePingResult(ipAddress, resultCell);
+            } else {
+                button.text('Start Continuous Ping');
+                button.data('isPinging', false);
+            }
+        });
+
+        function updatePingResult(ipAddress, resultCell) {
+            $.ajax({
+                url: '@Url.Action("PingIpAddress", "Procurement")',
+                type: 'POST',
+                data: { ipAddress: ipAddress },
+                success: function (data) {
+                    var formattedResult = formatPingResult(ipAddress, data);
+                    var currentContent = resultCell.text();
+                    resultCell.text(currentContent + formattedResult + '\n');
+                    resultCell.scrollTop(resultCell[0].scrollHeight);
+
+                    var isPinging = resultCell.closest('tr').find('.startPingButton').data('isPinging');
+                    if (isPinging) {
+                        setTimeout(function () {
+                            updatePingResult(ipAddress, resultCell);
+                        }, 1000);
+                    }
+                }
+            });
+        }
+
+        function formatPingResult(ipAddress, data) {
+            // Example: Assuming data is the round-trip time in milliseconds
+            var formattedResult = 'Pinging ' + ipAddress + ' with 32 bytes of data:\n';
+            formattedResult += 'Reply from ' + ipAddress + ': bytes=32 time=' + data + 'ms TTL=64\n';
+            // You can add more details based on the structure of your server response
+
+            return formattedResult;
+        }
+    });
+</script>

@@ -1,0 +1,453 @@
+﻿@model List<fmis.Models.Procurement.PuIndexing>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Procurement" + " " + "(Indexing)";
+}
+
+
+<style>
+    .ui-datepicker {
+        width: 250px !important;
+    }
+</style>
+
+<h3 class="grey lighter smaller">
+    List Of Index
+</h3>
+<hr>
+
+<div class="col-xs-12">
+    <div id="editIndexing" class="modal fade" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 class="smaller lighter blue no-margin">Update Index</h3>
+                </div>
+                <form>
+                    <div class="modal-body">
+                        <div>
+                            <h4 class="grey lighter smaller">
+                                Please complete the form.
+                            </h4>
+                            <br />
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold"> PO NO. </label>
+                                        <input type="text" class="form-control" id="poNo" name="PoNo" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold"> PR NO. </label>
+                                        <input type="text" class="form-control" id="prNo" name="Prno" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">  ITEM/DESCRIPTION </label>
+                                        <textarea class="form-control" id="itemDesc" name="ItemDesc"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">Remarks</label>
+                                        <input type="text" class="form-control" id="remarks" name="Remarks" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">  GP  </label>
+                                        <input type="text" class="form-control" id="gp" name="Gp" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Date" style="font-weight:bold"> RMOP </label>
+                                        <input type="text" class="form-control" id="rmop" name="Rmop" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">Date Released to Budget</label>
+                                        <input type="text" class="form-control" id="budgetReleased" name="budgetReleased" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <br />
+                                        <label for="" style="font-weight:bold">Date Released Approve PO to Supply</label>
+                                        <input type="text" class="form-control" id="supplyReleased" name="supplyReleased" required>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-xs btn-primary" id="saveChanges">Submit <span class="fa fa-check-square-o"></span> </button>
+                        <a data-dismiss="modal" class="btn btn-xs btn-danger">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p>
+    <a class="btn btn-success btn-sm" href="#addIndexing" role="button" data-toggle="modal">
+        <i class="ace-icon fa fa-plus "></i>Create New
+    </a>
+</p>
+<br />
+<table class="table table-hover" style="width: 1500px">
+    <thead>
+        <tr>
+            <th>
+                PO NO.
+            </th>
+            <th>
+                PR NO.
+            </th>
+            <th>
+                ITEM/DESCRIPTION
+            </th>
+            <th>
+                GP
+            </th>
+            <th>
+                RMOP
+            </th>
+            <th>
+                Date Released to Budget
+            </th>
+            <th>
+                Date Released Approve PO to Supply
+            </th>
+            <th>
+                Remarks
+            </th>
+            <th>
+                Actions
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+            @if(Model.Count > 0)
+            {
+                @foreach(var item in Model)
+                {
+                <tr>
+                    <td>
+                        @item.PoNo
+                    </td>
+                    <td>
+                        @item.PrNo
+                    </td>
+                    <td>
+                        @item.ItemDesc
+                    </td>
+                    <td>
+                        @item.Gp
+                    </td>
+                    <td>
+                        @item.Rmop
+                    </td>
+                    <td>
+                        @item.BudgetReleased.ToString("MMM d, yyyy")
+                    </td>
+                    <td>
+                        @item.SupplyReleased.ToString("MMM d, yyyy")
+                    </td>
+                    <td>
+                        @item.Remarks
+                    </td>
+                    <td>
+                        <a class="btn btn-xs btn-primary btn-edit" data-id="@item.Id">
+                            <i class="ace-icon fa fa-edit"></i>Edit
+                        </a>
+                    </td>
+                </tr>
+                }
+            }
+            else
+            {
+            <tr>
+                <td colspan="9">
+                    <div class="alert alert-danger">
+                        No data found.
+                    </div>
+                </td>
+            </tr>
+            }
+    </tbody>
+</table>
+
+@await Html.PartialAsync("_AddIndexing")
+
+
+<script>
+
+    var itemId;
+    $(document).ready(function () {
+        $(".btn-edit").click(function () {
+            itemId = $(this).data("id");
+
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetIndex", "Procurement")',
+                data: { id: itemId },
+                success: function (data) {
+                    $("#poNo").val(data.poNo);
+                    $("#prNo").val(data.prNo);
+                    $("#itemDesc").val(data.itemDesc);
+                    $("#gp").val(data.gp);
+                    $("#rmop").val(data.rmop);
+                    $("#budgetReleased").val(data.budgetReleased);
+                    $("#supplyReleased").val(data.supplyReleased);
+                    $("#remarks").val(data.remarks);
+                    $("#editIndexing").modal("show");
+                }
+            });
+        });
+
+        $("#budgetReleased").datepicker({
+            dateFormat: "MM d, yy"
+
+        });
+        $("#supplyReleased").datepicker({
+            dateFormat: "MM d, yy"
+
+        });
+
+        $("#saveChanges").click(function (e) {
+            e.preventDefault();
+            var newData = {
+                Id: itemId,
+                PoNo: $("#poNo").val(),
+                PrNo: $("#prNo").val(),
+                ItemDesc: $("#itemDesc").val(),
+                Gp: $("#gp").val(),
+                Rmop: $("#rmop").val(),
+                BudgetReleased: $("#budgetReleased").val(),
+                SupplyReleased: $("#supplyReleased").val(),
+                Remarks: $("#remarks").val(),
+
+            };
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("UpdateIndex", "Procurement")',
+                data: JSON.stringify(newData),
+                contentType: "application/json; charset=utf-8",
+                success: function (result) {
+                    if (result.success) {
+                        Lobibox.notify('success', {
+                            title: 'Success',
+                            msg: 'Data saved successfully..',
+                            sound: false
+                        });
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1500);
+                    } else {
+                        Lobibox.notify('error', {
+                            title: 'Error',
+                            msg: 'Error submitting the form..',
+                            sound: false
+                        });
+                        setTimeout(function () {
+                            $("#editPo").modal("hide");
+                            location.reload();
+                        }, 1000);
+                    }
+                    //$("#editPo").modal("hide");
+                    //$('form')[0].reset();
+                }
+            });
+        });
+
+    });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@* @{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Procurement";
+}
+
+
+
+<style>
+
+
+
+
+</style>
+<h3 class="grey lighter smaller">
+    ABSTRACT
+</h3>
+<hr>
+
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div id="modalContent"></div> <!-- Placeholder for content -->
+        </div>
+    </div>
+</div>
+
+<p>
+    <a class="btn btn-success btn-sm" href="#my-modal" role="button" data-toggle="modal">
+        <i class="ace-icon fa fa-plus "></i>Create New
+    </a>
+</p>
+<h1 style="margin-left : 200px; font-weight:bold;">2023 ABSTRACT OF PRICE LIST LOGBOOK</h1>
+<br />
+<table class="table table-hover" style="width: 900px">
+    <thead>
+        <tr>
+            <th>
+                ABSTRACT NO.
+            </th>
+            <th>
+                ABSTRACT DATE
+            </th>
+            <th>
+                PR NO./ DATE
+            </th>
+            <th>
+                CANVASS NO./DATE
+            </th>
+            <th>
+                RECOMMENDED AWARD
+            </th>
+            <th>
+                RMOP
+            </th>
+            <th>
+                Actions
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+
+        <tr>
+            <td>
+                SAMPLE
+            </td>
+            <td>
+                SAMPLE
+            </td>
+            <td>
+                SAMPLE
+            </td>
+            <td>
+                SAMPLE
+            </td>
+            <td>
+                SAMPLE
+            </td>
+            <td>
+                SAMPLE
+            </td>
+            <td>
+                <a asp-action="Edit" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#EditModal">
+                    <i class="ace-icon fa fa-edit"></i>
+                </a>
+            </td>
+        </tr>
+
+    </tbody>
+</table>
+
+
+
+
+<div class="col-xs-12">
+
+    <div id="my-modal" class="modal fade" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 class="smaller lighter blue no-margin">Create Canvass</h3>
+                </div>
+                <form asp-action="Create" method="post">
+                    <div class="modal-body">
+                        <div>
+                            <h4 class="grey lighter smaller">
+                                Please complete the form.
+                            </h4>
+                            <br />
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">RPQ NO. </label>
+                                        <input type="text" class="form-control" id="" name="" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">RPQ DATE </label>
+                                        <input type="DATE" class="form-control" id="" name="" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold"> ITEM/DESCRIPTION: </label>
+                                        <input type="text" class="form-control" id="" name="" required>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="Date" style="font-weight:bold"> PR NO.  </label>
+                                        <input type="text" class="form-control" id="Date" name="Date">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Date" style="font-weight:bold">PR DATE: </label>
+                                        <input type="date" class="form-control" id="Date" name="Date">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">RMOP</label>
+                                        <input type="text" class="form-control" id="ContactNumber" name="" required>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" onclick="showNotification()" class="btn btn-xs btn-primary">Submit <span class="fa fa-check-square-o"></span> </button>
+                        <a data-dismiss="modal" class="btn btn-xs btn-danger">Cancel</a>
+                    </div>
+                </form>
+            </div><!-- /.modal-content -->
+
+        </div><!-- /.modal-dialog -->
+    </div>
+
+
+
+
+    <!-- PAGE CONTENT ENDS -->
+</div>
+ *@

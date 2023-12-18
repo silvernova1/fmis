@@ -59,9 +59,15 @@ namespace fmis
 
             services.Configure<FormOptions>(options =>
             {
-                options.ValueCountLimit = 5000;
+                options.ValueCountLimit = 10000;
             });
 
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30); // Set an appropriate timeout
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
 
             services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
             services.AddTransient<EmailService>();
@@ -213,8 +219,6 @@ namespace fmis
                 options.UseSqlServer(Configuration.GetConnectionString("InOfPayDeductionContext")));
             services.AddDbContext<SectionsContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("SectionsContext")));
-            services.AddDbContext<MaiffDvContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("MaiffDvContext")));
             #endregion
 
 
@@ -248,9 +252,9 @@ namespace fmis
                 .AddCookie("Scheme1", options =>
                 {
                     options.Cookie.Name = "Scheme1";
-                    options.LoginPath = "/Account/Login";
-                    options.LogoutPath = "/Account/Logout";
-                    options.AccessDeniedPath = "/Account/NotFound";
+                    options.LoginPath = "/Fmis/Account/Login";
+                    options.LogoutPath = "/Fmis/Account/Logout";
+                    options.AccessDeniedPath = "/Fmis/Account/NotFound";
                     options.ExpireTimeSpan = TimeSpan.FromHours(5);
                     options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
                 })
@@ -333,6 +337,11 @@ namespace fmis
 
             app.UseEndpoints(endpoints =>
             {
+
+                endpoints.MapControllerRoute(
+                    name: "Fmis",
+                    pattern: "Fmis/{controller=Home}/{action=Index}/{id?}");
+
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");

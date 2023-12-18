@@ -46,7 +46,8 @@ using OfficeOpenXml.FormulaParsing.Excel.Functions.Database;
 
 namespace fmis.Controllers.Employee
 {
-    public class PrController : Controller
+	[Authorize(AuthenticationSchemes = "Scheme2", Roles = "accounting_user")]
+	public class PrController : Controller
     {
         private readonly PpmpContext _ppmpContext;
         private readonly DtsContext _dts;
@@ -66,8 +67,9 @@ namespace fmis.Controllers.Employee
             //ItemsDropDownList();
             UsersDropDownList();
 
-            var pr = await _context.Pr.Include(x => x.PrItems).ToListAsync();
-            //ViewBag.ItemDesc = _ppmpContext.item_daily.FirstOrDefault();
+            var pr = await _context.Pr.Where(x=>x.UserId == UserId).Include(x => x.PrItems).ToListAsync();
+
+			var puCheck = await _context.PuChecklist.Include(x => x.PrChecklist).ToListAsync();
 
             var Query = from i in _ppmpContext.item
                         orderby i.Id
@@ -88,6 +90,7 @@ namespace fmis.Controllers.Employee
         [HttpPost]
         public async Task<IActionResult> Create(Pr pr)
         {
+			pr.UserId = UserId;
             _context.Add(pr);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
@@ -616,5 +619,9 @@ namespace fmis.Controllers.Employee
 			}
 
 		}
-	}
+
+        #region COOKIES
+        public string UserId { get { return User.FindFirstValue(ClaimTypes.Name); } }
+        #endregion
+    }
 }

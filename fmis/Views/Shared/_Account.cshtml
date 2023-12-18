@@ -29,6 +29,12 @@
             <i class="fa fa-sign-out" aria-hidden="true"></i> Logout
         </a>
         }
+        else if (User.IsInRole("pu_admin"))
+        {
+            <a id="logout-link" asp-action="Logout" asp-controller="Procurement">
+                <i class="fa fa-sign-out" aria-hidden="true"></i> Logout
+            </a>
+        }
         else if (User.IsInRole("app_admin"))
         {
             <a id="logout-link" asp-action="Logout" asp-controller="App">

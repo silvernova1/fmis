@@ -119,6 +119,8 @@ namespace fmis.Data
         public DbSet<Po> Po { get; set; }
         public DbSet<Abstract> Abstract { get; set; }
         public DbSet<Twg> Twg { get; set; }
+        public DbSet<Supplier> Supplier { get; set; }
+        public DbSet<PuIndexing> PuIndexing { get; set; }
 
 
 
