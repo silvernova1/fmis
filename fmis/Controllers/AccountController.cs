@@ -22,7 +22,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace fmis.Controllers
 {
-
     public class AccountController : Controller
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
