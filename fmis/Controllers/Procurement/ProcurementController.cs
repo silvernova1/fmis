@@ -40,6 +40,7 @@ using fmis.Models.pr;
 using System.Net.NetworkInformation;
 using System.Text.RegularExpressions;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Logical;
+using DocumentFormat.OpenXml.InkML;
 
 namespace fmis.Controllers.Procurement
 {
@@ -62,7 +63,18 @@ namespace fmis.Controllers.Procurement
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public IActionResult SaveChecklist(PuChecklist puChecklist)
+		[HttpGet]
+		public IActionResult GetChecklist(int id)
+		{
+			var prChecklist = _context.PuChecklist
+		    .Where(x => x.Prno == id)
+		    .ToList();
+
+
+			return Json(prChecklist);
+		}
+
+		public IActionResult SaveChecklist(PuChecklist puChecklist)
         {
             if (ModelState.IsValid)
             {
@@ -512,7 +524,7 @@ namespace fmis.Controllers.Procurement
             {
                 if (model.BacNo != null)
                 {
-					var userId = _context.Pr.FirstOrDefault(x => x.Id == Convert.ToInt32(model.PrNoOne)).UserId;
+					var userId = _context.Pr.FirstOrDefault(x => x.Prno == model.PrNoOne).UserId;
 					model.UserId = userId;
 					_context.Add(model);
                     _context.SaveChanges();
@@ -534,9 +546,9 @@ namespace fmis.Controllers.Procurement
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Rmop", "LeaseOfVenue");
             BacResNoDownList();
-            PrDropDownList();
+            PrDdl();
 
-            return View();
+            return View(_context.RmopLov.ToList());
         }
 
         public IActionResult SaveRmopLov(RmopLov model)
@@ -545,7 +557,7 @@ namespace fmis.Controllers.Procurement
             {
                 if (model.BacNo != null)
                 {
-					var userId = _context.Pr.FirstOrDefault(x => x.Id == Convert.ToInt32(model.PrNoOne)).UserId;
+					var userId = _context.Pr.FirstOrDefault(x => x.Prno == model.PrNoOne).UserId;
 					model.UserId = userId;
 
 					_context.Add(model);
@@ -566,10 +578,10 @@ namespace fmis.Controllers.Procurement
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Rmop", "PublicBidding");
             BacResNoDownList();
-            PrDropDownList();
+            PrDdl();
 
 
-            return View();
+            return View(_context.RmopPb.ToList());
         }
         public IActionResult SaveRmopPb(RmopPb model)
         {
@@ -577,7 +589,7 @@ namespace fmis.Controllers.Procurement
             {
                 if (model.BacNo != null)
                 {
-					var userId = _context.Pr.FirstOrDefault(x => x.Id == Convert.ToInt32(model.PrNoOne)).UserId;
+					var userId = _context.Pr.FirstOrDefault(x => x.Prno == model.PrNoOne).UserId;
 					model.UserId = userId;
 
 					_context.Add(model);
@@ -599,9 +611,9 @@ namespace fmis.Controllers.Procurement
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Rmop", "PsDbm");
             BacResNoDownList();
-            PrDropDownList();
+            PrDdl();
 
-            return View();
+            return View(_context.RmopPsDbm.ToList());
         }
         public IActionResult SaveRmopPsDbm(RmopPsDbm model)
         {
@@ -609,7 +621,7 @@ namespace fmis.Controllers.Procurement
             {
                 if (model.BacNo != null)
                 {
-					var userId = _context.Pr.FirstOrDefault(x => x.Id == Convert.ToInt32(model.PrNoOne)).UserId;
+					var userId = _context.Pr.FirstOrDefault(x => x.Prno == model.PrNoOne).UserId;
 					model.UserId = userId;
 
 					_context.Add(model);
@@ -631,10 +643,10 @@ namespace fmis.Controllers.Procurement
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Rmop", "ScientificScholarly");
             BacResNoDownList();
-            PrDropDownList();
+            PrDdl();
 
 
-            return View();
+            return View(_context.RmopSs.ToList());
         }
 
         public IActionResult SaveRmopSs(RmopSs model)
@@ -643,7 +655,7 @@ namespace fmis.Controllers.Procurement
             {
                 if (model.BacNo != null)
                 {
-					var userId = _context.Pr.FirstOrDefault(x => x.Id == Convert.ToInt32(model.PrNoOne)).UserId;
+					var userId = _context.Pr.FirstOrDefault(x => x.Prno == model.PrNoOne).UserId;
 					model.UserId = userId;
 
 					_context.Add(model);
@@ -2238,7 +2250,7 @@ namespace fmis.Controllers.Procurement
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "                                   WHEREAS,  corollary  thereto,  Purchase  Request  No. " + dc.PrNoOne +   " for  the  Procurement  of", false, 11);
                 AddCellWithContent(nT, "              " + dc.PrDescriptionOne + "  in the amount of ", false, 11);
-                AddCellWithContent(nT, "              PHP " + dc.PrAmountOne + "  was referred to the Bids and Awards Committee for processing;", false, 11);
+                AddCellWithContent(nT, "              PHP " + dc.PrAmountOne.ToString("##,#00.00") + "  was referred to the Bids and Awards Committee for processing;", false, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "                                   WHEREAS, after evaluation of the purchase request  vis-à-vis  the  implementing  rules  and  upon", false, 11);
                 AddCellWithContent(nT, "              confirmation of the existence of the conditions allowing the same, the BAC has come to a  resolution  that  resort", false, 11);
@@ -2248,7 +2260,7 @@ namespace fmis.Controllers.Procurement
                 AddCellWithContent(nT, "                                   NOW THEREFORE, above premises considered, resolved as it is hereby resolved, to  recommend", false, 11);
                 AddCellWithContent(nT, "             the use of the Alternative Mode of Procurement Direct Contracting under Sec. 50  of  the  Revised  Implementing", false, 11);
                 AddCellWithContent(nT, "             Rules and Regulations of the Republic Act No. 9184 for Purchase Request No. " + dc.PrNoOne + ", in  the  amount", false, 11);
-                AddCellWithContent(nT, "             of PHP " + dc.PrAmountOne + "  for the Procurement of " + dc.PrDescriptionOne, false, 11);
+                AddCellWithContent(nT, "             of PHP " + dc.PrAmountOne.ToString("##,#00.00") + "  for the Procurement of " + dc.PrDescriptionOne, false, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "                                 " + dc.PrDate + " 2023, Cebu City, Philippines.", false, 11);
@@ -2300,6 +2312,8 @@ namespace fmis.Controllers.Procurement
                 doc.SetMargins(10f, 10f, 10f, 10f);
                 PdfWriter writer = PdfWriter.GetInstance(doc, stream);
                 doc.Open();
+
+                var rmopEc = _context.RmopEc.FirstOrDefault(x => x.Id == id);
 
                 string logoPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "assets", "images", "doh_logo_updated.png");
                 iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(logoPath);
@@ -2374,7 +2388,7 @@ namespace fmis.Controllers.Procurement
                 AddCellWithContent(nT, "                                                     Regional Director’s Office Tel. No. (032) 253-6355 Fax No. (032) 254-0109", false, 10);
                 AddCellWithContent(nT, "                                             Official Website http://www.ro7.doh.gov.ph E-mail Address: dohro7@gmail.com", false, 10);
                 AddCellWithContent(nT, "", false, 10, 10f);
-                AddCellWithContent(nT, "                                                         BAC RESOLUTION NO." + "        " + "-AMP s. 2023", true, 11);
+                AddCellWithContent(nT, "                                                         BAC RESOLUTION NO. " + rmopEc.BacNo + "-AMP s. 2023", true, 11);
                 AddCellWithContent(nT, "                             “RECOMMENDING THE USE OF ALTERNATIVE MODE OF PROCUREMENT:", true, 11);
                 AddCellWithContent(nT, "                              NEGOTIATED PROCUREMENT (EMERGENCY CASES) UNDER SEC. 53.2 OF", true, 11);
                 AddCellWithContent(nT, "                               THE REVISED IMPLEMENTING RULES AND REGULATIONS OF RA 9184.”", true, 11);
@@ -2392,9 +2406,9 @@ namespace fmis.Controllers.Procurement
                 AddCellWithContent(nT, "              causes where immediate action is necessary to prevent damage to or loss of life or property,  or  to  restore  vital", false, 11);
                 AddCellWithContent(nT, "              public services, infrastructure facilities and other public utilities;", false, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
-                AddCellWithContent(nT, "                                  WHEREAS, corollary thereto, Purchase Request No. _________________  for the Procurement of", false, 11);
-                AddCellWithContent(nT, "              _______________________________________________________________________  in the amount of  PHP", false, 11);
-                AddCellWithContent(nT, "              _____________ was referred to the Bids and Awards Committee for processing;", false, 11);
+                AddCellWithContent(nT, "                                  WHEREAS, corollary thereto, Purchase Request No. " + rmopEc.PrNoOne + "  for the Procurement of", false, 11);
+                AddCellWithContent(nT, "              " + rmopEc.PrDescriptionOne + "  in the amount of  PHP", false, 11);
+                AddCellWithContent(nT, "              " + rmopEc.PrAmountOne.ToString("##,#00.00") + " was referred to the Bids and Awards Committee for processing;", false, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "                                  WHEREAS,  after evaluation of the purchase  request  vis-à-vis the  implementing  rules  and  upon", false, 11);
                 AddCellWithContent(nT, "              confirmation of the existence of the conditions allowing the same, the BAC has come to a  resolution  that  resort", false, 11);
@@ -2405,11 +2419,11 @@ namespace fmis.Controllers.Procurement
                 AddCellWithContent(nT, "                                   NOW THEREFORE, above premises considered, resolved as it is hereby resolved, to recommend", false, 11);
                 AddCellWithContent(nT, "             the use of the Alternative Mode of Procurement: Negotiated Procurement (Emergency Cases) under Sec. 53.2  of", false, 11);
                 AddCellWithContent(nT, "             the Revised Implementing Rules  and  Regulations  of  the  Republic  Act  No.  9184  for  Purchase  Request  No.", false, 11);
-                AddCellWithContent(nT, "             _________________ ,  in  the  amount  of  PHP   ______________________________  for  the  Procurement  of", false, 11);
-                AddCellWithContent(nT, "             _____________________________________________________________________________________", false, 11);
+                AddCellWithContent(nT, "             " + rmopEc.PrNoOne + " ,  in  the  amount  of  PHP   " + rmopEc.PrAmountOne.ToString("##,#00.00") + "  for  the  Procurement  of", false, 11);
+                AddCellWithContent(nT, "             " + rmopEc.PrDescriptionOne, false, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "", false, 10, 10f);
-                AddCellWithContent(nT, "                                 _____________________" + " 2023 , Cebu City, Philippines.", false, 11);
+                AddCellWithContent(nT, "                                 " + rmopEc.PrDate + " 2023 , Cebu City, Philippines.", false, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "", false, 10, 10f);
@@ -2456,6 +2470,8 @@ namespace fmis.Controllers.Procurement
                 doc.SetMargins(10f, 10f, 10f, 10f);
                 PdfWriter writer = PdfWriter.GetInstance(doc, stream);
                 doc.Open();
+
+                var rmopLov = _context.RmopLov.FirstOrDefault(x => x.Id == id);
 
                 string logoPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "assets", "images", "doh_logo_updated.png");
                 iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(logoPath);
@@ -2525,7 +2541,7 @@ namespace fmis.Controllers.Procurement
                 AddCellWithContent(nT, "                                                                                              Department Of Health", false, 10);
                 AddCellWithContent(nT, "                                 CENTRAL VISAYAS CENTER for HEALTH DEVELOPMENT", true, 12);
                 AddCellWithContent(nT, "", false, 10, 10f);
-                AddCellWithContent(nT, "                                                         BAC RESOLUTION NO." + "        " + "-AMP s. 2023", true, 11);
+                AddCellWithContent(nT, "                                                         BAC RESOLUTION NO. " + rmopLov.BacNo + "-AMP s. 2023", true, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "                                         “RECOMMENDING THE USE OF ALTERNATIVE MODE OF", true, 11);
                 AddCellWithContent(nT, "                                   PROCUREMENT: NEGOTIATED PROCUREMENT (LEASE OF REAL", true, 11);
@@ -2544,9 +2560,9 @@ namespace fmis.Controllers.Procurement
                 AddCellWithContent(nT, "              capable supplier, contractor, or consultant  in  instances  such  as  in  LEASE OF REAL PROPERTY", false, 11);
                 AddCellWithContent(nT, "              AND VENUE;", false, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
-                AddCellWithContent(nT, "                                 WHEREAS, corollary thereto, Purchase Request No. ____________ for the Procurement of", false, 11);
-                AddCellWithContent(nT, "              __________________________________________________________________  in the amount of PHP", false, 11);
-                AddCellWithContent(nT, "              __________ was referred to the Bids and Awards Committee for processing;", false, 11);
+                AddCellWithContent(nT, "                                 WHEREAS, corollary thereto, Purchase Request No. " + rmopLov.PrNoOne + " for the Procurement of", false, 11);
+                AddCellWithContent(nT, "              " + rmopLov.PrDescriptionOne + "  in the amount of PHP" + rmopLov.PrAmountOne.ToString("##,#00.00"), false, 11);
+                AddCellWithContent(nT, "               was referred to the Bids and Awards Committee for processing;", false, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "                                 WHEREAS,  after evaluation of the purchase request vis-à-vis the  implementing  rules  and", false, 11);
                 AddCellWithContent(nT, "              upon  confirmation of  the  existence  of  the  conditions  allowing  the  same,  the  BAC  has  come  to  a", false, 11);
@@ -2557,11 +2573,11 @@ namespace fmis.Controllers.Procurement
                 AddCellWithContent(nT, "                                 NOW THEREFORE,  above  premises  considered,  resolved  as  it  is hereby  resolved, to", false, 11);
                 AddCellWithContent(nT, "              recommend the use of the Alternative Mode of Procurement: Negotiated  Procurement  (Lease  of  Real", false, 11);
                 AddCellWithContent(nT, "              Property and Venue) under Sec.  53.10  of  the  Revised  Implementing  Rules  and  Regulations  of  the", false, 11);
-                AddCellWithContent(nT, "              Republic  Act  No.  9184  for  Purchase  Request  No. ___________________ , in  the  amount of PHP", false, 11);
-                AddCellWithContent(nT, "              ____________ for the Procurement of _______________________________________", false, 11);
+                AddCellWithContent(nT, "              Republic  Act  No.  9184  for  Purchase  Request  No. " + rmopLov.PrAmountOne + " , in  the  amount of PHP", false, 11);
+                AddCellWithContent(nT, "              " + rmopLov.PrAmountOne.ToString("##,#00.00") + " for the Procurement of " + rmopLov.PrDescriptionOne, false, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "", false, 10, 10f);
-                AddCellWithContent(nT, "                                 _____________________" + " 2023 , Cebu City, Philippines.", false, 11);
+                AddCellWithContent(nT, "                                 "+ rmopLov.PrDate + " 2023 , Cebu City, Philippines.", false, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "", false, 10, 10f);
@@ -2602,6 +2618,8 @@ namespace fmis.Controllers.Procurement
                 doc.SetMargins(10f, 10f, 10f, 10f);
                 PdfWriter writer = PdfWriter.GetInstance(doc, stream);
                 doc.Open();
+
+                var rmopPb = _context.RmopPb.FirstOrDefault(x => x.Id == id);
 
                 string logoPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "assets", "images", "doh_logo_updated.png");
                 iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(logoPath);
@@ -2670,7 +2688,7 @@ namespace fmis.Controllers.Procurement
                 AddCellWithContent(nT, "                                                                                              Department Of Health", false, 10);
                 AddCellWithContent(nT, "                                 CENTRAL VISAYAS CENTER for HEALTH DEVELOPMENT", true, 12);
                 AddCellWithContent(nT, "", false, 10, 10f);
-                AddCellWithContent(nT, "                                                         BAC RESOLUTION NO." + "        " + "-AMP s. 2023", true, 11);
+                AddCellWithContent(nT, "                                                         BAC RESOLUTION NO. " + rmopPb.BacNo + "-AMP s. 2023", true, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "                                         “RECOMMENDING THE USE OF COMPETITIVE BIDDING (PUBLIC", true, 11);
                 AddCellWithContent(nT, "                                       BIDDING) UNDER SEC. 10 OF THE REVISED IMPLEMENTING RULES", true, 11);
@@ -2680,9 +2698,9 @@ namespace fmis.Controllers.Procurement
                 AddCellWithContent(nT, "                                           WHEREAS,  pursuant to Sec. 10 of the IRR, all procurement shall be done through", false, 11);
                 AddCellWithContent(nT, "                        competitive bidding, except as provided in Rule XVI;", false, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
-                AddCellWithContent(nT, "                                           WHEREAS,  corollary  thereto,  Purchase  Request  No. _____________________",  false, 11);
-                AddCellWithContent(nT, "                        for  the  Procurement  of  ____________________________________   in  the amount  of  PHP", false, 11);
-                AddCellWithContent(nT, "                        __________ was referred to the Bids and Awards Committee for processing;", false, 11);
+                AddCellWithContent(nT, "                                           WHEREAS,  corollary  thereto,  Purchase  Request  No. " + rmopPb.PrNoOne,  false, 11);
+                AddCellWithContent(nT, "                        for  the  Procurement  of " + rmopPb.PrDescriptionOne + "   in  the amount  of  PHP", false, 11);
+                AddCellWithContent(nT, "                        " + rmopPb.PrAmountOne + " was referred to the Bids and Awards Committee for processing;", false, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "                                           WHEREAS, after evaluation of  the  purchase  request  vis-à-vis  the  implementing ", false, 11);
                 AddCellWithContent(nT, "                        rules and finding no substantial ground to depart from the general rule, the BAC has  come  to  a ", false, 11);
@@ -2692,11 +2710,11 @@ namespace fmis.Controllers.Procurement
                 AddCellWithContent(nT, "                                           NOW THEREFORE, above premises considered, resolved as it is hereby resolved,", false, 11);
                 AddCellWithContent(nT, "                        to recommend the use of Competitive Bidding  (Public Bidding)  under  Sec. 10 of  the  Revised", false, 11);
                 AddCellWithContent(nT, "                        Implementing Rules and Regulations of the Republic Act  No. 9184  for  Purchase  Request  No.", false, 11);
-                AddCellWithContent(nT, "                        _________________ , in  the  amount  of  PHP ___________________  for  the  Procurment  of  ", false, 11);
-                AddCellWithContent(nT, "                        _____________________________________________", false, 11);
+                AddCellWithContent(nT, "                        " + rmopPb.PrNoOne + ", in  the  amount  of  PHP " + rmopPb.PrAmountOne + "  for  the  Procurment  of  ", false, 11);
+                AddCellWithContent(nT, "                        " + rmopPb.PrDescriptionOne, false, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "", false, 10, 10f);
-                AddCellWithContent(nT, "                                             _____________________" + " 2023 , Cebu City, Philippines.", false, 11);
+                AddCellWithContent(nT, "                                             " + rmopPb.PrDate + " 2023 , Cebu City, Philippines.", false, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "", false, 10, 10f);
@@ -2736,6 +2754,8 @@ namespace fmis.Controllers.Procurement
                 doc.SetMargins(10f, 10f, 10f, 10f);
                 PdfWriter writer = PdfWriter.GetInstance(doc, stream);
                 doc.Open();
+
+                var rmopPsdbm = _context.RmopPsDbm.FirstOrDefault(x => x.Id == id);
 
                 string logoPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "assets", "images", "doh_logo_updated.png");
                 iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(logoPath);
@@ -2818,7 +2838,7 @@ namespace fmis.Controllers.Procurement
                 AddCellWithContent(nT, "                                                                                              Department Of Health", false, 10);
                 AddCellWithContent(nT, "                                 CENTRAL VISAYAS CENTER for HEALTH DEVELOPMENT", true, 12);
                 AddCellWithContent(nT, "", false, 10, 10f);
-                AddCellWithContent(nT, "                                                         BAC RESOLUTION NO." + "        " + "-AMP s. 2023", true, 11);
+                AddCellWithContent(nT, "                                                         BAC RESOLUTION NO. " + rmopPsdbm.BacNo + "-AMP s. 2023", true, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "                                “RECOMMENDING THE USE OF ALTERNATIVE MODE OF PROCUREMENT", true, 11);
                 AddCellWithContent(nT, "                                (PS-DBM), IF NOT AVAILBLE SHOPPING UNDER SEC. 52.1 OF THE REVISED", true, 11);
@@ -2899,6 +2919,8 @@ namespace fmis.Controllers.Procurement
                 PdfWriter writer = PdfWriter.GetInstance(doc, stream);
                 doc.Open();
 
+                var rmopSs = _context.RmopSs.FirstOrDefault(x => x.Id == id);
+
                 string logoPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "assets", "images", "doh_logo_updated.png");
                 iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(logoPath);
                 logo.ScaleAbsolute(70f, 70f);
@@ -2969,7 +2991,7 @@ namespace fmis.Controllers.Procurement
                 AddCellWithContent(nT, "                                                                                              Department Of Health", false, 10);
                 AddCellWithContent(nT, "                                 CENTRAL VISAYAS CENTER for HEALTH DEVELOPMENT", true, 12);
                 AddCellWithContent(nT, "", false, 10, 10f);
-                AddCellWithContent(nT, "                                                         BAC RESOLUTION NO." + "        " + "-AMP s. 2023", true, 11);
+                AddCellWithContent(nT, "                                                         BAC RESOLUTION NO. " + rmopSs.BacNo + "-AMP s. 2023", true, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "                              “RECOMMENDING THE USE OF ALTERNATIVE MODE OF PROCUREMENT:", true, 11);
                 AddCellWithContent(nT, "                                 NEGOTIATED PROCUREMENT (SCIENTIFIC, SCHOLARLY, OR ARTISTIC", true, 11);
@@ -2988,9 +3010,9 @@ namespace fmis.Controllers.Procurement
                 AddCellWithContent(nT, "              TECHNOLOGY AND MEDIA SERVICES where it  can  be  contracted to a particular supplier, contractor", false, 11);
                 AddCellWithContent(nT, "              or consultant and as determined by the HoPE for any of the requirements enumerated in items 1 and 2 thereof;", false, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
-                AddCellWithContent(nT, "                                 WHEREAS,  corollary  thereto,  Purchase  Request  No. ____________  for  the  Procurement  of", false, 11);
-                AddCellWithContent(nT, "              ___________________________________________________________________________________ in  the ", false, 11);
-                AddCellWithContent(nT, "              amount of PHP __________ was referred to the Bids and Awards Committee for processing;", false, 11);
+                AddCellWithContent(nT, "                                 WHEREAS,  corollary  thereto,  Purchase  Request  No. " + rmopSs.PrNoOne + "  for  the  Procurement  of", false, 11);
+                AddCellWithContent(nT, "              " + rmopSs.PrDescriptionOne + " in  the ", false, 11);
+                AddCellWithContent(nT, "              amount of PHP " + rmopSs.PrAmountOne.ToString("##,#0.00") + " was referred to the Bids and Awards Committee for processing;", false, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "                                 WHEREAS,  after evaluation of the purchase request vis-à-vis the implementing  rules  and  upon", false, 11);
                 AddCellWithContent(nT, "              confirmation of the existence of the conditions allowing  the  same,  the  BAC  has  come  to  a  resolution that", false, 11);
@@ -3001,12 +3023,12 @@ namespace fmis.Controllers.Procurement
                 AddCellWithContent(nT, "                                 NOW THEREFORE,   above   premises   considered,   resolved   as   it   is   hereby   resolved, to", false, 11);
                 AddCellWithContent(nT, "              recommend the use of the Alternative Mode of Procurement:  Negotiated  Procurement  (Scientific,  Scholarly,", false, 11);
                 AddCellWithContent(nT, "              or Artistic Work, Exclusive Technology and Media Services) under  Sec.  53.6  of  the  Revised  Implementing", false, 11);
-                AddCellWithContent(nT, "              Rules and Regulations of the Republic Act No. 9184 for Purchase Request No. ___________________,  in  the", false, 11);
-                AddCellWithContent(nT, "              amount of PHP  ____________________________ for the Procurment of  _____________________________ ", false, 11);
-                AddCellWithContent(nT, "              _____________________________________________", false, 11);
+                AddCellWithContent(nT, "              Rules and Regulations of the Republic Act No. 9184 for Purchase Request No. " + rmopSs.PrNoOne + ",  in  the", false, 11);
+                AddCellWithContent(nT, "              amount of PHP" + rmopSs.PrAmountOne.ToString("##,#0.00") + " for the Procurment of " + rmopSs.PrDescriptionOne, false, 11);
+                AddCellWithContent(nT, "              ", false, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "", false, 10, 10f);
-                AddCellWithContent(nT, "                                 _____________________" + " 2023 , Cebu City, Philippines.", false, 11);
+                AddCellWithContent(nT, "                                 " + rmopSs.PrDate + " 2023 , Cebu City, Philippines.", false, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "", false, 10, 10f);
