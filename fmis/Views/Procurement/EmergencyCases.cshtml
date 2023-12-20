@@ -214,20 +214,19 @@
         </div>
         <div class="col-md-3">
             <div class="p-3">
-                <table class="table table-striped" id="dataTable">
-                    <thead>
-                        <tr>
-                            <th scope="col">Bac No</th>
-                            <th scope="col">PR No</th>
-                            <th scope="col">PR Amount</th>
-                            <th scope="col">Actions</th>
-                        </tr>
-                    </thead>
+                @if (Model.Count > 0)
+                {
+                    <table class="table table-striped" id="dataTable">
+                        <thead>
+                            <tr>
+                                <th scope="col">Bac No</th>
+                                <th scope="col">PR No</th>
+                                <th scope="col">PR Amount</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
 
-                    <tbody>
-
-                        @if (Model.Count > 0)
-                        {
+                        <tbody>
                             @foreach (var item in Model)
                             {
                                 <tr>
@@ -241,20 +240,21 @@
                                     </td>
                                 </tr>
                             }
-                        }
-                        else
-                        {
-                            <tr>
-                                <td colspan="4">
-                                    <div class="alert alert-danger">
-                                        No data found.
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
+                        </tbody>
+                    </table>
 
-                </table>
+                    <script>
+                        $(document).ready(function () {
+                            $('#dataTable').DataTable({
+                                searching: true,
+                                paging: true,
+                                pageLength: 10,
+                                ordering: false,
+                                lengthChange: false
+                            });
+                        });
+                    </script>
+                }
             </div>
         </div>
     </div>
@@ -262,11 +262,20 @@
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
 
 <script>
     $(document).ready(function () {
         var sourceData = @Json.Serialize(ViewBag.BacResNo);
         var prData = @Json.Serialize(ViewBag.Pr);
+
+        $('#dataTable').DataTable({
+            searching: true,
+            paging: true,
+            pageLength: 10,
+            ordering: false,
+            lengthChange: false
+        });
 
         // Initialize X-Editable
         $('#bacNo').editable({

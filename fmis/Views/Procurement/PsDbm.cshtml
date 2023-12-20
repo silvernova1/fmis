@@ -1,4 +1,4 @@
-﻿@model fmis.Models.Procurement.RmopPsDbm
+﻿@model List<fmis.Models.Procurement.RmopPsDbm>
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Procurement" + " " + "(Ps-Dbm)";
@@ -94,131 +94,176 @@
     RMOP PS-DBM
 </h3>
 <hr>
-<div class="background-wrapper">
-    <div class="card-container">
-        <div class="row">
-            <form asp-controller="Procurement" asp-action="SaveRmopPsDbm" method="post">
-                <div class="col-md-12">
-                    <div class="logo-container">
-                        <img src="~/assets/images/doh_logo_updated.png" alt="Logo" style="margin-left:160px" class="logo-image" />
-                    </div>
-                    <center>
-                        <div style="margin-right: 300px;">
-                            <p class="TimesNewRoman">Republic of the Philippines</p>
-                            <p class="TimesNewRoman">Department Of Health </p>
-                            <h4 class="TimesNewRoman" style="font-weight:bold">CENTRAL VISAYAS CENTER for HEALTH DEVELOPMENT </h4>
-                            <br />
-                            <br />
-                            <h5 class="TimesNewRoman" style="font-weight:bold">BAC RESOLUTION NO. 
-                                <b id="bacNo" data-type="select">______ </b>
-                                <input type="hidden" name="BacNo" id="BacNoHidden" />
-                                -AMP s. 2023</h5>
-                        </div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 card-container">
+            <form>
+                <div class="logo-container">
+                    <img src="~/assets/images/doh_logo_updated.png" alt="Logo" style="margin-left:160px" class="logo-image" />
+                </div>
+                <center>
+                    <div style="margin-right: 300px;">
+                        <p class="TimesNewRoman">Republic of the Philippines</p>
+                        <p class="TimesNewRoman">Department Of Health </p>
+                        <h4 class="TimesNewRoman" style="font-weight:bold">CENTRAL VISAYAS CENTER for HEALTH DEVELOPMENT </h4>
+                        <br />
                         <br />
                         <h5 class="TimesNewRoman" style="font-weight:bold">
-                            “RECOMMENDING THE USE OF ALTERNATIVE MODE OF PROCUREMENT  <br />
-                            (PS-DBM), IF NOT AVAILBLE SHOPPING UNDER SEC. 52.1 OF THE REVISED   <br />
-                            IMPLEMENTING RULES AND REGULATIONS OF RA 9184.” <br />
-                            __________________________________________________________________________________
+                            BAC RESOLUTION NO.
+                            <b id="bacNo" data-type="select">______ </b>
+                            <input type="hidden" name="BacNo" id="BacNoHidden" />
+                            -AMP s. 2023
                         </h5>
-                        <br />
-                    </center>
-                    <div class="justify">
-                        <h5 style="margin-left:300px;" class="TimesNewRoman"><b>WHEREAS,</b> pursuant to Sec. 48.2, in relation to Sec. 10 of the IRR, as a general rule, the  </h5>
-                        <h5 style="margin-left:245px;" class="TimesNewRoman"> Procuring Entity shall adopt competitive bidding as the general method of procurement and that alternative </h5>
-                        <h5 style="margin-left:245px;" class="TimesNewRoman"> methods of procurement shall be resorted to only in highly exceptional cases provided for in the rules;  </h5>
-                        <br />
-                        <h5 style="margin-left:300px;" class="TimesNewRoman"> <b>WHEREAS,</b> Sec. 52.1 of the IRR defines Shopping as the method of procurement of Goods </h5>
-                        <h5 style="margin-left:245px;" class="TimesNewRoman"> whereby the Procuring Entity simply requests for the submission of price quotations for readily available off-  </h5>
-                        <h5 style="margin-left:245px;" class="TimesNewRoman"> the-shelf goods or ordinary/regular equipment to be procured directly from suppliers of known qualifications </h5>
-                        <h5 style="margin-left:245px;" class="TimesNewRoman"> and shall only be employed when any of the following cases are attendant, thus: (1) <i>when there is an</i> </h5>
-                        <h5 style="margin-left:245px;" class="TimesNewRoman"> <i>unforeseen contingency requiring immediate purchase, provided, that the amount shall not exceed the </i> </h5>
-                        <h5 style="margin-left:245px;" class="TimesNewRoman"> <i>thresholds prescribed by the rules and (2) procurement of ordinary or regular office supplies and equipment  </i> </h5>
-                        <h5 style="margin-left:245px;" class="TimesNewRoman"> <i>not available in the Procurement Service involving an amount not exceeding the thresholds as prescribed;  </i> </h5>
-                        <br />
-                        <h5 style="margin-left:300px;" class="TimesNewRoman"> <b>WHEREAS,</b> corollary thereto, Purchase Request No. 
-                            <b id="prNoOne" data-type="select">______ </b>
-                            <input type="hidden" name="PrNoOne" id="PrNoOneHidden" /> 
-                            for the Procurement of </h5>
-                        <input type="text" name="PrDescriptionOne" style="border: none; border-bottom: 1px solid black; text-align: center; margin-left: 245px; width: 530px; font-family: 'Times New Roman'; font-size: 14px;"> in the amount of
-                        <h5 style="margin-left:245px;" class="TimesNewRoman"> PHP <input type="text" style="border: none; border-bottom: 1px solid black; width: 80px;" name="PrAmountOne"> was referred to the Bids and Awards Committee for processing;   </h5>
-                        <br />
-                        <h5 style="margin-left:300px;" class="TimesNewRoman"><b>WHEREAS,</b> despite diligent efforts, the BAC found the items covered in the above-stated   </h5>
-                        <h5 style="margin-left:245px;" class="TimesNewRoman"> Purchase Request were not available in the Procurement Service – Department of Budget and Management </h5>
-                        <h5 style="margin-left:245px;" class="TimesNewRoman"> (PS-DBM);  </h5>
-                        <br />
-                        <h5 style="margin-left:300px;" class="TimesNewRoman"><b>WHEREAS,</b> after evaluating the options provided under the rules and confirming the existence   </h5>
-                        <h5 style="margin-left:245px;" class="TimesNewRoman"> of the conditions allowing the same, the BAC has come to a resolution that resort to the Alternative Mode of  </h5>
-                        <h5 style="margin-left:245px;" class="TimesNewRoman"> Procurement: Shopping under Sec. 52.1 of the IRR would be most advantageous to the government and is   </h5>
-                        <h5 style="margin-left:245px;" class="TimesNewRoman"> essentially the most applicable recourse given the availing circumstances   </h5>
-                        <br />
-                        <h5 style="margin-left:300px;" class="TimesNewRoman"> <b>NOW THEREFORE,</b> above premises considered, resolved as it is hereby resolved, to  </h5>
-                        <h5 style="margin-left:245px;" class="TimesNewRoman"> recommend the use of the Alternative Mode of Procurement: Shopping under Sec. 52.1 of the Revised   </h5>
-                        <h5 style="margin-left:245px;" class="TimesNewRoman"> Implementing  Rules and Regulations of the Republic Act No. 9184 for Purchase Request No.    </h5>
-                        <h5 style="margin-left:245px;" class="TimesNewRoman">
-                            <b id="prNoTwo" data-type="select">______ </b>
-                            <input type="hidden" name="PrNoTwo" id="PrNoTwoHidden" />, in the amount of PHP <input type="text" style="border: none; border-bottom: 1px solid black; width: 100px;" name="PrAmountTwo"> for the  Procurement of
-                        </h5>
-                        <h5 style="margin-left:245px;" class="TimesNewRoman"> <input type="text" style="border: none; border-bottom: 1px solid black; width: 580px;" name="PrDescriptionTwo"> .</h5>
-                        <br />
-                        <h5 style="margin-left:320px;" class="TimesNewRoman"> <input type="text" style="border: none; border-bottom: 1px solid black; width: 150px;" name="PrDate"> 2023 , Cebu City, Philippines. </h5>
-                        <br />
-                        <br />
-                    </div>
-                    <div class="grid-container">
-                        <div class="grid-item" style="margin-left:150px;">
-                            <h5 class="TimesNewRoman" style="font-weight:bold; white-space: nowrap;">ATTY. MARISSA C. GOROSIN </h5>
-                            <p class="TimesNewRoman">Provisional Member</p>
-                        </div>
-                        <div class="grid-item">
-                            <h5 class="TimesNewRoman" style="font-weight:bold">MR. RAMIL R. ABREA</h5>
-                            <p class="TimesNewRoman">Provisional Member</p>
-                        </div>
-                        <div class="grid-item" style="margin-right:150px;">
-                            <h5 class="TimesNewRoman" style="font-weight:bold">MR. ROLDAN A. CUBILLO</h5>
-                            <p class="TimesNewRoman">Member</p>
-                        </div>
-
-                        <div class="grid-item" style="margin-left:150px;">
-                            <h5 class="TimesNewRoman" style="font-weight:bold">ATTY. JO DAVID Z. BORCES</h5>
-                            <p class="TimesNewRoman">Member</p>
-                        </div>
-                        <div class="grid-item">
-                            <h5 class="TimesNewRoman" style="font-weight:bold">DR. SOPHIA M. MANCAO</h5>
-                            <p class="TimesNewRoman">Vice-Chairperson</p>
-                            <br />
-                            <br />
-                            <br />
-                            <h5 class="TimesNewRoman" style="margin-right:300px;">Approved:</h5>
-                            <br />
-                            <h5 class="TimesNewRoman" style="font-weight:bold">JAIME S. BERNADAS, MD, MGM, CESO III</h5>
-                            <p class="TimesNewRoman">Director IV</p>
-                        </div>
-                        <div class="grid-item" style="margin-right:150px;">
-                            <h5 class="TimesNewRoman" style="font-weight:bold; white-space: nowrap;">DR. JONATHAN NEIL V. ERASMO</h5>
-                            <p class="TimesNewRoman">Chairperson</p>
-                        </div>
                     </div>
                     <br />
-                    <div class="col-md-12 bg-light text-right">
-                        <button type="submit" class="btn btn-xs btn-primary"> <i class="ace-icon fa fa-check-square-o"></i> Save</button>
-                        <a class="btn btn-xs btn-success" target="_blank" href="@Url.Action("PrintPsDbm","Procurement",new { id = "" })" data-bs-toggle="print" title="Print">
-                            <i class="ace-icon fa fa-file-pdf-o"></i> Print to PDF
-                        </a>
+                    <h5 class="TimesNewRoman" style="font-weight:bold">
+                        “RECOMMENDING THE USE OF ALTERNATIVE MODE OF PROCUREMENT  <br />
+                        (PS-DBM), IF NOT AVAILBLE SHOPPING UNDER SEC. 52.1 OF THE REVISED   <br />
+                        IMPLEMENTING RULES AND REGULATIONS OF RA 9184.” <br />
+                        __________________________________________________________________________________
+                    </h5>
+                    <br />
+                </center>
+                <div class="justify">
+                    <h5 style="margin-left:300px;" class="TimesNewRoman"><b>WHEREAS,</b> pursuant to Sec. 48.2, in relation to Sec. 10 of the IRR, as a general rule, the  </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> Procuring Entity shall adopt competitive bidding as the general method of procurement and that alternative </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> methods of procurement shall be resorted to only in highly exceptional cases provided for in the rules;  </h5>
+                    <br />
+                    <h5 style="margin-left:300px;" class="TimesNewRoman"> <b>WHEREAS,</b> Sec. 52.1 of the IRR defines Shopping as the method of procurement of Goods </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> whereby the Procuring Entity simply requests for the submission of price quotations for readily available off-  </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> the-shelf goods or ordinary/regular equipment to be procured directly from suppliers of known qualifications </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> and shall only be employed when any of the following cases are attendant, thus: (1) <i>when there is an</i> </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> <i>unforeseen contingency requiring immediate purchase, provided, that the amount shall not exceed the </i> </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> <i>thresholds prescribed by the rules and (2) procurement of ordinary or regular office supplies and equipment  </i> </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> <i>not available in the Procurement Service involving an amount not exceeding the thresholds as prescribed;  </i> </h5>
+                    <br />
+                    <h5 style="margin-left:300px;" class="TimesNewRoman">
+                        <b>WHEREAS,</b> corollary thereto, Purchase Request No.
+                        <b id="prNoOne" data-type="select">______ </b>
+                        <input type="hidden" name="PrNoOne" id="PrNoOneHidden" />
+                        for the Procurement of
+                    </h5>
+                    <input type="text" name="PrDescriptionOne" style="border: none; border-bottom: 1px solid black; text-align: center; margin-left: 245px; width: 530px; font-family: 'Times New Roman'; font-size: 14px;"> in the amount of
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> PHP <input type="text" style="border: none; border-bottom: 1px solid black; width: 80px;" name="PrAmountOne"> was referred to the Bids and Awards Committee for processing;   </h5>
+                    <br />
+                    <h5 style="margin-left:300px;" class="TimesNewRoman"><b>WHEREAS,</b> despite diligent efforts, the BAC found the items covered in the above-stated   </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> Purchase Request were not available in the Procurement Service – Department of Budget and Management </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> (PS-DBM);  </h5>
+                    <br />
+                    <h5 style="margin-left:300px;" class="TimesNewRoman"><b>WHEREAS,</b> after evaluating the options provided under the rules and confirming the existence   </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> of the conditions allowing the same, the BAC has come to a resolution that resort to the Alternative Mode of  </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> Procurement: Shopping under Sec. 52.1 of the IRR would be most advantageous to the government and is   </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> essentially the most applicable recourse given the availing circumstances   </h5>
+                    <br />
+                    <h5 style="margin-left:300px;" class="TimesNewRoman"> <b>NOW THEREFORE,</b> above premises considered, resolved as it is hereby resolved, to  </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> recommend the use of the Alternative Mode of Procurement: Shopping under Sec. 52.1 of the Revised   </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> Implementing  Rules and Regulations of the Republic Act No. 9184 for Purchase Request No.    </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman">
+                        <b id="prNoTwo" data-type="select">______ </b>
+                        <input type="hidden" name="PrNoTwo" id="PrNoTwoHidden" />, in the amount of PHP <input type="text" style="border: none; border-bottom: 1px solid black; width: 100px;" name="PrAmountTwo"> for the  Procurement of
+                    </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> <input type="text" style="border: none; border-bottom: 1px solid black; width: 580px;" name="PrDescriptionTwo"> .</h5>
+                    <br />
+                    <h5 style="margin-left:320px;" class="TimesNewRoman"> <input type="text" style="border: none; border-bottom: 1px solid black; width: 150px;" name="PrDate"> 2023 , Cebu City, Philippines. </h5>
+                    <br />
+                    <br />
+                </div>
+                <div class="grid-container">
+                    <div class="grid-item" style="margin-left:150px;">
+                        <h5 class="TimesNewRoman" style="font-weight:bold; white-space: nowrap;">ATTY. MARISSA C. GOROSIN </h5>
+                        <p class="TimesNewRoman">Provisional Member</p>
+                    </div>
+                    <div class="grid-item">
+                        <h5 class="TimesNewRoman" style="font-weight:bold">MR. RAMIL R. ABREA</h5>
+                        <p class="TimesNewRoman">Provisional Member</p>
+                    </div>
+                    <div class="grid-item" style="margin-right:150px;">
+                        <h5 class="TimesNewRoman" style="font-weight:bold">MR. ROLDAN A. CUBILLO</h5>
+                        <p class="TimesNewRoman">Member</p>
+                    </div>
+
+                    <div class="grid-item" style="margin-left:150px;">
+                        <h5 class="TimesNewRoman" style="font-weight:bold">ATTY. JO DAVID Z. BORCES</h5>
+                        <p class="TimesNewRoman">Member</p>
+                    </div>
+                    <div class="grid-item">
+                        <h5 class="TimesNewRoman" style="font-weight:bold">DR. SOPHIA M. MANCAO</h5>
+                        <p class="TimesNewRoman">Vice-Chairperson</p>
+                        <br />
+                        <br />
+                        <br />
+                        <h5 class="TimesNewRoman" style="margin-right:300px;">Approved:</h5>
+                        <br />
+                        <h5 class="TimesNewRoman" style="font-weight:bold">JAIME S. BERNADAS, MD, MGM, CESO III</h5>
+                        <p class="TimesNewRoman">Director IV</p>
+                    </div>
+                    <div class="grid-item" style="margin-right:150px;">
+                        <h5 class="TimesNewRoman" style="font-weight:bold; white-space: nowrap;">DR. JONATHAN NEIL V. ERASMO</h5>
+                        <p class="TimesNewRoman">Chairperson</p>
                     </div>
                 </div>
+                <br />
+                <div class="col-md-12 bg-light text-right">
+                    <button type="submit" class="btn btn-xs btn-primary"> <i class="ace-icon fa fa-check-square-o"></i> Save</button>
+                </div>
             </form>
+        </div>
+        <div class="col-md-3">
+            <div class="p-3">
+                @if (Model.Count > 0)
+                {
+                    <table class="table table-striped" id="dataTable">
+                        <thead>
+                            <tr>
+                                <th scope="col">Bac No</th>
+                                <th scope="col">PR No</th>
+                                <th scope="col">PR Amount</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.BacNo</td>
+                                    <td>@item.PrNoOne</td>
+                                    <td>@item.PrAmountOne.ToString("##,#00.00")</td>
+                                    <td>
+                                        <a class="btn btn-xs btn-success" target="_blank" href="@Url.Action("PrintPsDbm","Procurement",new { id = @item.Id })" data-bs-toggle="print" title="Print">
+                                            <i class="ace-icon fa fa-file-pdf-o"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    <script>
+                        $(document).ready(function () {
+                            $('#dataTable').DataTable({
+                                searching: true,
+                                paging: true,
+                                pageLength: 10,
+                                ordering: false,
+                                lengthChange: false
+                            });
+                        });
+                    </script>
+                }
+            </div>
         </div>
     </div>
 </div>
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
 
 <script>
     $(document).ready(function () {
         var sourceData = @Json.Serialize(ViewBag.BacResNo);
-        var prData = @Json.Serialize(ViewBag.PrId);
+        var prData = @Json.Serialize(ViewBag.Pr);
 
         // Initialize X-Editable
         $('#bacNo').editable({
@@ -263,7 +308,7 @@
                     if (result.success) {
                         Lobibox.notify('success', {
                             title: 'Success',
-                            msg: 'RMOP DIRECT CONTRACTING (DRUGS AND MEDS) saved successfully.'
+                            msg: 'RMOP PS-DBM saved successfully.'
                         });
                         setTimeout(function () {
                             location.reload();

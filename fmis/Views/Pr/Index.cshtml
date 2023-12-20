@@ -100,7 +100,7 @@
 								<div class="modal-body">
 									<ul>
 										@{
-											var puChecks = context.PuChecklist.Where(x=>x.Prno == items.Id.ToString()).FirstOrDefault();
+											var puChecks = context.PuChecklist.Where(x=>x.Prno == items.Id).FirstOrDefault();
 											if(puChecks != null)
 											{
 												var puCheck = context.PrChecklist.Where(x => x.PuChecklist.Id == puChecks.Id).ToList();
@@ -109,7 +109,11 @@
 												{
 													foreach (var prCheck in puCheck)
 													{
-														<li>@prCheck.Description </li>
+														<li>@prCheck.Description</li>
+														if (prCheck.Others != null)
+														{
+															<p>- @prCheck.Others</p>
+														}
 													}
 												}
 												else
