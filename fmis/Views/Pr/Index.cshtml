@@ -3,6 +3,7 @@
 @model List<fmis.Models.pr.Pr>
 @inject PpmpContext PpmpContext
 @inject DtsContext dts
+@inject MyDbContext context
 @{
 	Layout = "~/Views/Shared/_Layout.cshtml";
 	ViewData["Title"] = "PR";
@@ -34,6 +35,7 @@
 <br />
 <br />
 <br />
+
 
 @if (Model.Count > 0)
 {
@@ -72,6 +74,7 @@
 
 				@foreach (var items in Model)
 				{
+
 					<tr>
 						<td class="pr-no clickable" data-toggle="modal" data-target="#modal-@items.Id">@items.Prno</td>
 						<td>@items.PrnoDate.ToShortDateString()</td>
@@ -83,13 +86,57 @@
 						<td>
 							<a class="btn btn-xs btn-primary" target="_blank" href="@Url.Action("PrintPr","Pr",new { id = @items.Id })" data-bs-toggle="print" title="Print Pr">
 								<i class="ace-icon fa fa-file-pdf-o"></i>
-							</a>
+							</a> | <a href="#" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#smallModal"><i class="ace-icon fa fa-list-ul"></i></a>
 						</td>
 					</tr>
+
+					<div class="modal fade" id="smallModal" tabindex="-1" role="dialog" aria-labelledby="smallModal" aria-hidden="true">
+						<div class="modal-dialog modal-sm">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+									<h4 class="modal-title" id="myModalLabel">Pu Checklist</h4>
+								</div>
+								<div class="modal-body">
+									<ul>
+										@{
+											var puChecks = context.PuChecklist.Where(x=>x.Prno == items.Id).FirstOrDefault();
+											if(puChecks != null)
+											{
+												var puCheck = context.PrChecklist.Where(x => x.PuChecklist.Id == puChecks.Id).ToList();
+
+												if (puCheck.Count > 0)
+												{
+													foreach (var prCheck in puCheck)
+													{
+														<li>@prCheck.Description</li>
+														if (prCheck.Others != null)
+														{
+															<p>- @prCheck.Others</p>
+														}
+													}
+												}
+												else
+												{
+													<li>No data</li>
+												}
+											}
+											else
+											{
+												<li>No data</li>
+											}
+										}
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+
 				}
 			</tbody>
 		</table>
 	</div>
+
 }
 else
 {

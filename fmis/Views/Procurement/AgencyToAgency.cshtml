@@ -1,4 +1,4 @@
-﻿@model fmis.Models.Procurement.RmopAta
+﻿@model List<fmis.Models.Procurement.RmopAta>
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Procurement" + " " + "(AgencyToAgency)";
@@ -90,10 +90,10 @@
 </h3>
 <hr>
 
-<div class="card-container">
+<div class="container-fluid">
     <div class="row">
-        <div class="col-md-12">
-            <form asp-controller="Procurement" asp-action="SavePrAta" method="post">
+        <div class="col-md-8 card-container">
+            <form>
                 <div class="logo-container">
                     <img src="~/assets/images/doh_logo_updated.png" alt="Logo" style="margin-left:160px" class="logo-image" />
                 </div>
@@ -216,9 +216,51 @@
 
                 </div>
             </form>
-        @*     <a class="btn btn-xs btn-success" target="_blank" href="@Url.Action("PrintAgencyToAgency","Procurement",new { id = "" })" data-bs-toggle="print" title="Print">
-                <i class="ace-icon fa fa-file-pdf-o"></i> Print to PDF
-            </a> *@
+        </div>
+        <div class="col-md-3">
+            <div class="p-3">
+                @if (Model.Count > 0)
+                {
+                    <table class="table table-striped" id="dataTable">
+                        <thead>
+                            <tr>
+                                <th scope="col">Bac No</th>
+                                <th scope="col">PR No</th>
+                                <th scope="col">PR Amount</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.BacNo</td>
+                                    <td>@item.PrNoOne</td>
+                                    <td>@item.PrAmountOne.ToString("##,#00.00")</td>
+                                    <td>
+                                        <a class="btn btn-xs btn-success" target="_blank" href="@Url.Action("PrintAgencytoAgency","Procurement",new { id = @item.Id })" data-bs-toggle="print" title="Print">
+                                            <i class="ace-icon fa fa-file-pdf-o"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    <script>
+                        $(document).ready(function () {
+                            $('#dataTable').DataTable({
+                                searching: true,
+                                paging: true,
+                                pageLength: 10,
+                                ordering: false,
+                                lengthChange: false
+                            });
+                        });
+                    </script>
+                }
+            </div>
         </div>
     </div>
 </div>
@@ -227,11 +269,12 @@
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
 
 <script>
     $(document).ready(function () {
         var sourceData = @Json.Serialize(ViewBag.BacResNo);
-        var prData = @Json.Serialize(ViewBag.PrId);
+        var prData = @Json.Serialize(ViewBag.Pr);
 
         // Initialize X-Editable
         $('#bacNo').editable({

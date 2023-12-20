@@ -10,7 +10,7 @@ namespace fmis.Models.Procurement
 
         public int ChecklistNo { get; set; }
 
-        public string Prno { get; set; }
+        public int Prno { get; set; }
 
         public DateTime PuChecklistDate { get; set; }
 

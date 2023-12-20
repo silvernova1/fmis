@@ -38,16 +38,27 @@
 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="Date" style="font-weight:bold"> PR NO.  </label>
-                                        <input type="text" class="form-control" name="PrNo">
+                                        <label for="" style="font-weight:bold"> PR NO  </label>
+                                        <select class="form-control" name="PrNo" id="PrNo" asp-items="ViewBag.Pr">
+                                            <option value="">Select Pr No.</option>
+                                        </select>
                                     </div>
                                     <div class="form-group">
-                                        <label for="Date" style="font-weight:bold">PR DATE: </label>
-                                        <input type="text" class="form-control" id="prdate" name="prdate">
+                                        <label for="" style="font-weight:bold"> PR DATE </label>
+                                        <input type="text" class="form-control" id="Date" name="PrDate" readonly>
                                     </div>
                                     <div class="form-group">
                                         <label for="" style="font-weight:bold">RMOP</label>
-                                        <input type="text" class="form-control" name="Rmop">
+                                        <select class="form-control" name="Rmop">
+                                            <option value="AGENCY TO AGENCY">AGENCY TO AGENCY</option>
+                                            <option value="DIRECT CONTRACTING (DRUGS AND MEDS)">DIRECT CONTRACTING (DRUGS AND MEDS)</option>
+                                            <option value="EMERGENCY CASES (DRUGS AND MEDS)">EMERGENCY CASES (DRUGS AND MEDS)</option>
+                                            <option value="LEASE OF VENUE (GOODS)">LEASE OF VENUE (GOODS)</option>
+                                            <option value="PUBLIC BIDDING (GOODS AND EQUIPMENT)">PUBLIC BIDDING (GOODS AND EQUIPMENT)</option>
+                                            <option value="PS-DBM">PS-DBM</option>
+                                            <option value="SCIENTIFIC SCHOLARLY">SCIENTIFIC SCHOLARLY</option>
+                                            <option value="SMALL VALUE PROCUREMENT (GOODS AND EQUIPMENT)">SMALL VALUE PROCUREMENT (GOODS AND EQUIPMENT)</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -74,6 +85,21 @@
         $("#prdate").datepicker({
             dateFormat: "MM d, yy"
 
+        });
+
+        $("#PrNo").change(function () {
+            var selectedPrNo = $(this).val();
+            $.ajax({
+                url: '@Url.Action("GetDate", "Procurement")',
+                type: 'GET',
+                data: { prNo: selectedPrNo },
+                success: function (result) {
+                    $("#Date").val(result);
+                },
+                error: function () {
+                    console.log('Error fetching date');
+                }
+            });
         });
 
         $('form').submit(function (e) {

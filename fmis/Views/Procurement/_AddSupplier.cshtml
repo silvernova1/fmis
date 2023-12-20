@@ -1,14 +1,8 @@
-﻿
+﻿@model List<fmis.Models.Procurement.Supplier>
 
-
-<style>
-    .ui-datepicker {
-        width: 250px !important;
-    }
-</style>
 
 <div class="col-xs-12">
-    <div id="my-modal" class="modal fade" style="display: none;">
+    <div id="addSupplier" class="modal fade" style="display: none;">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -26,11 +20,11 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="" style="font-weight:bold"> Supplier Name </label>
-                                        <input type="text" class="form-control" required>
+                                        <input type="text" name="SupplierName" class="form-control" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="" style="font-weight:bold"> Supplier Address </label>
-                                        <input type="text" class="form-control" required>
+                                        <input type="text" name="SupplierAddress" class="form-control" required>
                                     </div>
                                
                                 </div>
@@ -39,7 +33,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-xs btn-primary" id="saveChanges">Submit <span class="fa fa-check-square-o"></span> </button>
+                        <button type="submit" class="btn btn-xs btn-primary">Submit <span class="fa fa-check-square-o"></span> </button>
                         <a data-dismiss="modal" class="btn btn-xs btn-danger">Cancel</a>
                     </div>
                 </form>
@@ -49,5 +43,39 @@
 </div>
 
 <script>
+    $(function () {
+        $('form').submit(function (e){
+            e.preventDefault();
 
+            $.ajax({
+                url: '@Url.Action("SaveSupplier","Procurement")',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function (result){
+                    if (result.success) {
+                        Lobibox.notify('success', {
+                            title: 'Success',
+                            msg: 'Data saved successfully..',
+                            sound: false
+                        });
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1500);
+                    }
+                    else
+                    {
+                        Lobibox.notify('error', {
+                            title: 'Error',
+                            msg: 'Error submitting the form..',
+                            sound: false
+                        });
+                        setTimeout(function () {
+                            $("#addSupplier").modal("hide");
+                            location.reload();
+                        }, 1000);
+                    }
+                }
+            });
+        });
+    });
 </script>

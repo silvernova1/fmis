@@ -244,13 +244,15 @@
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[19].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[19].Description" value="Specify others ameneties, if applicable" />
                             Specify others ameneties, if applicable <br />
-                            &nbsp; &nbsp; &nbsp; &nbsp;  ________________________________________
+                            &nbsp; &nbsp; &nbsp; &nbsp;  <input type="text" asp-for="PrChecklist[19].Others" style="border: none; border-bottom: 1px solid black;" />
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[20].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[20].Description" value="Others" />
                             Others <br />
-                            &nbsp; &nbsp; &nbsp; &nbsp;  ________________________________________
+                            &nbsp; &nbsp; &nbsp; &nbsp;  <input type="text" asp-for="PrChecklist[20].Others" style="border: none; border-bottom: 1px solid black;" />
                         </p>
                         <p style="font-weight:bold">
                             <input type="checkbox" asp-for="PrChecklist[21].IsChecked" class="form-check-input">
@@ -283,8 +285,9 @@
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[27].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[27].Description" value="Others" />
                             <u style="font-weight:bold">Others</u> <br />
-                            &nbsp; &nbsp; &nbsp; &nbsp;  ________________________________________
+                            &nbsp; &nbsp; &nbsp; &nbsp;  <input type="text" asp-for="PrChecklist[27].Others" style="border: none; border-bottom: 1px solid black;" />
                         </p>
                         <br />
                         <p style="font-weight:bold">
@@ -297,8 +300,9 @@
                         </p>
                         <p style="font-weight:bold">
                             <input type="checkbox" asp-for="PrChecklist[29].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[29].Description" value="Please comply with item(s) marked X on or before" />
                             Please comply with item(s) marked <br />
-                            &nbsp; &nbsp; &nbsp; &nbsp; X on or before _________________________
+                            &nbsp; &nbsp; &nbsp; &nbsp; X on or before <input type="text" asp-for="PrChecklist[29].Others" style="border: none; border-bottom: 1px solid black;" />
                         </p>
                         <br />
                         <br />
@@ -320,11 +324,6 @@
     </div>
 </div>
 <br />
-@*<div class="alert alert-success" role="alert" style="width: 550px; display: none;">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>*@
 
 <div class="alert" style="width: 550px; display: none;">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -337,27 +336,25 @@
 
         $('form').submit(function (e) {
             e.preventDefault();
+
             $.ajax({
                 url: '@Url.Action("SaveChecklist", "Procurement")',
                 type: 'POST',
                 data: $(this).serialize(),
                 success: function (result) {
-                    var $alert = $('.alert');
-                    var $alertMessage = $('#alert-message');
-
                     if (result.success) {
-                        $alert
-                            .removeClass('alert-danger')
-                            .addClass('alert-success');
+                        Lobibox.notify('success', {
+                            title: 'Success',
+                            msg: 'Submitted to End User..',
+                            sound: false
+                        });
                     } else {
-                        $alert
-                            .removeClass('alert-success')
-                            .addClass('alert-danger');
+                        Lobibox.notify('error', {
+                            title: 'Error',
+                            msg: 'Error submitting the form..',
+                            sound: false
+                        });
                     }
-
-                    $alertMessage.text(result.message);
-                    $alert.show();
-
                     $('form')[0].reset();
                     $('.pr').val('').trigger('change');
                 },
