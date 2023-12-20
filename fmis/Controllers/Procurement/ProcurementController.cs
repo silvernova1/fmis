@@ -2744,6 +2744,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
+
         //PRINT PS DBM
         #region
         public IActionResult PrintPsDbm(string[] token, int id)
@@ -2785,14 +2786,14 @@ namespace fmis.Controllers.Procurement
                     Paragraph paragraph = new Paragraph();
                     paragraph.Alignment = Element.ALIGN_JUSTIFIED;
 
-                    string[] chunks = Regex.Split(content, "(WHEREAS,|NOW THEREFORE,)");
+                    string[] chunks = Regex.Split(content, "(WHEREAS,|NOW THEREFORE, |when  there  is  an)");
 
                     for (int i = 0; i < chunks.Length; i++)
                     {
                         if (!string.IsNullOrEmpty(chunks[i]))
                         {
                             Font chunkFont;
-                            if (chunks[i].IndexOf("when there is an", StringComparison.OrdinalIgnoreCase) >= 0)
+                            if (chunks[i].Trim() == "when  there  is  an")
                             {
                                 chunkFont = italicFont; // Set font to italic
                             }
@@ -2852,7 +2853,7 @@ namespace fmis.Controllers.Procurement
                 AddCellWithContent(nT, "                                WHEREAS, Sec. 52.1 of the IRR defines  Shopping  as  the  method  of  procurement  of  Goods", false, 11);
                 AddCellWithContent(nT, "              whereby the Procuring Entity simply requests for the submission of price quotations for readily available off-", false, 11);
                 AddCellWithContent(nT, "              the-shelf goods or ordinary/regular equipment to be procured directly from suppliers of known qualifications", false, 11);
-                AddCellWithContent(nT, "              and shall only be employed when  any  of  the  following  cases  are  attendant,  thus:  (1)  when  there  is  an", false, 11, 0f, true);
+                AddCellWithContent(nT, "              and shall only be employed when  any  of  the  following  cases  are  attendant,  thus:  (1)  when  there  is  an", false, 11);
                 AddCellWithContent(nT, "              unforeseen contingency  requiring  immediate  purchase,  provided,  that  the  amount  shall  not  exceed  the", false, 11, 0f, true);
                 AddCellWithContent(nT, "              thresholds prescribed by the rules and (2) procurement of ordinary or regular office supplies and equipment", false, 11, 0f, true);
                 AddCellWithContent(nT, "              not available in the Procurement Service involving an amount not exceeding the thresholds as prescribed;", false, 11, 0f, true);
