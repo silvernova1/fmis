@@ -8,7 +8,8 @@ namespace fmis.Models.UserModels
     public class CombineIndexFmisUser
     {
 
-        public List<UserModels.FmisUser> Users { get; set; }
-        public List<UserModels.IndexUser> ListUser { get; set; }
+        public List<FmisUser> Users { get; set; }
+        public List<IndexUser> ListUser { get; set; }
+        public List<PuUser> PuUser { get; set; }
     }
 }

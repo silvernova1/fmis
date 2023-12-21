@@ -1,4 +1,4 @@
-﻿@model fmis.ViewModel.IndexViewModel
+﻿@model fmis.ViewModel.LoginViewModel
 
 
 @{
@@ -21,6 +21,7 @@
 
         <form method="post" asp-action="Login">
             <input type="hidden" asp-for="ReturnUrl" />
+            <div asp-validation-summary="All" class="text-danger"></div>
             <div class="input-group mb-3">
                 <input type="text" asp-for="Username" class="form-control" placeholder="User ID">
                 <div class="input-group-append">
@@ -55,7 +56,6 @@
                 </div>
                 <!-- /.col -->
             </div>
-            <div class="text-danger text-sm" asp-validation-summary="All"></div>
         </form>
     </div>
     <!-- /.login-card-body -->

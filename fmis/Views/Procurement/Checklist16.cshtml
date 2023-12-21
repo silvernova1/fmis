@@ -136,56 +136,69 @@
                     <div class="form-group">
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[0].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[0].Description" value="Complete signatures incl. approval" />
                             Complete signatures incl. approval
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[1].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[1].Description" value="Complete with PR # and date" />
                             Complete with PR # and date
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[2].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[2].Description" value="Estimated unit cost & correct total cost" />
                             Estimated unit cost & correct total cost
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[3].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[3].Description" value="Purpose of Request" />
                             Purpose of Request
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[4].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[4].Description" value="Funding Source" />
                             Funding Source
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[5].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[5].Description" value="Period of Service" />
                             Period of Service
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[6].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[6].Description" value="Number of Security Guards" />
                             Number of Security Guards
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[7].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[7].Description" value="Approve Terms and Conditions" />
                             Approve Terms and Conditions
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[8].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[8].Description" value="Blank Form for Cost Distribution" />
                             Blank Form for Cost Distribution
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[9].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[9].Description" value="Approved Realignment, If applicable" />
                             Approved Realignment, If applicable
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[10].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[10].Description" value="Approved WFP/Supplemental WFP" />
                             Approved WFP/Supplemental WFP
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[11].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[11].Description" value="Approved PPMP/Supplemental PPMP" />
                             Approved PPMP/Supplemental PPMP
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[12].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[12].Description" value="Others" />
                             <u style="font-weight:bold">Others</u> <br />
-                            &nbsp; &nbsp; &nbsp; &nbsp;  ________________________________________
+                            &nbsp; &nbsp; &nbsp; &nbsp;  <input type="text" asp-for="PrChecklist[12].Others" style="border: none; border-bottom: 1px solid black;" />
                         </p>
                         <br />
                         <p style="font-weight:bold">
@@ -193,12 +206,14 @@
                         </p>
                         <p style="font-weight:bold">
                             <input type="checkbox" asp-for="PrChecklist[13].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[13].Description" value="COMPLETE" />
                             COMPLETE
                         </p>
                         <p style="font-weight:bold">
                             <input type="checkbox" asp-for="PrChecklist[14].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[14].Description" value="Please comply with item(s) marked X on or before" />
                             Please comply with item(s) marked <br />
-                            &nbsp; &nbsp; &nbsp; &nbsp; X on or before _________________________
+                            &nbsp; &nbsp; &nbsp; &nbsp; X on or before <input type="text" asp-for="PrChecklist[14].Others" style="border: none; border-bottom: 1px solid black;" />
                         </p>
                         <br />
                         <br />
