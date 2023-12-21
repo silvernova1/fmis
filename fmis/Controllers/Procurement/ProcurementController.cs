@@ -53,15 +53,18 @@ namespace fmis.Controllers.Procurement
         private readonly PpmpContext _ppmpContext;
         private readonly DtsContext _dts;
         private readonly IHttpContextAccessor _httpContextAccessor;
+		private readonly fmisContext _dtsContext;
 
-        public ProcurementController(MyDbContext context, IUserService userService, PpmpContext ppmpContext, DtsContext dts, IHttpContextAccessor httpContextAccessor)
+		public ProcurementController(MyDbContext context, IUserService userService, PpmpContext ppmpContext, DtsContext dts, IHttpContextAccessor httpContextAccessor, fmisContext dtsContext)
         {
             _context = context;
             _userService = userService;
             _ppmpContext = ppmpContext;
             _dts = dts;
             _httpContextAccessor = httpContextAccessor;
-        }
+            _dtsContext = dtsContext;
+
+		}
 
 		[HttpGet]
 		public IActionResult GetChecklist(int id)
@@ -3207,6 +3210,58 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
+
+
+        #region PU USER
+        [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
+        [Route("Procurement/Users")]
+        public IActionResult PuUser()
+        {
+            ViewBag.filter = new FilterSidebar("Procurement", "Users", "");
+
+            var dtsUser = _dtsContext.users.ToList();
+            var puUser = _context.PuUser.ToList();
+
+            var viewModel = new CombineIndexFmisUser
+            {
+                Users = dtsUser,
+                PuUser = puUser,
+            };
+
+            Console.WriteLine(UserRole);
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult SavePuUsers(int userId)
+        {
+            //dohdtr.users.id = userId
+
+            var dtrUser = _dtsContext.users.FirstOrDefault(x=>x.Id == userId);
+
+            if(dtrUser != null)
+            {
+                var puUser = new PuUser
+                {
+                    UserId = dtrUser.UserId,
+                    Username = dtrUser.Username,
+                    Password = dtrUser.Password,
+                    Email = dtrUser.Email,
+                    Fname = dtrUser.Fname,
+                    Lname = dtrUser.Lname,
+                };
+
+                _context.PuUser.Add(puUser);
+                _context.SaveChanges();
+
+                return Json(new { success = true });
+            }
+
+            return Json(new { success = false });
+        }
+        #endregion
+
         #region LOGIN
         [HttpGet]
         [AllowAnonymous]
@@ -3236,28 +3291,35 @@ namespace fmis.Controllers.Procurement
         {
             if (ModelState.IsValid)
             {
-                var user = await _userService.ValidateUserCredentialsAsync(model.Username, model.Password);
-                if (user is not null)
+                var (user, errorMessage) = await _userService.ValidatePuUserCredentialsAsync(model.Username, model.Password);
+
+                if (user != null)
                 {
-                    user.Year = model.Year.ToString();
                     await LoginAsync(user, model.RememberMe);
 
-
-                    if (user.Username == "hr_admin")
+                    if (user.Username == "1731")
                     {
                         return RedirectToAction("Checklist1", "Procurement");
-                    }
-                    else
-                    {
-                        return NotFound();
                     }
                 }
                 else
                 {
-                    ModelState.AddModelError("Username", "Username or Password is Incorrect");
+                    if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        ModelState.AddModelError("Validation", errorMessage);
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("User", "User not found in the database or invalid password");
+                    }
+
+                    return View(model);
                 }
 
+                // Additional logic for handling successful login if needed
             }
+
+            ModelState.AddModelError("Username", "Username or Password is Incorrect");
             return View(model);
         }
         #endregion
@@ -3286,7 +3348,7 @@ namespace fmis.Controllers.Procurement
         #endregion
 
         #region HELPERS
-        private async Task LoginAsync(FmisUser user, bool rememberMe)
+        private async Task LoginAsync(PuUser user, bool rememberMe)
         {
             var properties = new AuthenticationProperties
             {
@@ -3298,10 +3360,14 @@ namespace fmis.Controllers.Procurement
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, user.Username.Equals("hr_admin") ? "pu_admin" : null),
                 new Claim(ClaimTypes.GivenName, user.Fname),
                 new Claim(ClaimTypes.Surname, user.Lname),
             };
+
+            if (user.Username == "1731")
+            {
+                claims.Add(new Claim(ClaimTypes.Role, "pu_admin"));
+            }
 
             var identity1 = new ClaimsIdentity(claims, "Scheme4");
             var principal1 = new ClaimsPrincipal(identity1);
@@ -3312,6 +3378,7 @@ namespace fmis.Controllers.Procurement
 
 		#region COOKIES
 		public string UserId { get { return User.FindFirstValue(ClaimTypes.Name); } }
+		public string UserRole { get { return User.FindFirstValue(ClaimTypes.Role); } }
 		#endregion
 
 
