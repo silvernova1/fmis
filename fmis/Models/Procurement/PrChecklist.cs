@@ -8,6 +8,8 @@
 
         public string Description { get; set; }
 
+        public string Others { get; set; }
+
         public PuChecklist PuChecklist { get; set; }
     }
 }

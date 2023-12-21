@@ -252,9 +252,9 @@ namespace fmis
                 .AddCookie("Scheme1", options =>
                 {
                     options.Cookie.Name = "Scheme1";
-                    options.LoginPath = "/Fmis/Account/Login";
-                    options.LogoutPath = "/Fmis/Account/Logout";
-                    options.AccessDeniedPath = "/Fmis/Account/NotFound";
+                    options.LoginPath = "/Account/Login";
+                    options.LogoutPath = "/Account/Logout";
+                    options.AccessDeniedPath = "/Account/NotFound";
                     options.ExpireTimeSpan = TimeSpan.FromHours(5);
                     options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
                 })
@@ -338,9 +338,9 @@ namespace fmis
             app.UseEndpoints(endpoints =>
             {
 
-                endpoints.MapControllerRoute(
+                /*endpoints.MapControllerRoute(
                     name: "Fmis",
-                    pattern: "Fmis/{controller=Home}/{action=Index}/{id?}");
+                    pattern: "Fmis/{controller=Home}/{action=Index}/{id?}");*/
 
                 endpoints.MapControllerRoute(
                     name: "default",
