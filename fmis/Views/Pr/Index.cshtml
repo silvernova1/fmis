@@ -25,6 +25,7 @@
 	}
 </style>
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css" rel="stylesheet" />
 
 <div class="col-xs-12">
 	<button class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
@@ -87,10 +88,11 @@
 							<a class="btn btn-xs btn-primary" target="_blank" href="@Url.Action("PrintPr","Pr",new { id = @items.Id })" data-bs-toggle="print" title="Print Pr">
 								<i class="ace-icon fa fa-file-pdf-o"></i>
 							</a> | <a href="#" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#smallModal"><i class="ace-icon fa fa-list-ul"></i></a>
+							| <a class="btn btn-xs btn-primary " data-toggle="modal" data-target="#trackModal" data-id="@items.Id"><i class="ace-icon fa fa-search"></i></a>
 						</td>
 					</tr>
 
-					<div class="modal fade" id="smallModal" tabindex="-1" role="dialog" aria-labelledby="smallModal" aria-hidden="true">
+					<div class="modal fade" id="trackModal-@items.Id" tabindex="-1" role="dialog" aria-labelledby="trackModal" aria-hidden="true">
 						<div class="modal-dialog modal-sm">
 							<div class="modal-content">
 								<div class="modal-header">
@@ -100,8 +102,8 @@
 								<div class="modal-body">
 									<ul>
 										@{
-											var puChecks = context.PuChecklist.Where(x=>x.Prno == items.Id).FirstOrDefault();
-											if(puChecks != null)
+											var puChecks = context.PuChecklist.Where(x => x.Prno == items.Id).FirstOrDefault();
+											if (puChecks != null)
 											{
 												var puCheck = context.PrChecklist.Where(x => x.PuChecklist.Id == puChecks.Id).ToList();
 
@@ -127,6 +129,52 @@
 											}
 										}
 									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					var abstractNo = context.Abstract.FirstOrDefault(x => x.PrNo == items.Prno);
+
+					<div class="modal fade" id="trackModal" tabindex="-1" role="dialog" aria-labelledby="trackModal" aria-hidden="true">
+						<div class="modal-dialog modal-lg">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+									<h4 class="modal-title" id="myModalLabel">PR Status</h4>
+								</div>
+								<div class="modal-body">
+									<div id="stepper1" class="bs-stepper linear">
+										<div class="bs-stepper-header" role="tablist">
+											<div class="step" data-target="#test-l-1">
+												<button type="button" class="step-trigger" role="tab" id="stepper1trigger1" aria-controls="test-l-1" aria-selected="false" disabled="disabled">
+													<span class="bs-stepper-circle">1</span>
+													<span class="bs-stepper-label">RMOP</span>
+												</button>
+											</div>
+											<div class="bs-stepper-line"></div>
+											<div class="step" data-target="#test-l-2">
+												<button type="button" class="step-trigger" role="tab" id="stepper1trigger2" aria-controls="test-l-2" aria-selected="false" disabled="disabled">
+													<span class="bs-stepper-circle">2</span>
+													<span class="bs-stepper-label">CANVASS</span>
+												</button>
+											</div>
+											<div class="bs-stepper-line"></div>
+											<div class="step @((abstractNo != null) ? "active" : "" )" data-target="#test-l-3" data-prno="@items.Prno">
+												<button type="button" class="step-trigger stepper1trigger3" role="tab" aria-controls="test-l-3" aria-selected="false" disabled="disabled">
+													<span class="bs-stepper-circle">3</span>
+													<span class="bs-stepper-label">ABSTRACT</span>
+												</button>
+											</div>
+											<div class="bs-stepper-line"></div>
+											<div class="step" data-target="#test-l-3">
+												<button type="button" class="step-trigger" role="tab" id="stepper1trigger3" aria-controls="test-l-3" aria-selected="false" disabled="disabled">
+													<span class="bs-stepper-circle">4</span>
+													<span class="bs-stepper-label">PO</span>
+												</button>
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -543,9 +591,11 @@ else
 	</div>
 </div>
 
-
+<script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/prStatus.js"></script>
 <script>
 
 	$(document).ready(function () {
