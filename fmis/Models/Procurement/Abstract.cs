@@ -10,6 +10,8 @@ namespace fmis.Models.Procurement
 
         public DateTime AbstractDate { get; set; }
 
+        public string PrNo { get; set; }
+
         public string PrNoWithDate { get; set; }
 
         public string CanvassNoWithDate { get; set; }
