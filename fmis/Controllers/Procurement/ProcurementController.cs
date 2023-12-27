@@ -41,6 +41,8 @@ using System.Net.NetworkInformation;
 using System.Text.RegularExpressions;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Logical;
 using DocumentFormat.OpenXml.InkML;
+using Microsoft.AspNetCore.SignalR;
+using fmis.Hubs;
 
 namespace fmis.Controllers.Procurement
 {
@@ -54,8 +56,9 @@ namespace fmis.Controllers.Procurement
         private readonly DtsContext _dts;
         private readonly IHttpContextAccessor _httpContextAccessor;
 		private readonly fmisContext _dtsContext;
+        private readonly IHubContext<PrStatus> _hubContext;
 
-		public ProcurementController(MyDbContext context, IUserService userService, PpmpContext ppmpContext, DtsContext dts, IHttpContextAccessor httpContextAccessor, fmisContext dtsContext)
+		public ProcurementController(MyDbContext context, IUserService userService, PpmpContext ppmpContext, DtsContext dts, IHttpContextAccessor httpContextAccessor, fmisContext dtsContext, IHubContext<PrStatus> hubContext)
         {
             _context = context;
             _userService = userService;
@@ -63,8 +66,16 @@ namespace fmis.Controllers.Procurement
             _dts = dts;
             _httpContextAccessor = httpContextAccessor;
             _dtsContext = dtsContext;
+            _hubContext = hubContext;
 
 		}
+
+        public IActionResult PrStatus(int id)
+        {
+            var active = _context.RmopAta.FirstOrDefault(x=>x.Id == id);
+
+            return Ok();
+        }
 
 		[HttpGet]
 		public IActionResult GetChecklist(int id)
@@ -81,7 +92,7 @@ namespace fmis.Controllers.Procurement
         {
             if (ModelState.IsValid)
             {
-                if (puChecklist.Prno != null)
+                if (puChecklist.Prno != 0)
                 {
                     puChecklist.PrChecklist = puChecklist.PrChecklist.Where(x => x.IsChecked).ToList();
 
@@ -807,12 +818,16 @@ namespace fmis.Controllers.Procurement
         {
             if(ModelState.IsValid)
             {
-                if(!String.IsNullOrEmpty(model.AbstractNo))
+				var PrNo = model.PrNoWithDate?.Split('/')[0]?.Trim();
+                model.PrNo = PrNo;
+				if (!String.IsNullOrEmpty(model.AbstractNo))
                 {
                     _context.Abstract.Add(model);
                     _context.SaveChanges();
 
-                    return Json(new { success = true } );
+					_hubContext.Clients.All.SendAsync("ReceiveUpdate", model.PrNo);
+
+					return Json(new { success = true } );
                 }
             }
 
@@ -3271,14 +3286,8 @@ namespace fmis.Controllers.Procurement
 
             if (isAuthenticated)
             {
-                switch (User.FindFirstValue(ClaimTypes.Role))
-                {
-                    case "pu_admin":
-                        return RedirectToAction("Checklist1", "Procurement");
-                    default:
-                        return RedirectToAction("Dashboard", "Home");
-                }
-            }
+				return RedirectToAction("Checklist1", "Procurement");
+			}
             else
             {
                 return View();
@@ -3297,10 +3306,7 @@ namespace fmis.Controllers.Procurement
                 {
                     await LoginAsync(user, model.RememberMe);
 
-                    if (user.Username == "1731")
-                    {
-                        return RedirectToAction("Checklist1", "Procurement");
-                    }
+                    return RedirectToAction("Checklist1", "Procurement");
                 }
                 else
                 {
@@ -3363,11 +3369,7 @@ namespace fmis.Controllers.Procurement
                 new Claim(ClaimTypes.GivenName, user.Fname),
                 new Claim(ClaimTypes.Surname, user.Lname),
             };
-
-            if (user.Username == "1731")
-            {
-                claims.Add(new Claim(ClaimTypes.Role, "pu_admin"));
-            }
+            claims.Add(new Claim(ClaimTypes.Role, "pu_admin"));
 
             var identity1 = new ClaimsIdentity(claims, "Scheme4");
             var principal1 = new ClaimsPrincipal(identity1);
