@@ -335,14 +335,15 @@ namespace fmis
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
+			app.UseHttpsRedirection();
+			app.UseEndpoints(endpoints =>
             {
 
                 /*endpoints.MapControllerRoute(
                     name: "Fmis",
                     pattern: "Fmis/{controller=Home}/{action=Index}/{id?}");*/
-                endpoints.MapHub<PrStatus>("/updateHub");
-                endpoints.MapControllerRoute(
+				endpoints.MapHub<PrStatus>("/updateHub");
+				endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
