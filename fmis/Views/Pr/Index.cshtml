@@ -23,6 +23,12 @@
 		.pr-no-link {
 		cursor: pointer;
 	}
+
+	.step-date {
+		margin-top: -20px;
+		font-size: 12px;
+		color: #777;
+	}
 </style>
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link href="https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css" rel="stylesheet" />
@@ -134,7 +140,10 @@
 						</div>
 					</div>
 
+					var rmop = context.RmopAta.FirstOrDefault(x => x.PrNoOne == items.Prno);
+					var canvass = context.Canvass.FirstOrDefault(x => x.PrNo == items.Prno);
 					var abstractNo = context.Abstract.FirstOrDefault(x => x.PrNo == items.Prno);
+					var po = context.Po.FirstOrDefault(x => x.PrNo == items.Prno);
 
 					<div class="modal fade" id="trackModal" tabindex="-1" role="dialog" aria-labelledby="trackModal" aria-hidden="true">
 						<div class="modal-dialog modal-lg">
@@ -146,32 +155,36 @@
 								<div class="modal-body">
 									<div id="stepper1" class="bs-stepper linear">
 										<div class="bs-stepper-header" role="tablist">
-											<div class="step" data-target="#test-l-1">
-												<button type="button" class="step-trigger" role="tab" id="stepper1trigger1" aria-controls="test-l-1" aria-selected="false" disabled="disabled">
+											<div class="step rmop-step @((rmop != null) ? "active" : "" )" data-prno="@items.Prno">
+												<button type="button" class="step-trigger" role="tab" aria-controls="test-l-1" aria-selected="false" disabled="disabled">
 													<span class="bs-stepper-circle">1</span>
 													<span class="bs-stepper-label">RMOP</span>
 												</button>
+												<div class="step-date">&nbsp; &nbsp; &nbsp; &nbsp; @rmop?.PrTrackingDate.ToString("MMM d, yyyy")</div>
 											</div>
 											<div class="bs-stepper-line"></div>
-											<div class="step" data-target="#test-l-2">
-												<button type="button" class="step-trigger" role="tab" id="stepper1trigger2" aria-controls="test-l-2" aria-selected="false" disabled="disabled">
+											<div class="step canvass-step @((canvass != null) ? "active" : "" )" data-prno="@items.Prno">
+												<button type="button" class="step-trigger" role="tab" aria-controls="test-l-2" aria-selected="false" disabled="disabled">
 													<span class="bs-stepper-circle">2</span>
 													<span class="bs-stepper-label">CANVASS</span>
 												</button>
+												<div class="step-date">&nbsp; &nbsp; &nbsp; &nbsp; @canvass?.PrTrackingDate.ToString("MMM d, yyyy")</div>
 											</div>
 											<div class="bs-stepper-line"></div>
-											<div class="step @((abstractNo != null) ? "active" : "" )" data-target="#test-l-3" data-prno="@items.Prno">
+											<div class="step abstractNo-step @((abstractNo != null) ? "active" : "" )" data-prno="@items.Prno">
 												<button type="button" class="step-trigger stepper1trigger3" role="tab" aria-controls="test-l-3" aria-selected="false" disabled="disabled">
 													<span class="bs-stepper-circle">3</span>
 													<span class="bs-stepper-label">ABSTRACT</span>
 												</button>
+												<div class="step-date">&nbsp; &nbsp; &nbsp; &nbsp; @abstractNo?.PrTrackingDate.ToString("MMM d, yyyy")</div>
 											</div>
 											<div class="bs-stepper-line"></div>
-											<div class="step" data-target="#test-l-3">
-												<button type="button" class="step-trigger" role="tab" id="stepper1trigger3" aria-controls="test-l-3" aria-selected="false" disabled="disabled">
+											<div class="step po-step @((po != null) ? "active" : "" )" data-prno="@items.Prno">
+												<button type="button" class="step-trigger" role="tab" aria-controls="test-l-3" aria-selected="false" disabled="disabled">
 													<span class="bs-stepper-circle">4</span>
 													<span class="bs-stepper-label">PO</span>
 												</button>
+												<div class="step-date">&nbsp; &nbsp; &nbsp; &nbsp; @po?.PrTrackingDate.ToString("MMM d, yyyy")</div>
 											</div>
 										</div>
 									</div>
@@ -594,7 +607,7 @@ else
 <script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/signalr/signalr.js"></script>
 <script src="~/js/prStatus.js"></script>
 <script>
 

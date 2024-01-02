@@ -476,10 +476,13 @@ namespace fmis.Controllers.Procurement
                 {
                     var userId = _context.Pr.FirstOrDefault(x=>x.Prno == model.PrNoOne).UserId;
 					model.UserId = userId;
+                    model.PrTrackingDate = DateTime.Now;
 
 					_context.Add(model);
                     _context.SaveChanges();
-                    return Json(new { success = true });
+
+					_hubContext.Clients.All.SendAsync("PrUpdateRmop", model.PrNoOne, model.PrTrackingDate);
+					return Json(new { success = true });
                 }
             }
             return Json(new { success = false });
@@ -738,10 +741,12 @@ namespace fmis.Controllers.Procurement
             {
                 if (!String.IsNullOrEmpty(model.RpqNo))
                 {
+                    model.PrTrackingDate = DateTime.Now;
                     _context.Canvass.Add(model);
                     _context.SaveChanges();
 
-                    return Json(new { success = true });
+					_hubContext.Clients.All.SendAsync("PrUpdateCanvass", model.PrNo, model.PrTrackingDate);
+					return Json(new { success = true });
                 }
             }
 
@@ -822,10 +827,11 @@ namespace fmis.Controllers.Procurement
                 model.PrNo = PrNo;
 				if (!String.IsNullOrEmpty(model.AbstractNo))
                 {
+                    model.PrTrackingDate = DateTime.Now;
                     _context.Abstract.Add(model);
                     _context.SaveChanges();
 
-					_hubContext.Clients.All.SendAsync("ReceiveUpdate", model.PrNo);
+					_hubContext.Clients.All.SendAsync("PrUpdateAbstract", model.PrNo, model.PrTrackingDate);
 
 					return Json(new { success = true } );
                 }
@@ -893,6 +899,16 @@ namespace fmis.Controllers.Procurement
             PrDdl();
             AbstractDropDown();
 
+
+			string year = DateTime.Now.Year.ToString();
+
+            int latestPoNo = _context.Po.Where(x => x.PoNo.StartsWith(year)).AsEnumerable().Select(x => int.Parse(x.PoNo.Substring(year.Length + 1))).DefaultIfEmpty(0).Max();
+            latestPoNo++;
+
+			string formattedPoNo = $"{year}-{latestPoNo:D4}";
+
+            ViewBag.FormattedPoNo = formattedPoNo;
+
             return View(_context.Po.ToList());
         }
 
@@ -917,11 +933,12 @@ namespace fmis.Controllers.Procurement
             {
                 if(!String.IsNullOrEmpty(model.PoNo))
                 {
-
+                    model.PrTrackingDate = DateTime.Now;
                     _context.Po.Add(model);
                     _context.SaveChanges();
 
-                    return Json(new { success = true });
+					_hubContext.Clients.All.SendAsync("PrUpdatePo", model.PrNo, model.PrTrackingDate);
+					return Json(new { success = true });
                 }
             }
 

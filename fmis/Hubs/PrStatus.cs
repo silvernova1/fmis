@@ -7,7 +7,7 @@ namespace fmis.Hubs
 	{
 		public async Task SendUpdate(string prNo)
 		{
-			await Clients.All.SendAsync("ReceiveUpdate", prNo);
+			await Clients.All.SendAsync("PrUpdate", prNo);
 		}
 	}
 }
