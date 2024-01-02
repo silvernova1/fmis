@@ -72,8 +72,8 @@ namespace fmis
             services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
             services.AddTransient<EmailService>();
             services.Configure<SmtpSettings>(Configuration.GetSection("SmtpSettings"));
-            services.AddCors();
-            services.AddRazorPages();
+			services.AddCors();
+			services.AddRazorPages();
             services.AddControllersWithViews()
                 .AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
@@ -219,12 +219,15 @@ namespace fmis
                 options.UseSqlServer(Configuration.GetConnectionString("InOfPayDeductionContext")));
             services.AddDbContext<SectionsContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("SectionsContext")));
-            #endregion
+			#endregion
 
 
 
-            services.AddSignalR();
-            services.AddControllers().AddJsonOptions(options =>
+			services.AddSignalR();
+
+			services.AddCors();
+
+			services.AddControllers().AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.PropertyNamingPolicy = null;
             });
@@ -332,22 +335,21 @@ namespace fmis
             app.UseCookiePolicy();
             app.UseRouting();
 
-            app.UseAuthentication();
+			app.UseAuthentication();
             app.UseAuthorization();
 
-			app.UseHttpsRedirection();
 			app.UseEndpoints(endpoints =>
             {
 
                 /*endpoints.MapControllerRoute(
                     name: "Fmis",
                     pattern: "Fmis/{controller=Home}/{action=Index}/{id?}");*/
-				endpoints.MapHub<PrStatus>("/updateHub");
+				endpoints.MapHub<PrStatus>("/updatePrHub");
 				endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
-                endpoints.MapHub<DvHub>("/dvHub");
+                //endpoints.MapHub<DvHub>("/dvHub");
             });            
         }
     }

@@ -19,5 +19,7 @@ namespace fmis.Models.Procurement
         public string RecommendedAward { get; set; }
 
         public string Rmop { get; set; }
-    }
+
+		public DateTime PrTrackingDate { get; set; }
+	}
 }
