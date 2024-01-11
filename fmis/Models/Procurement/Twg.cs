@@ -17,5 +17,7 @@ namespace fmis.Models.Procurement
         public string Recommendation { get; set; }
 
         public string ReceivedBy { get; set; }
-    }
+
+		public string Remarks { get; set; }
+	}
 }
