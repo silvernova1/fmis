@@ -344,7 +344,7 @@ namespace fmis
                 /*endpoints.MapControllerRoute(
                     name: "Fmis",
                     pattern: "Fmis/{controller=Home}/{action=Index}/{id?}");*/
-				endpoints.MapHub<PrStatus>("/dummy/updatePrHub");
+				endpoints.MapHub<PrStatus>("/updatePrHub");
 				endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
