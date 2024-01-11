@@ -103,12 +103,12 @@
 						<td>
 							<a class="btn btn-xs btn-primary" target="_blank" href="@Url.Action("PrintPr","Pr",new { id = @items.Id })" data-bs-toggle="print" title="Print Pr">
 								<i class="ace-icon fa fa-file-pdf-o"></i>
-							</a> | <a href="#" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#smallModal"><i class="ace-icon fa fa-list-ul"></i></a>
-							| <a class="btn btn-xs btn-primary " data-toggle="modal" data-target="#trackModal" data-id="@items.Id"><i class="ace-icon fa fa-search"></i></a>
+							</a> | <a href="#" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#smallModal-@items.Id" data-id="@items.Id"><i class="ace-icon fa fa-list-ul"></i></a>
+							| <a class="btn btn-xs btn-primary " data-toggle="modal" data-target="#trackModal-@items.Id" data-id="@items.Id"><i class="ace-icon fa fa-search"></i></a>
 						</td>
 					</tr>
 
-					<div class="modal fade" id="smallModal" tabindex="-1" role="dialog" aria-labelledby="trackModal" aria-hidden="true">
+					<div class="modal fade" id="smallModal-@items.Id" tabindex="-1" role="dialog" aria-labelledby="smallModal" aria-hidden="true">
 						<div class="modal-dialog modal-sm">
 							<div class="modal-content">
 								<div class="modal-header">
@@ -156,7 +156,7 @@
 					var po = context.Po.FirstOrDefault(x => x.PrNo == items.Prno);
 					var twg = context.Twg.FirstOrDefault(x => x.Prno == items.Prno);
 
-					<div class="modal fade" id="trackModal" tabindex="-1" role="dialog" aria-labelledby="trackModal" aria-hidden="true">
+					<div class="modal fade" id="trackModal-@items.Id" tabindex="-1" role="dialog" aria-labelledby="trackModal" aria-hidden="true">
 						<div class="modal-dialog modal-lg">
 							<div class="modal-content">
 								<div class="modal-header">
