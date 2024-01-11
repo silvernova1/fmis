@@ -29,6 +29,16 @@
 		font-size: 12px;
 		color: #777;
 	}
+
+	.custom-stepper-content {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+	}
+
+	.custom-modal-dialog {
+		max-width: 800px;
+	}
 </style>
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link href="https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css" rel="stylesheet" />
@@ -67,10 +77,10 @@
 					<th>
 						<i class="ace-icon fa fa-user bigger-110 hidden-480"></i>
 						Requested by</th>
-					<th>
+					@* <th>
 						<i class="ace-icon fa fa-check-square-o bigger-110 hidden-480"></i>
 						Status
-					</th>
+					</th> *@
 					<th>
 						ACTIONS
 					</th>
@@ -98,7 +108,7 @@
 						</td>
 					</tr>
 
-					<div class="modal fade" id="trackModal-@items.Id" tabindex="-1" role="dialog" aria-labelledby="trackModal" aria-hidden="true">
+					<div class="modal fade" id="smallModal" tabindex="-1" role="dialog" aria-labelledby="trackModal" aria-hidden="true">
 						<div class="modal-dialog modal-sm">
 							<div class="modal-content">
 								<div class="modal-header">
@@ -144,13 +154,14 @@
 					var canvass = context.Canvass.FirstOrDefault(x => x.PrNo == items.Prno);
 					var abstractNo = context.Abstract.FirstOrDefault(x => x.PrNo == items.Prno);
 					var po = context.Po.FirstOrDefault(x => x.PrNo == items.Prno);
+					var twg = context.Twg.FirstOrDefault(x => x.Prno == items.Prno);
 
 					<div class="modal fade" id="trackModal" tabindex="-1" role="dialog" aria-labelledby="trackModal" aria-hidden="true">
 						<div class="modal-dialog modal-lg">
 							<div class="modal-content">
 								<div class="modal-header">
 									<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-									<h4 class="modal-title" id="myModalLabel">PR Status</h4>
+									<h4 class="modal-title" id="myModalLabel">PR Status for PR No. <b>@items.Prno</b></h4>
 								</div>
 								<div class="modal-body">
 									<div id="stepper1" class="bs-stepper linear">
@@ -160,7 +171,6 @@
 													<span class="bs-stepper-circle">1</span>
 													<span class="bs-stepper-label">RMOP</span>
 												</button>
-												<div class="step-date">&nbsp; &nbsp; &nbsp; &nbsp; @rmop?.PrTrackingDate.ToString("MMM d, yyyy")</div>
 											</div>
 											<div class="bs-stepper-line"></div>
 											<div class="step canvass-step @((canvass != null) ? "active" : "" )" data-prno="@items.Prno">
@@ -168,24 +178,151 @@
 													<span class="bs-stepper-circle">2</span>
 													<span class="bs-stepper-label">CANVASS</span>
 												</button>
-												<div class="step-date">&nbsp; &nbsp; &nbsp; &nbsp; @canvass?.PrTrackingDate.ToString("MMM d, yyyy")</div>
+											</div>
+											<div class="bs-stepper-line"></div>
+											<div class="step twg-step @((twg != null) ? "active" : "" )" data-prno="@items.Prno">
+												<button type="button" class="step-trigger" role="tab" aria-controls="test-l-2" aria-selected="false" disabled="disabled">
+													<span class="bs-stepper-circle">3</span>
+													<span class="bs-stepper-label">TWG</span>
+												</button>
 											</div>
 											<div class="bs-stepper-line"></div>
 											<div class="step abstractNo-step @((abstractNo != null) ? "active" : "" )" data-prno="@items.Prno">
 												<button type="button" class="step-trigger stepper1trigger3" role="tab" aria-controls="test-l-3" aria-selected="false" disabled="disabled">
-													<span class="bs-stepper-circle">3</span>
+													<span class="bs-stepper-circle">4</span>
 													<span class="bs-stepper-label">ABSTRACT</span>
 												</button>
-												<div class="step-date">&nbsp; &nbsp; &nbsp; &nbsp; @abstractNo?.PrTrackingDate.ToString("MMM d, yyyy")</div>
 											</div>
 											<div class="bs-stepper-line"></div>
 											<div class="step po-step @((po != null) ? "active" : "" )" data-prno="@items.Prno">
 												<button type="button" class="step-trigger" role="tab" aria-controls="test-l-3" aria-selected="false" disabled="disabled">
-													<span class="bs-stepper-circle">4</span>
+													<span class="bs-stepper-circle">5</span>
 													<span class="bs-stepper-label">PO</span>
 												</button>
-												<div class="step-date">&nbsp; &nbsp; &nbsp; &nbsp; @po?.PrTrackingDate.ToString("MMM d, yyyy")</div>
 											</div>
+										</div>
+
+										<div class="bs-stepper-content custom-stepper-content">
+												@if(rmop != null)
+												{
+												<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block rmop-date" data-prno="@items.Prno">
+														<div class="form-group">
+															<label for="inputMailForm">@rmop?.PrTrackingDate.ToString("MMM d, yyyy")</label>
+															<br />
+														<br />
+															<b>Remarks</b>
+														<div class="invalid-feedback">asdasdasd</div>
+														</div>
+													</div>
+												}
+												else
+												{
+												<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block rmop-date" data-prno="@items.Prno">
+														<div class="form-group">
+															<label for="inputMailForm"></label>
+															<br />
+														<br />
+															<b></b>
+															<div class="invalid-feedback"></div>
+														</div>
+													</div>
+												}
+												@if (canvass != null)
+												{
+													<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block canvass-date" data-prno="@items.Prno">
+														<div class="form-group">
+															<label for="inputMailForm">@canvass?.SubmissionDate.ToString("MMM d, yyyy")</label>
+															<br />
+															<br />
+															<b>Remarks</b>
+															<div class="invalid-feedback">@canvass?.Remarks</div>
+														</div>
+													</div>
+												}
+												else
+												{
+													<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block canvass-date" data-prno="@items.Prno">
+														<div class="form-group">
+															<label for="inputMailForm"></label>
+															<br />
+														<br />
+															<b></b>
+															<div class="invalid-feedback"></div>
+														</div>
+													</div>
+												}
+												@if (twg != null)
+												{
+													<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block twg-date" data-prno="@items.Prno">
+														<div class="form-group">
+															<label for="inputMailForm">@twg?.TwgDate.ToString("MMM d, yyyy")</label>
+															<br />
+														<br />
+															<b>Remarks</b>
+															<div class="invalid-feedback">@twg?.Remarks</div>
+														</div>
+													</div>
+												}
+												else
+												{
+												<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block twg-date" data-prno="@items.Prno">
+														<div class="form-group">
+															<label for="inputMailForm"></label>
+															<br />
+														<br />
+															<b></b>
+															<div class="invalid-feedback"></div>
+														</div>
+													</div>
+												}
+												@if (abstractNo != null)
+												{
+													<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block abstractNo-date" data-prno="@items.Prno">
+														<div class="form-group">
+															<label for="inputMailForm">@abstractNo?.AbstractDate.ToString("MMM d, yyyy")</label>
+															<br />
+															<br />
+															<b>Remarks</b>
+															<div class="invalid-feedback">@abstractNo?.Remarks</div>
+														</div>
+													</div>
+												}
+												else
+												{
+													<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block abstractNo-date" data-prno="@items.Prno">
+														<div class="form-group">
+															<label for="inputMailForm"></label>
+															<br />
+															<br />
+															<b></b>
+															<div class="invalid-feedback"></div>
+														</div>
+													</div>
+												}
+												@if (po != null)
+												{
+													<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block po-date" data-prno="@items.Prno">
+														<div class="form-group">
+															<label for="inputMailForm">@po?.PoDate.ToString("MMM d, yyyy")</label>
+															<br />
+															<br />
+															<b>Remarks</b>
+															<div class="invalid-feedback">@po?.Remarks</div>
+														</div>
+													</div>
+												}
+												else
+												{
+													<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block po-date" data-prno="@items.Prno">
+														<div class="form-group">
+															<label for="inputMailForm"></label>
+															<br />
+															<br />
+															<b></b>
+															<div class="invalid-feedback"></div>
+														</div>
+													</div>
+												}
 										</div>
 									</div>
 								</div>
