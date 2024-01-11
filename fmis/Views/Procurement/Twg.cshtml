@@ -47,6 +47,10 @@
                                         <label for="" style="font-weight:bold"> RECOMMENDATION </label>
                                         <input type="text" class="form-control" id="recommendation" name="Recommendation" required>
                                     </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold"> REMARKS </label>
+                                        <textarea class="form-control" id="remarks" name="Remarks"></textarea>
+                                    </div>
                                 </div>
 
                                 <div class="col-md-6">
@@ -106,7 +110,9 @@
             <th>
                 RECEIVED BY
             </th>
-         
+            <th>
+                REMARKS
+            </th>
             <th>
                 ACTIONS
             </th>
@@ -137,6 +143,9 @@
                         @item.ReceivedBy
                     </td>
                     <td>
+                        @item.Remarks
+                    </td>
+                    <td>
                         <a class="btn btn-xs btn-primary btn-edit" data-id="@item.Id">
                             <i class="ace-icon fa fa-edit"></i>Edit
                         </a>
@@ -147,7 +156,7 @@
         else
         {
             <tr>
-                <td colspan="7">
+                <td colspan="8">
                     <div class="alert alert-danger">
                         No data found.
                     </div>
@@ -177,6 +186,7 @@
                     $("#prNo").val(data.prNo);
                     $("#prDate").val(data.prDate);
                     $("#receivedBy").val(data.receivedBy);
+                    $("#remarks").val(data.remarks);
                     $("#editTwg").modal("show");
                 }
             });
@@ -196,7 +206,8 @@
                 Recommendation: $("#recommendation").val(),
                 PrNo: $("#prNo").val(),
                 PrDate: $("#prDate").val(),
-                ReceivedBy: $("#receivedBy").val()
+                ReceivedBy: $("#receivedBy").val(),
+                Remarks: $("#remarks").val()
             };
 
             $.ajax({

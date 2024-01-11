@@ -1,89 +1,84 @@
 ﻿const connection = new signalR.HubConnectionBuilder()
-    .withUrl("/dummy/updatePrHub")
+    .withUrl("/updatePrHub")
     .build();
 
-connection.on("PrUpdateRmop", (prNo, prTrackingDate) => {
+connection.on("PrUpdateRmop", (prNo, htmlContent) => {
     const rmopDiv = document.querySelector(`.rmop-step[data-prno="${prNo}"]`);
+    const rmopDate = document.querySelector(`.rmop-date[data-prno="${prNo}"]`);
+
     if (rmopDiv) {
         rmopDiv.classList.add("active");
-        const stepDateDiv = rmopDiv.querySelector(".step-date");
-        if (stepDateDiv) {
-            if (prTrackingDate !== null) {
-                const formattedDate = new Date(prTrackingDate).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric"
-                });
-                stepDateDiv.innerHTML = `&nbsp; &nbsp; &nbsp; &nbsp; ${formattedDate}`;
-            } else {
-                const rmopDate = "";
-                stepDateDiv.innerHTML = `&nbsp; &nbsp; &nbsp; &nbsp; ${rmopDate}`;
-            }
-        }
+    }
+
+    if (rmopDate) {
+        rmopDate.innerHTML = htmlContent;
+        console.log("rmopDate found");
+    } else {
+        console.log("rmopDate not found");
     }
 });
 
-connection.on("PrUpdateCanvass", (prNo, prTrackingDate) => {
+connection.on("PrUpdateCanvass", (prNo, htmlContent) => {
     const canvassDiv = document.querySelector(`.canvass-step[data-prno="${prNo}"]`);
+    const canvassDate = document.querySelector(`.canvass-date[data-prno="${prNo}"]`);
+
     if (canvassDiv) {
         canvassDiv.classList.add("active");
-        const stepDateDiv = canvassDiv.querySelector(".step-date");
-        if (stepDateDiv) {
-            if (prTrackingDate !== null) {
-                const formattedDate = new Date(prTrackingDate).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric"
-                });
-                stepDateDiv.innerHTML = `&nbsp; &nbsp; &nbsp; &nbsp; ${formattedDate}`;
-            } else {
-                const canvassDate = "";
-                stepDateDiv.innerHTML = `&nbsp; &nbsp; &nbsp; &nbsp; ${canvassDate}`;
-            }
-        }
     }
 
+    if (canvassDate) {
+        canvassDate.innerHTML = htmlContent;
+        console.log("canvassDate found");
+    } else {
+        console.log("canvassDate not found");
+    }
 });
 
-connection.on("PrUpdateAbstract", (prNo, prTrackingDate) => {
+connection.on("PrUpdateAbstract", (prNo, htmlContent) => {
     const abstractDiv = document.querySelector(`.abstractNo-step[data-prno="${prNo}"]`);
+    const abstractDate = document.querySelector(`.abstractNo-date[data-prno="${prNo}"]`);
+
     if (abstractDiv) {
         abstractDiv.classList.add("active");
-        const stepDateDiv = abstractDiv.querySelector(".step-date");
-        if (stepDateDiv) {
-            if (prTrackingDate !== null) {
-                const formattedDate = new Date(prTrackingDate).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric"
-                });
-                stepDateDiv.innerHTML = `&nbsp; &nbsp; &nbsp; &nbsp; ${formattedDate}`;
-            } else {
-                const abstractNoDate = "";
-                stepDateDiv.innerHTML = `&nbsp; &nbsp; &nbsp; &nbsp; ${abstractNoDate}`;
-            }
-        }
+    }
+
+    if (abstractDate) {
+        abstractDate.innerHTML = htmlContent;
+        console.log("abstractDate found");
+    } else {
+        console.log("abstractDate not found");
     }
 });
 
-connection.on("PrUpdatePo", (prNo, prTrackingDate) => {
+connection.on("PrUpdatePo", (prNo, htmlContent) => {
     const poDiv = document.querySelector(`.po-step[data-prno="${prNo}"]`);
+    const poDate = document.querySelector(`.po-date[data-prno="${prNo}"]`);
+
     if (poDiv) {
         poDiv.classList.add("active");
-        const stepDateDiv = poDiv.querySelector(".step-date");
-        if (stepDateDiv) {
-            if (prTrackingDate !== null) {
-                const formattedDate = new Date(prTrackingDate).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric"
-                });
-                stepDateDiv.innerHTML = `&nbsp; &nbsp; &nbsp; &nbsp; ${formattedDate}`;
-            } else {
-                const poDate = "";
-                stepDateDiv.innerHTML = `&nbsp; &nbsp; &nbsp; &nbsp; ${poDate}`;
-            }
-        }
+    }
+
+    if (poDate) {
+        poDate.innerHTML = htmlContent;
+        console.log("poDate found");
+    } else {
+        console.log("poDate not found");
+    }
+});
+
+connection.on("PrUpdateTwg", (prNo, htmlContent) => {
+    const twgDiv = document.querySelector(`.twg-step[data-prno="${prNo}"]`);
+    const twgDate = document.querySelector(`.twg-date[data-prno="${prNo}"]`);
+
+    if (twgDiv) {
+        twgDiv.classList.add("active");
+    }
+
+    if (twgDate) {
+        twgDate.innerHTML = htmlContent;
+        console.log("twgDate found");
+    } else {
+        console.log("twgDate not found");
     }
 });
 

@@ -98,6 +98,36 @@
         display: inline-block;
     }
 
+        .text-input-container {
+        display: inline-block;
+    }
+
+    input[type="checkbox"] {
+        -webkit-appearance: initial;
+        appearance: initial;
+        background: white;
+        width: 40px;
+        height: 40px;
+        border: 1px solid black;
+        position: relative;
+    }
+
+    input[type="checkbox"]:checked {
+        background: black;
+    }
+
+    input[type="checkbox"]:checked:after {
+       content: "X";
+       color: #fff;
+       position: absolute;
+       left: 50%;
+       top: 50%;
+       -webkit-transform: translate(-50%,-50%);
+       -moz-transform: translate(-50%,-50%);
+       -ms-transform: translate(-50%,-50%);
+       transform: translate(-50%,-50%);
+    }
+
 
 
 </style>

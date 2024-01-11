@@ -481,7 +481,17 @@ namespace fmis.Controllers.Procurement
 					_context.Add(model);
                     _context.SaveChanges();
 
-					_hubContext.Clients.All.SendAsync("PrUpdateRmop", model.PrNoOne, model.PrTrackingDate);
+					string htmlContent = $@"
+                    <div role='tabpanel' class='bs-stepper-pane fade active dstepper-block' id='rmopDate'>
+                        <div class='form-group'>
+                            <label for='inputMailForm'>{model.PrTrackingDate.ToString("MMM d, yyyy")}</label>
+                            <br />
+                            <b>Remarks</b>
+                            <div class='invalid-feedback'>asdasdasd</div>
+                        </div>
+                    </div>";
+
+					_hubContext.Clients.All.SendAsync("PrUpdateRmop", model.PrNoOne, htmlContent);
 					return Json(new { success = true });
                 }
             }
@@ -745,7 +755,17 @@ namespace fmis.Controllers.Procurement
                     _context.Canvass.Add(model);
                     _context.SaveChanges();
 
-					_hubContext.Clients.All.SendAsync("PrUpdateCanvass", model.PrNo, model.PrTrackingDate);
+					string htmlContent = $@"
+                    <div role='tabpanel' class='bs-stepper-pane fade active dstepper-block'>
+                        <div class='form-group' id='rmopDiv'>
+                            <label for='inputMailForm'>{model?.SubmissionDate.ToString("MMM d, yyyy")}</label>
+                            <br />
+                            <b>Remarks</b>
+                            <div class='invalid-feedback'>{model?.Remarks}</div>
+                        </div>
+                    </div>";
+
+					_hubContext.Clients.All.SendAsync("PrUpdateCanvass", model.PrNo, htmlContent);
 					return Json(new { success = true });
                 }
             }
@@ -760,6 +780,7 @@ namespace fmis.Controllers.Procurement
             {
                 string formattedRpqDate = item.RpqDate.ToString("MMM d, yyyy");
                 string formattedPrDate = item.PrDate.ToString("MMM d, yyyy");
+                string formattedSubDate = item.SubmissionDate.ToString("MMM d, yyyy");
 
                 var result = new
                 {
@@ -767,7 +788,9 @@ namespace fmis.Controllers.Procurement
                     RpqDate = formattedRpqDate,
                     PrNo = item.PrNo,
                     PrDate = formattedPrDate,
+                    SubDate = formattedSubDate,
                     ItemDesc = item.ItemDesc,
+                    Remarks = item.Remarks,
                     Rmop = item.Rmop
                 };
 
@@ -831,7 +854,17 @@ namespace fmis.Controllers.Procurement
                     _context.Abstract.Add(model);
                     _context.SaveChanges();
 
-					_hubContext.Clients.All.SendAsync("PrUpdateAbstract", model.PrNo, model.PrTrackingDate);
+					string htmlContent = $@"
+                    <div role='tabpanel' class='bs-stepper-pane fade active dstepper-block'>
+                        <div class='form-group'>
+                            <label for='inputMailForm'>{model?.AbstractDate.ToString("MMM d, yyyy")}</label>
+                            <br />
+                            <b>Remarks</b>
+                            <div class='invalid-feedback'>{model?.Remarks}</div>
+                        </div>
+                    </div>";
+
+					_hubContext.Clients.All.SendAsync("PrUpdateAbstract", model.PrNo, htmlContent);
 
 					return Json(new { success = true } );
                 }
@@ -854,7 +887,8 @@ namespace fmis.Controllers.Procurement
                     PrNoWithDate = item.PrNoWithDate,
                     CanvassNoWithDate = item.CanvassNoWithDate,
                     RecommendedAward = item.RecommendedAward,
-                    Rmop = item.Rmop
+                    Rmop = item.Rmop,
+                    Remarks = item.Remarks
                 };
 
                 return Json(result);
@@ -934,10 +968,21 @@ namespace fmis.Controllers.Procurement
                 if(!String.IsNullOrEmpty(model.PoNo))
                 {
                     model.PrTrackingDate = DateTime.Now;
+
                     _context.Po.Add(model);
                     _context.SaveChanges();
 
-					_hubContext.Clients.All.SendAsync("PrUpdatePo", model.PrNo, model.PrTrackingDate);
+					string htmlContent = $@"
+                    <div role='tabpanel' class='bs-stepper-pane fade active dstepper-block'>
+                        <div class='form-group' id='rmopDiv'>
+                            <label for='inputMailForm'>{model?.PoDate.ToString("MMM d, yyyy")}</label>
+                            <br />
+                            <b>Remarks</b>
+                            <div class='invalid-feedback'>{model?.Remarks}</div>
+                        </div>
+                    </div>";
+
+					_hubContext.Clients.All.SendAsync("PrUpdatePo", model.PrNo, htmlContent);
 					return Json(new { success = true });
                 }
             }
@@ -1023,7 +1068,19 @@ namespace fmis.Controllers.Procurement
                     _context.Twg.Add(model);
                     _context.SaveChanges();
 
-                    return Json(new { success = true });
+					string htmlContent = $@"
+                    <div role='tabpanel' class='bs-stepper-pane fade active dstepper-block'>
+                        <div class='form-group'>
+                            <label for='inputMailForm'>{model?.TwgDate.ToString("MMM d, yyyy")}</label>
+                            <br />
+                            <b>Remarks</b>
+                            <div class='invalid-feedback'>{model?.Remarks}</div>
+                        </div>
+                    </div>";
+
+					_hubContext.Clients.All.SendAsync("PrUpdateTwg", model.Prno, htmlContent);
+
+					return Json(new { success = true });
                 }
             }
 
@@ -1045,7 +1102,8 @@ namespace fmis.Controllers.Procurement
                     Recommendation = item.Recommendation,
                     PrNo = item.Prno,
                     PrDate = formattedPrDate,
-                    ReceivedBy = item.ReceivedBy
+                    ReceivedBy = item.ReceivedBy,
+                    Remarks = item.Remarks
                 };
 
                 return Json(result);
