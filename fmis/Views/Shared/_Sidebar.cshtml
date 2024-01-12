@@ -1428,6 +1428,19 @@
                         </a>
                         <b class="arrow"></b>
                     </li>
+
+
+                    <li class="@if (ViewBag.filter.sub2 == "Twg")
+                     @Html.Raw("active")
+    ">
+                        <a asp-controller="Procurement" asp-action="Twg">
+                            <i class="menu-icon fa fa-arrow-right blue"></i>
+                            TWG
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+
+
                     <li class="@if (ViewBag.filter.sub2 == "Abstract")
                      @Html.Raw("active")
 
@@ -1449,19 +1462,6 @@
                         <a asp-controller="Procurement" asp-action="PurchaseOrder">
                             <i class="menu-icon fa fa-arrow-right blue"></i>
                            PURCHASE ORDER
-                        </a>
-                        <b class="arrow"></b>
-                    </li>
-
-
-                    <li class="@if (ViewBag.filter.sub2 == "Twg")
-                     @Html.Raw("active")
-
-
-">
-                        <a asp-controller="Procurement" asp-action="Twg">
-                            <i class="menu-icon fa fa-arrow-right blue"></i>
-                            TWG
                         </a>
                         <b class="arrow"></b>
                     </li>
