@@ -486,8 +486,9 @@ namespace fmis.Controllers.Procurement
                         <div class='form-group'>
                             <label for='inputMailForm'>{model.PrTrackingDate.ToString("MMM d, yyyy")}</label>
                             <br />
+                            <br />
                             <b>Remarks</b>
-                            <div class='invalid-feedback'>asdasdasd</div>
+                            <div class='invalid-feedback'>Sample Remarks</div>
                         </div>
                     </div>";
 
@@ -760,6 +761,7 @@ namespace fmis.Controllers.Procurement
                         <div class='form-group' id='rmopDiv'>
                             <label for='inputMailForm'>{model?.SubmissionDate.ToString("MMM d, yyyy")}</label>
                             <br />
+                            <br />
                             <b>Remarks</b>
                             <div class='invalid-feedback'>{model?.Remarks}</div>
                         </div>
@@ -858,6 +860,7 @@ namespace fmis.Controllers.Procurement
                     <div role='tabpanel' class='bs-stepper-pane fade active dstepper-block'>
                         <div class='form-group'>
                             <label for='inputMailForm'>{model?.AbstractDate.ToString("MMM d, yyyy")}</label>
+                            <br />
                             <br />
                             <b>Remarks</b>
                             <div class='invalid-feedback'>{model?.Remarks}</div>
@@ -977,6 +980,7 @@ namespace fmis.Controllers.Procurement
                         <div class='form-group' id='rmopDiv'>
                             <label for='inputMailForm'>{model?.PoDate.ToString("MMM d, yyyy")}</label>
                             <br />
+                            <br />
                             <b>Remarks</b>
                             <div class='invalid-feedback'>{model?.Remarks}</div>
                         </div>
@@ -1072,6 +1076,7 @@ namespace fmis.Controllers.Procurement
                     <div role='tabpanel' class='bs-stepper-pane fade active dstepper-block'>
                         <div class='form-group'>
                             <label for='inputMailForm'>{model?.TwgDate.ToString("MMM d, yyyy")}</label>
+                            <br />
                             <br />
                             <b>Remarks</b>
                             <div class='invalid-feedback'>{model?.Remarks}</div>
