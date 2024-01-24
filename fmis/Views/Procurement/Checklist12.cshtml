@@ -96,6 +96,36 @@
         display: inline-block;
     }
 
+    .text-input-container {
+        display: inline-block;
+    }
+
+    input[type="checkbox"] {
+        -webkit-appearance: initial;
+        appearance: initial;
+        background: white;
+        width: 40px;
+        height: 40px;
+        border: 1px solid black;
+        position: relative;
+    }
+
+    input[type="checkbox"]:checked {
+        background: black;
+    }
+
+    input[type="checkbox"]:checked:after {
+       content: "X";
+       color: #fff;
+       position: absolute;
+       left: 50%;
+       top: 50%;
+       -webkit-transform: translate(-50%,-50%);
+       -moz-transform: translate(-50%,-50%);
+       -ms-transform: translate(-50%,-50%);
+       transform: translate(-50%,-50%);
+    }
+
 </style>
 <h3 class="grey lighter smaller">
     P.U Checklist #12
@@ -143,82 +173,101 @@
                     <div class="form-group">
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[0].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[0].Description" value="Complete signatures incl. approval" />
                             Complete signatures incl. approval
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[1].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[1].Description" value="Complete with PR # and date" />
                             Complete with PR # and date
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[2].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[2].Description" value="Estimated unit cost & correct total cost" />
                             Estimated unit cost & correct total cost
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[3].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[3].Description" value="Purpose of Request" />
                             Purpose of Request
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[4].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[4].Description" value="Funding Source" />
                             Funding Source
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[5].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[5].Description" value="Quality per Item" />
                             Quality per Item
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[6].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[6].Description" value="Estimate Unit Cost" />
                             Estimate Unit Cost
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[7].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[7].Description" value="Total Cost Per item" />
                             Total Cost Per item
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[8].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[8].Description" value="Grand Total" />
                             Grand Total
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[9].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[9].Description" value="Approved Allocation List or List of Recipients, if applicable" />
                             Approved Allocation List or List of Recipients, if applicable
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[10].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[10].Description" value="Complete description of the items to include type, make, color, size, measurement, shape etc." />
                             Complete description of the items to include type, <br />
                             &nbsp; &nbsp; &nbsp; &nbsp; make, color, size, measurement, shape etc.
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[11].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[11].Description" value="NO BRAND NAME" />
                             <u style="font-weight:bold"> NO BRAND NAME</u>
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[12].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[12].Description" value='Pre-"Job Order" Inspection Report, if applicable' />
                             Pre-"Job Order" Inspection Report, if applicable
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[13].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[13].Description" value='IT Job Report (together with Pre-"Job Order" Inspection Report for IT requests only)' />
                             IT Job Report (together with Pre-"Job Order" Inspection Report <br />
                             &nbsp; &nbsp; &nbsp; &nbsp; for IT requests only)
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[14].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[14].Description" value="Provision for warranty, if applicable" />
                             Provision for warranty, if applicable
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[15].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[15].Description" value="Approved Realignment, If applicable" />
                             Approved Realignment, If applicable
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[16].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[16].Description" value="Approved WFP/Supplemental WFP" />
                             Approved WFP/Supplemental WFP
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[17].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[17].Description" value="Approved PPMP/Supplemental PPMP" />
                             Approved PPMP/Supplemental PPMP
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[18].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[18].Description" value="Others" />
                             <u style="font-weight:bold">Others</u> <br />
-                            &nbsp; &nbsp; &nbsp; &nbsp;  ________________________________________
+                            &nbsp; &nbsp; &nbsp; &nbsp;  <input type="text" asp-for="PrChecklist[18].Others" style="border: none; border-bottom: 1px solid black;" />
                         </p>
                         <br />
                         <p style="font-weight:bold">
@@ -226,12 +275,14 @@
                         </p>
                         <p style="font-weight:bold">
                             <input type="checkbox" asp-for="PrChecklist[19].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[19].Description" value="COMPLETE" />
                             COMPLETE
                         </p>
                         <p style="font-weight:bold">
                             <input type="checkbox" asp-for="PrChecklist[20].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[20].Description" value="Please comply with item(s) marked X on or before" />
                             Please comply with item(s) marked <br />
-                            &nbsp; &nbsp; &nbsp; &nbsp; X on or before _________________________
+                            &nbsp; &nbsp; &nbsp; &nbsp; X on or before <input type="text" asp-for="PrChecklist[20].Others" style="border: none; border-bottom: 1px solid black;" />
                         </p>
                         <br />
                         <br />

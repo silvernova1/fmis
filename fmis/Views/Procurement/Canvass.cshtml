@@ -46,8 +46,21 @@
                                         <input type="text" class="form-control" id="rpqDate" name="RpqDate" required>
                                     </div>
                                     <div class="form-group">
-                                        <label for="" style="font-weight:bold"> ITEM/DESCRIPTION: </label>
-                                        <input type="text" class="form-control" id="itemDesc" name="ItemDesc" required>
+                                        <label for="" style="font-weight:bold">SUBMISSION DATE </label>
+                                        <input type="text" class="form-control" id="subDate" name="SubmissionDate">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">RMOP</label>
+                                        <select class="form-control" id="rmop" name="Rmop">
+                                            <option value="AGENCY TO AGENCY">AGENCY TO AGENCY</option>
+                                            <option value="DIRECT CONTRACTING (DRUGS AND MEDS)">DIRECT CONTRACTING (DRUGS AND MEDS)</option>
+                                            <option value="EMERGENCY CASES (DRUGS AND MEDS)">EMERGENCY CASES (DRUGS AND MEDS)</option>
+                                            <option value="LEASE OF VENUE (GOODS)">LEASE OF VENUE (GOODS)</option>
+                                            <option value="PUBLIC BIDDING (GOODS AND EQUIPMENT)">PUBLIC BIDDING (GOODS AND EQUIPMENT)</option>
+                                            <option value="PS-DBM">PS-DBM</option>
+                                            <option value="SCIENTIFIC SCHOLARLY">SCIENTIFIC SCHOLARLY</option>
+                                            <option value="SMALL VALUE PROCUREMENT (GOODS AND EQUIPMENT)">SMALL VALUE PROCUREMENT (GOODS AND EQUIPMENT)</option>
+                                        </select>
                                     </div>
                                 </div>
 
@@ -63,17 +76,12 @@
                                         <input type="text" class="form-control" id="prDate" name="PrDate" readonly>
                                     </div>
                                     <div class="form-group">
-                                        <label for="" style="font-weight:bold">RMOP</label>
-                                        <select class="form-control" id="rmop" name="Rmop">
-                                            <option value="AGENCY TO AGENCY">AGENCY TO AGENCY</option>
-                                            <option value="DIRECT CONTRACTING (DRUGS AND MEDS)">DIRECT CONTRACTING (DRUGS AND MEDS)</option>
-                                            <option value="EMERGENCY CASES (DRUGS AND MEDS)">EMERGENCY CASES (DRUGS AND MEDS)</option>
-                                            <option value="LEASE OF VENUE (GOODS)">LEASE OF VENUE (GOODS)</option>
-                                            <option value="PUBLIC BIDDING (GOODS AND EQUIPMENT)">PUBLIC BIDDING (GOODS AND EQUIPMENT)</option>
-                                            <option value="PS-DBM">PS-DBM</option>
-                                            <option value="SCIENTIFIC SCHOLARLY">SCIENTIFIC SCHOLARLY</option>
-                                            <option value="SMALL VALUE PROCUREMENT (GOODS AND EQUIPMENT)">SMALL VALUE PROCUREMENT (GOODS AND EQUIPMENT)</option>
-                                        </select>
+                                        <label for="" style="font-weight:bold"> ITEM/DESCRIPTION: </label>
+                                        <textarea class="form-control" id="itemDesc" name="ItemDesc"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold"> REMARKS </label>
+                                        <textarea class="form-control" id="remarks" name="Remarks"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -97,7 +105,9 @@
 </p>
 <h1 style="margin-left : 200px; font-weight:bold;">2023 CANVASS LOG BOOK</h1>
 
+
 <table class="table table-hover" style="width: 1300px">
+
     <thead>
         <tr>
             <th>
@@ -113,10 +123,16 @@
                 PR DATE
             </th>
             <th>
+                SUBMISSION DATE
+            </th>
+            <th>
                 ITEMS/DESCRIPTIONS
             </th>
             <th>
                 RMOP
+            </th>
+            <th>
+                REMARKS
             </th>
             <th>
                 ACTIONS
@@ -145,10 +161,16 @@
                         @item.PrDate.ToString("MMM d, yyyy")
                     </td>
                     <td>
+                        @item.SubmissionDate.ToString("MMM d, yyyy")
+                    </td>
+                    <td>
                         @item.ItemDesc
                     </td>
                     <td>
                         @item.Rmop
+                    </td>
+                    <td>
+                        @item.Remarks
                     </td>
                     <td>
                         <a class="btn btn-xs btn-primary btn-edit" data-id="@item.Id">
@@ -171,7 +193,7 @@
         else
         {
             <tr>
-                <td colspan="7">
+                <td colspan="9">
                     <div class="alert alert-danger">
                         No data found.
                     </div>
@@ -181,10 +203,13 @@
     </tbody>
 </table>
 
+
 @await Html.PartialAsync("_AddCanvass")
 @await Html.PartialAsync("ReCanvassAdditional")
 
-<script>
+
+ <script>
+
     var itemId;
 
     $(document).ready(function () {
@@ -238,7 +263,9 @@
                     $("#rpqDate").val(data.rpqDate);
                     $("#prNo").val(data.prNo);
                     $("#prDate").val(data.prDate);
+                    $("#subDate").val(data.subDate);
                     $("#itemDesc").val(data.itemDesc);
+                    $("#remarks").val(data.remarks);
                     $("#rmop").val(data.rmop);
                     $("#editModal").modal("show");
                 }
@@ -258,6 +285,10 @@
             dateFormat: "MM d, yy"
 
         });
+        $("#subDate").datepicker({
+            dateFormat: "MM d, yy"
+
+        });
 
         $("#saveChanges").click(function (e) {
             e.preventDefault();
@@ -267,7 +298,9 @@
                 RpqDate: $("#rpqDate").val(),
                 PrNo: $("#prNo").val(),
                 PrDate: $("#prDate").val(),
+                SubmissionDate: $("#subDate").val(),
                 ItemDesc: $("#itemDesc").val(),
+                Remarks: $("#remarks").val(),
                 Rmop: $("#rmop").val()
             };
 
@@ -301,7 +334,8 @@
             });
         });
     });
-</script>
+
+    </script>
 
 
 

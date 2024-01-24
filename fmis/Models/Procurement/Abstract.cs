@@ -10,6 +10,8 @@ namespace fmis.Models.Procurement
 
         public DateTime AbstractDate { get; set; }
 
+        public string PrNo { get; set; }
+
         public string PrNoWithDate { get; set; }
 
         public string CanvassNoWithDate { get; set; }
@@ -17,5 +19,9 @@ namespace fmis.Models.Procurement
         public string RecommendedAward { get; set; }
 
         public string Rmop { get; set; }
-    }
+
+		public DateTime PrTrackingDate { get; set; }
+
+		public string Remarks { get; set; }
+	}
 }

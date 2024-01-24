@@ -121,6 +121,7 @@ namespace fmis.Data
         public DbSet<Twg> Twg { get; set; }
         public DbSet<Supplier> Supplier { get; set; }
         public DbSet<PuIndexing> PuIndexing { get; set; }
+        public DbSet<PuUser> PuUser { get; set; }
 
 
 

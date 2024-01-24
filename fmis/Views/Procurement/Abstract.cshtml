@@ -47,6 +47,10 @@
                                             <option>Select Pr</option>
                                         </select>
                                     </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold"> REMARKS </label>
+                                        <textarea class="form-control" id="remarks" name="Remarks"></textarea>
+                                    </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
@@ -115,6 +119,9 @@
                 RMOP
             </th>
             <th>
+                REMARKS
+            </th>
+            <th>
                 Actions
             </th>
         </tr>
@@ -142,6 +149,9 @@
                     </td>
                     <td>
                         @item.Rmop
+                    </td>
+                    <td>
+                        @item.Remarks
                     </td>
                     <td>
                         <a class="btn btn-xs btn-primary btn-edit" data-id="@item.Id">
@@ -185,6 +195,7 @@
                     $("#prNoWithDate").val(data.prNoWithDate);
                     $("#canvassNoWithDate").val(data.canvassNoWithDate);
                     $("#recommendedAward").val(data.recommendedAward);
+                    $("#remarks").val(data.remarks);
                     $("#rmop").val(data.rmop);
                     $("#editAbstract").modal("show");
                 }
@@ -206,6 +217,7 @@
                 CanvassNoWithDate: $("#canvassNoWithDate").val(),
                 RecommendedAward: $("#recommendedAward").val(),
                 Rmop: $("#rmop").val(),
+                Remarks: $("#remarks").val(),
 
             };
 

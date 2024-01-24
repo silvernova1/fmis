@@ -72,8 +72,8 @@ namespace fmis
             services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
             services.AddTransient<EmailService>();
             services.Configure<SmtpSettings>(Configuration.GetSection("SmtpSettings"));
-            services.AddCors();
-            services.AddRazorPages();
+			services.AddCors();
+			services.AddRazorPages();
             services.AddControllersWithViews()
                 .AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
@@ -219,12 +219,15 @@ namespace fmis
                 options.UseSqlServer(Configuration.GetConnectionString("InOfPayDeductionContext")));
             services.AddDbContext<SectionsContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("SectionsContext")));
-            #endregion
+			#endregion
 
 
 
-            services.AddSignalR();
-            services.AddControllers().AddJsonOptions(options =>
+			services.AddSignalR();
+
+			services.AddCors();
+
+			services.AddControllers().AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.PropertyNamingPolicy = null;
             });
@@ -252,9 +255,9 @@ namespace fmis
                 .AddCookie("Scheme1", options =>
                 {
                     options.Cookie.Name = "Scheme1";
-                    options.LoginPath = "/Fmis/Account/Login";
-                    options.LogoutPath = "/Fmis/Account/Logout";
-                    options.AccessDeniedPath = "/Fmis/Account/NotFound";
+                    options.LoginPath = "/Account/Login";
+                    options.LogoutPath = "/Account/Logout";
+                    options.AccessDeniedPath = "/Account/NotFound";
                     options.ExpireTimeSpan = TimeSpan.FromHours(5);
                     options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
                 })
@@ -332,21 +335,21 @@ namespace fmis
             app.UseCookiePolicy();
             app.UseRouting();
 
-            app.UseAuthentication();
+			app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
+			app.UseEndpoints(endpoints =>
             {
 
-                endpoints.MapControllerRoute(
+                /*endpoints.MapControllerRoute(
                     name: "Fmis",
-                    pattern: "Fmis/{controller=Home}/{action=Index}/{id?}");
-
-                endpoints.MapControllerRoute(
+                    pattern: "Fmis/{controller=Home}/{action=Index}/{id?}");*/
+				endpoints.MapHub<PrStatus>("/updatePrHub");
+				endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
-                endpoints.MapHub<DvHub>("/dvHub");
+                //endpoints.MapHub<DvHub>("/dvHub");
             });            
         }
     }

@@ -41,6 +41,8 @@ using System.Net.NetworkInformation;
 using System.Text.RegularExpressions;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Logical;
 using DocumentFormat.OpenXml.InkML;
+using Microsoft.AspNetCore.SignalR;
+using fmis.Hubs;
 
 namespace fmis.Controllers.Procurement
 {
@@ -53,14 +55,26 @@ namespace fmis.Controllers.Procurement
         private readonly PpmpContext _ppmpContext;
         private readonly DtsContext _dts;
         private readonly IHttpContextAccessor _httpContextAccessor;
+		private readonly fmisContext _dtsContext;
+        private readonly IHubContext<PrStatus> _hubContext;
 
-        public ProcurementController(MyDbContext context, IUserService userService, PpmpContext ppmpContext, DtsContext dts, IHttpContextAccessor httpContextAccessor)
+		public ProcurementController(MyDbContext context, IUserService userService, PpmpContext ppmpContext, DtsContext dts, IHttpContextAccessor httpContextAccessor, fmisContext dtsContext, IHubContext<PrStatus> hubContext)
         {
             _context = context;
             _userService = userService;
             _ppmpContext = ppmpContext;
             _dts = dts;
             _httpContextAccessor = httpContextAccessor;
+            _dtsContext = dtsContext;
+            _hubContext = hubContext;
+
+		}
+
+        public IActionResult PrStatus(int id)
+        {
+            var active = _context.RmopAta.FirstOrDefault(x=>x.Id == id);
+
+            return Ok();
         }
 
 		[HttpGet]
@@ -78,7 +92,7 @@ namespace fmis.Controllers.Procurement
         {
             if (ModelState.IsValid)
             {
-                if (puChecklist.Prno != null)
+                if (puChecklist.Prno != 0)
                 {
                     puChecklist.PrChecklist = puChecklist.PrChecklist.Where(x => x.IsChecked).ToList();
 
@@ -462,10 +476,24 @@ namespace fmis.Controllers.Procurement
                 {
                     var userId = _context.Pr.FirstOrDefault(x=>x.Prno == model.PrNoOne).UserId;
 					model.UserId = userId;
+                    model.PrTrackingDate = DateTime.Now;
 
 					_context.Add(model);
                     _context.SaveChanges();
-                    return Json(new { success = true });
+
+					string htmlContent = $@"
+                    <div role='tabpanel' class='bs-stepper-pane fade active dstepper-block' id='rmopDate'>
+                        <div class='form-group'>
+                            <label for='inputMailForm'>{model.PrTrackingDate.ToString("MMM d, yyyy")}</label>
+                            <br />
+                            <br />
+                            <b>Remarks</b>
+                            <div class='invalid-feedback'>Sample Remarks</div>
+                        </div>
+                    </div>";
+
+					_hubContext.Clients.All.SendAsync("PrUpdateRmop", model.PrNoOne, htmlContent);
+					return Json(new { success = true });
                 }
             }
             return Json(new { success = false });
@@ -741,10 +769,23 @@ namespace fmis.Controllers.Procurement
             {
                 if (!String.IsNullOrEmpty(model.RpqNo))
                 {
+                    model.PrTrackingDate = DateTime.Now;
                     _context.Canvass.Add(model);
                     _context.SaveChanges();
 
-                    return Json(new { success = true });
+					string htmlContent = $@"
+                    <div role='tabpanel' class='bs-stepper-pane fade active dstepper-block'>
+                        <div class='form-group' id='rmopDiv'>
+                            <label for='inputMailForm'>{model?.SubmissionDate.ToString("MMM d, yyyy")}</label>
+                            <br />
+                            <br />
+                            <b>Remarks</b>
+                            <div class='invalid-feedback'>{model?.Remarks}</div>
+                        </div>
+                    </div>";
+
+					_hubContext.Clients.All.SendAsync("PrUpdateCanvass", model.PrNo, htmlContent);
+					return Json(new { success = true });
                 }
             }
 
@@ -758,6 +799,7 @@ namespace fmis.Controllers.Procurement
             {
                 string formattedRpqDate = item.RpqDate.ToString("MMM d, yyyy");
                 string formattedPrDate = item.PrDate.ToString("MMM d, yyyy");
+                string formattedSubDate = item.SubmissionDate.ToString("MMM d, yyyy");
 
                 var result = new
                 {
@@ -765,7 +807,9 @@ namespace fmis.Controllers.Procurement
                     RpqDate = formattedRpqDate,
                     PrNo = item.PrNo,
                     PrDate = formattedPrDate,
+                    SubDate = formattedSubDate,
                     ItemDesc = item.ItemDesc,
+                    Remarks = item.Remarks,
                     Rmop = item.Rmop
                 };
 
@@ -830,12 +874,28 @@ namespace fmis.Controllers.Procurement
         {
             if(ModelState.IsValid)
             {
-                if(!String.IsNullOrEmpty(model.AbstractNo))
+				var PrNo = model.PrNoWithDate?.Split('/')[0]?.Trim();
+                model.PrNo = PrNo;
+				if (!String.IsNullOrEmpty(model.AbstractNo))
                 {
+                    model.PrTrackingDate = DateTime.Now;
                     _context.Abstract.Add(model);
                     _context.SaveChanges();
 
-                    return Json(new { success = true } );
+					string htmlContent = $@"
+                    <div role='tabpanel' class='bs-stepper-pane fade active dstepper-block'>
+                        <div class='form-group'>
+                            <label for='inputMailForm'>{model?.AbstractDate.ToString("MMM d, yyyy")}</label>
+                            <br />
+                            <br />
+                            <b>Remarks</b>
+                            <div class='invalid-feedback'>{model?.Remarks}</div>
+                        </div>
+                    </div>";
+
+					_hubContext.Clients.All.SendAsync("PrUpdateAbstract", model.PrNo, htmlContent);
+
+					return Json(new { success = true } );
                 }
             }
 
@@ -856,7 +916,8 @@ namespace fmis.Controllers.Procurement
                     PrNoWithDate = item.PrNoWithDate,
                     CanvassNoWithDate = item.CanvassNoWithDate,
                     RecommendedAward = item.RecommendedAward,
-                    Rmop = item.Rmop
+                    Rmop = item.Rmop,
+                    Remarks = item.Remarks
                 };
 
                 return Json(result);
@@ -901,6 +962,16 @@ namespace fmis.Controllers.Procurement
             PrDdl();
             AbstractDropDown();
 
+
+			string year = DateTime.Now.Year.ToString();
+
+            int latestPoNo = _context.Po.Where(x => x.PoNo.StartsWith(year)).AsEnumerable().Select(x => int.Parse(x.PoNo.Substring(year.Length + 1))).DefaultIfEmpty(0).Max();
+            latestPoNo++;
+
+			string formattedPoNo = $"{year}-{latestPoNo:D4}";
+
+            ViewBag.FormattedPoNo = formattedPoNo;
+
             return View(_context.Po.ToList());
         }
 
@@ -925,11 +996,24 @@ namespace fmis.Controllers.Procurement
             {
                 if(!String.IsNullOrEmpty(model.PoNo))
                 {
+                    model.PrTrackingDate = DateTime.Now;
 
                     _context.Po.Add(model);
                     _context.SaveChanges();
 
-                    return Json(new { success = true });
+					string htmlContent = $@"
+                    <div role='tabpanel' class='bs-stepper-pane fade active dstepper-block'>
+                        <div class='form-group' id='rmopDiv'>
+                            <label for='inputMailForm'>{model?.PoDate.ToString("MMM d, yyyy")}</label>
+                            <br />
+                            <br />
+                            <b>Remarks</b>
+                            <div class='invalid-feedback'>{model?.Remarks}</div>
+                        </div>
+                    </div>";
+
+					_hubContext.Clients.All.SendAsync("PrUpdatePo", model.PrNo, htmlContent);
+					return Json(new { success = true });
                 }
             }
 
@@ -1014,7 +1098,20 @@ namespace fmis.Controllers.Procurement
                     _context.Twg.Add(model);
                     _context.SaveChanges();
 
-                    return Json(new { success = true });
+					string htmlContent = $@"
+                    <div role='tabpanel' class='bs-stepper-pane fade active dstepper-block'>
+                        <div class='form-group'>
+                            <label for='inputMailForm'>{model?.TwgDate.ToString("MMM d, yyyy")}</label>
+                            <br />
+                            <br />
+                            <b>Remarks</b>
+                            <div class='invalid-feedback'>{model?.Remarks}</div>
+                        </div>
+                    </div>";
+
+					_hubContext.Clients.All.SendAsync("PrUpdateTwg", model.Prno, htmlContent);
+
+					return Json(new { success = true });
                 }
             }
 
@@ -1036,7 +1133,8 @@ namespace fmis.Controllers.Procurement
                     Recommendation = item.Recommendation,
                     PrNo = item.Prno,
                     PrDate = formattedPrDate,
-                    ReceivedBy = item.ReceivedBy
+                    ReceivedBy = item.ReceivedBy,
+                    Remarks = item.Remarks
                 };
 
                 return Json(result);
@@ -3374,7 +3472,6 @@ namespace fmis.Controllers.Procurement
 
 
 
-        #region PRINT CHECKLIST1
         public IActionResult PrintChecklist1(string[] token, int id)
         {
             using (MemoryStream stream = new System.IO.MemoryStream())
@@ -3384,15 +3481,65 @@ namespace fmis.Controllers.Procurement
                 PdfWriter writer = PdfWriter.GetInstance(doc, stream);
                 doc.Open();
 
-              
+
 
                 doc.Close();
                 return File(stream.ToArray(), "application/pdf");
             }
         }
-        #endregion
 
-        #region LOGIN
+
+       
+        [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
+        [Route("Procurement/Users")]
+        public IActionResult PuUser()
+        {
+            ViewBag.filter = new FilterSidebar("Procurement", "Users", "");
+
+            var dtsUser = _dtsContext.users.ToList();
+            var puUser = _context.PuUser.ToList();
+
+            var viewModel = new CombineIndexFmisUser
+            {
+                Users = dtsUser,
+                PuUser = puUser,
+            };
+
+            Console.WriteLine(UserRole);
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult SavePuUsers(int userId)
+        {
+            //dohdtr.users.id = userId
+
+            var dtrUser = _dtsContext.users.FirstOrDefault(x=>x.Id == userId);
+
+            if(dtrUser != null)
+            {
+                var puUser = new PuUser
+                {
+                    UserId = dtrUser.UserId,
+                    Username = dtrUser.Username,
+                    Password = dtrUser.Password,
+                    Email = dtrUser.Email,
+                    Fname = dtrUser.Fname,
+                    Lname = dtrUser.Lname,
+                };
+
+                _context.PuUser.Add(puUser);
+                _context.SaveChanges();
+
+                return Json(new { success = true });
+            }
+
+            return Json(new { success = false });
+
+        }
+     
+
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Login()
@@ -3401,14 +3548,8 @@ namespace fmis.Controllers.Procurement
 
             if (isAuthenticated)
             {
-                switch (User.FindFirstValue(ClaimTypes.Role))
-                {
-                    case "pu_admin":
-                        return RedirectToAction("Checklist1", "Procurement");
-                    default:
-                        return RedirectToAction("Dashboard", "Home");
-                }
-            }
+				return RedirectToAction("Checklist1", "Procurement");
+			}
             else
             {
                 return View();
@@ -3421,33 +3562,37 @@ namespace fmis.Controllers.Procurement
         {
             if (ModelState.IsValid)
             {
-                var user = await _userService.ValidateUserCredentialsAsync(model.Username, model.Password);
-                if (user is not null)
+                var (user, errorMessage) = await _userService.ValidatePuUserCredentialsAsync(model.Username, model.Password);
+
+                if (user != null)
                 {
-                    user.Year = model.Year.ToString();
                     await LoginAsync(user, model.RememberMe);
 
-
-                    if (user.Username == "hr_admin")
-                    {
-                        return RedirectToAction("Checklist1", "Procurement");
-                    }
-                    else
-                    {
-                        return NotFound();
-                    }
+                    return RedirectToAction("Checklist1", "Procurement");
                 }
                 else
                 {
-                    ModelState.AddModelError("Username", "Username or Password is Incorrect");
+                    if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        ModelState.AddModelError("Validation", errorMessage);
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("User", "User not found in the database or invalid password");
+                    }
+
+                    return View(model);
                 }
 
+                // Additional logic for handling successful login if needed
             }
+
+            ModelState.AddModelError("Username", "Username or Password is Incorrect");
             return View(model);
         }
-        #endregion
+   
 
-        #region LOGOUT
+
         [HttpGet]
         public async Task<IActionResult> Logout(string returnUrl)
         {
@@ -3455,13 +3600,14 @@ namespace fmis.Controllers.Procurement
 
             return await Logout();
         }
+
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync("Scheme4");
             return RedirectToAction("Login", "Procurement");
         }
-        #endregion
+
 
         #region NOT FOUND
         public new IActionResult NotFound()
@@ -3471,7 +3617,7 @@ namespace fmis.Controllers.Procurement
         #endregion
 
         #region HELPERS
-        private async Task LoginAsync(FmisUser user, bool rememberMe)
+        private async Task LoginAsync(PuUser user, bool rememberMe)
         {
             var properties = new AuthenticationProperties
             {
@@ -3483,10 +3629,10 @@ namespace fmis.Controllers.Procurement
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, user.Username.Equals("hr_admin") ? "pu_admin" : null),
                 new Claim(ClaimTypes.GivenName, user.Fname),
                 new Claim(ClaimTypes.Surname, user.Lname),
             };
+            claims.Add(new Claim(ClaimTypes.Role, "pu_admin"));
 
             var identity1 = new ClaimsIdentity(claims, "Scheme4");
             var principal1 = new ClaimsPrincipal(identity1);
@@ -3497,6 +3643,7 @@ namespace fmis.Controllers.Procurement
 
 		#region COOKIES
 		public string UserId { get { return User.FindFirstValue(ClaimTypes.Name); } }
+		public string UserRole { get { return User.FindFirstValue(ClaimTypes.Role); } }
 		#endregion
 
 

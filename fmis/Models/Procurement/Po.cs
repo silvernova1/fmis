@@ -25,5 +25,7 @@ namespace fmis.Models.Procurement
         public string Rmop { get; set; }
 
         public string Remarks { get; set; }
-    }
+
+		public DateTime PrTrackingDate { get; set; }
+	}
 }
