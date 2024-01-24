@@ -583,6 +583,23 @@ namespace fmis.Controllers.Procurement
 
             return View(_context.RmopPb.ToList());
         }
+
+
+        //RMOP PUBLIC BIDDING INFRA
+        #region
+        [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
+        public IActionResult PublicBiddingInfra()
+        {
+            ViewBag.filter = new FilterSidebar("Procurement", "Rmop", "PbInfra");
+            BacResNoDownList();
+            PrDdl();
+
+
+            return View(_context.RmopPb.ToList());
+        }
+        #endregion
+
+
         public IActionResult SaveRmopPb(RmopPb model)
         {
             if (ModelState.IsValid)
@@ -775,6 +792,15 @@ namespace fmis.Controllers.Procurement
             return Json(new { success = false });
         }
         #endregion
+
+        [HttpGet]
+        public IActionResult ReCanvassAdditional()
+        {
+            // You can pass any necessary model or data to the partial view
+            return PartialView("ReCanvassAdditional");
+        }
+
+
 
         //LOGBOOK CANVASS EDIT
         #region
@@ -2698,7 +2724,7 @@ namespace fmis.Controllers.Procurement
                 AddCellWithContent(nT, "                                           WHEREAS,  pursuant to Sec. 10 of the IRR, all procurement shall be done through", false, 11);
                 AddCellWithContent(nT, "                        competitive bidding, except as provided in Rule XVI;", false, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
-                AddCellWithContent(nT, "                                           WHEREAS,  corollary  thereto,  Purchase  Request  No. " + rmopPb.PrNoOne,  false, 11);
+                AddCellWithContent(nT, "                                           WHEREAS,  corollary  thereto,  Purchase  Request  No. " + rmopPb.PrNoOne, false, 11);
                 AddCellWithContent(nT, "                        for  the  Procurement  of " + rmopPb.PrDescriptionOne + "   in  the amount  of  PHP", false, 11);
                 AddCellWithContent(nT, "                        " + rmopPb.PrAmountOne + " was referred to the Bids and Awards Committee for processing;", false, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
@@ -2736,6 +2762,144 @@ namespace fmis.Controllers.Procurement
                 AddCellWithContent(nT, "                                                                       DR. JONATHAN NEIL V. ERASMO", true, 11);
                 AddCellWithContent(nT, "                                                                                            Chairperson", false, 11);
 
+                doc.Add(nT);
+
+                doc.Close();
+                return File(stream.ToArray(), "application/pdf");
+            }
+        }
+        #endregion
+
+        #region PUBLIC BIDDING INFRA
+        public IActionResult PrintPublicBiddingInfra(string[] token, int id)
+        {
+            using (MemoryStream stream = new System.IO.MemoryStream())
+            {
+                Document doc = new iTextSharp.text.Document(PageSize.LEGAL);
+                doc.SetMargins(10f, 10f, 10f, 10f);
+                PdfWriter writer = PdfWriter.GetInstance(doc, stream);
+                doc.Open();
+
+                var rmopPb = _context.RmopPb.FirstOrDefault(x => x.Id == id);
+
+                string logoPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "assets", "images", "doh_logo_updated.png");
+                iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(logoPath);
+                logo.ScaleAbsolute(70f, 70f);
+
+
+                float totalWidth = doc.PageSize.Width - 50; // Adjust for 50px right margin
+                PdfPTable logoTable = new PdfPTable(1);
+                logoTable.SetTotalWidth(new float[] { totalWidth });
+
+                // Create a cell for the logo
+                PdfPCell logoCell = new PdfPCell(logo);
+                logoCell.Border = Rectangle.NO_BORDER;
+
+                // Add the cell to the table
+                logoTable.AddCell(logoCell);
+
+                // Position the table with a margin top of 50 pixels
+                logoTable.WriteSelectedRows(0, -1, 33, doc.PageSize.Height - 20, writer.DirectContent);
+                void AddContentToCell(PdfPCell cell, string content, bool isBold = false, int fontSize = 10, float yOffset = 0f)
+                {
+                    Font regularFont = new Font(Font.FontFamily.TIMES_ROMAN, fontSize, isBold ? Font.BOLD : Font.NORMAL);
+                    Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, fontSize, Font.BOLD);
+
+                    Paragraph paragraph = new Paragraph();
+                    paragraph.Alignment = Element.ALIGN_JUSTIFIED;  // Set text alignment to justified
+
+                    // Split the content into chunks based on the target strings ("WHEREAS," and "NOW THEREFORE,")
+                    string[] chunks = Regex.Split(content, "(WHEREAS,|NOW THEREFORE,)");
+
+                    for (int i = 0; i < chunks.Length; i++)
+                    {
+                        if (!string.IsNullOrEmpty(chunks[i]))
+                        {
+                            // Add the text with appropriate formatting
+                            Font chunkFont = (chunks[i].Trim() == "WHEREAS," || chunks[i].Trim() == "NOW THEREFORE,") ? boldFont : regularFont;
+                            Chunk chunk = new Chunk(chunks[i], chunkFont);
+                            paragraph.Add(chunk);
+                        }
+                    }
+
+                    paragraph.Alignment = Element.ALIGN_LEFT;
+                    paragraph.SetLeading(0, 1);
+                    paragraph.SpacingAfter = yOffset;
+
+                    cell.AddElement(paragraph);
+                }
+
+                // Method to add a cell with content (without borders)
+                void AddCellWithContent(PdfPTable table, string content, bool isBold = false, int fontSize = 10, float cellHeight = 0f)
+                {
+                    PdfPCell cell = new PdfPCell();
+                    cell.Border = Rectangle.NO_BORDER; // Remove the border
+                    cell.FixedHeight = cellHeight; // Set the height of the cell
+                    AddContentToCell(cell, content, isBold, fontSize);
+                    table.AddCell(cell);
+                }
+
+                PdfPTable nT = new PdfPTable(1);
+                nT.TotalWidth = PageSize.A4.Width - 20f; // Adjusted for margins
+                nT.LockedWidth = true;
+
+                AddCellWithContent(nT, "", false, 10, 10f);
+                AddCellWithContent(nT, "", false, 10, 10f);
+                AddCellWithContent(nT, "                                                                                        Republic Of The Philippines", false, 10);
+                AddCellWithContent(nT, "                                                                                              Department Of Health", false, 10);
+                AddCellWithContent(nT, "                                 CENTRAL VISAYAS CENTER for HEALTH DEVELOPMENT", true, 12);
+                AddCellWithContent(nT, "", false, 10, 10f);
+                AddCellWithContent(nT, "                                                         BAC RESOLUTION NO. " + "" + "-AMP s. 2023", true, 11);
+                AddCellWithContent(nT, "", false, 10, 10f);
+                AddCellWithContent(nT, "                                         “RECOMMENDING THE USE OF COMPETITIVE BIDDING (PUBLIC", true, 11);
+                AddCellWithContent(nT, "                                       BIDDING) UNDER SEC. 10 OF THE REVISED IMPLEMENTING RULES", true, 11);
+                AddCellWithContent(nT, "                                                                     AND REGULATIONS OF RA 9184.”", true, 11);
+                AddCellWithContent(nT, "               __________________________________________________________________________________________", false, 11);
+                AddCellWithContent(nT, "", false, 10, 10f);
+                AddCellWithContent(nT, "                                           WHEREAS,  pursuant to Sec. 10 of the IRR, all procurement shall be done through", false, 11);
+                AddCellWithContent(nT, "                        competitive bidding, except as provided in Rule XVI;", false, 11);
+                AddCellWithContent(nT, "", false, 10, 10f);
+                AddCellWithContent(nT, "                                           WHEREAS,  corollary  thereto,  Purchase  Request  No. " + "", false, 11);
+                AddCellWithContent(nT, "                        for  the  Procurement  of " + "" + "   in  the amount  of  PHP", false, 11);
+                AddCellWithContent(nT, "                        " + "" + " was referred to the Bids and Awards Committee for processing;", false, 11);
+                AddCellWithContent(nT, "", false, 10, 10f);
+                AddCellWithContent(nT, "                                           WHEREAS, after evaluation of  the  purchase  request  vis-à-vis  the  implementing ", false, 11);
+                AddCellWithContent(nT, "                        rules and finding no substantial ground to depart from the general rule, the BAC has  come  to  a ", false, 11);
+                AddCellWithContent(nT, "                        resolution that Competitive Bidding, as the Mode of Procurement, be adopted  for  the  purchase ", false, 11);
+                AddCellWithContent(nT, "                        request referred to in the immediately preceding clause;", false, 11);
+                AddCellWithContent(nT, "", false, 10, 10f);
+                AddCellWithContent(nT, "                                           NOW THEREFORE, above premises considered, resolved as it is hereby resolved,", false, 11);
+                AddCellWithContent(nT, "                        to recommend the use of Competitive Bidding  (Public Bidding)  under  Sec. 10 of  the  Revised", false, 11);
+                AddCellWithContent(nT, "                        Implementing Rules and Regulations of the Republic Act  No. 9184  for  Purchase  Request  No.", false, 11);
+                AddCellWithContent(nT, "                        " + "" + ", in  the  amount  of  PHP " + "" + "  for  the  Procurment  of  ", false, 11);
+                AddCellWithContent(nT, "                        " + "", false, 11);
+                AddCellWithContent(nT, "", false, 10, 10f);
+                AddCellWithContent(nT, "", false, 10, 10f);
+                AddCellWithContent(nT, "                                             " + "" + " 2023 , Cebu City, Philippines.", false, 11);
+                AddCellWithContent(nT, "", false, 10, 10f);
+                AddCellWithContent(nT, "", false, 10, 10f);
+                AddCellWithContent(nT, "", false, 10, 10f);
+                AddCellWithContent(nT, "", false, 10, 10f);
+                AddCellWithContent(nT, "", false, 10, 10f);
+                AddCellWithContent(nT, "", false, 10, 10f);
+                AddCellWithContent(nT, "             ENGR. JOEY SALAGANTIN" + "           " + "ATTY. MARISSA C. GOROSIN" + "                 " + "MR. RAMIL R. ABREA", true, 11);
+                AddCellWithContent(nT, "                     Provisional Member" + "                                   " + "Provisional Member" + "                                          " + "Member", false, 11);
+                AddCellWithContent(nT, "", false, 10, 10f);
+                AddCellWithContent(nT, "", false, 10, 10f);
+                AddCellWithContent(nT, "", false, 10, 10f);
+                AddCellWithContent(nT, "", false, 10, 10f);
+                AddCellWithContent(nT, "", false, 10, 10f);
+                AddCellWithContent(nT, "             MR. ROLDAN A. CUBILLO" + "              " + "ATTY. JO DAVID Z. BORCES" + "                 " + "DR. SOPHIA M. MANCAO", true, 11);
+                AddCellWithContent(nT, "                            Member" + "                                                " + "Provisional Member" + "                                   " + "Vice-Chairperson", false, 11);
+                AddCellWithContent(nT, "", false, 10, 10f);
+                AddCellWithContent(nT, "", false, 10, 10f);
+                AddCellWithContent(nT, "", false, 10, 10f);
+                AddCellWithContent(nT, "", false, 10, 10f);
+                AddCellWithContent(nT, "", false, 10, 10f);
+                AddCellWithContent(nT, "                                                                           DR. JONATHAN NEIL V. ERASMO", true, 11);
+                AddCellWithContent(nT, "                                                                                               Chairperson", false, 11);
+                AddCellWithContent(nT, "", false, 10, 10f);
+   
                 doc.Add(nT);
 
                 doc.Close();
@@ -2839,6 +3003,7 @@ namespace fmis.Controllers.Procurement
                 AddCellWithContent(nT, "                                                                                              Department Of Health", false, 10);
                 AddCellWithContent(nT, "                                 CENTRAL VISAYAS CENTER for HEALTH DEVELOPMENT", true, 12);
                 AddCellWithContent(nT, "", false, 10, 10f);
+
                 AddCellWithContent(nT, "                                                         BAC RESOLUTION NO. " + rmopPsdbm.BacNo + "-AMP s. 2023", true, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "                                “RECOMMENDING THE USE OF ALTERNATIVE MODE OF PROCUREMENT", true, 11);
@@ -3200,6 +3365,26 @@ namespace fmis.Controllers.Procurement
                 AddCellWithContent(nT, "                                                                                                 Director IV", false, 11);
 
                 doc.Add(nT);
+
+                doc.Close();
+                return File(stream.ToArray(), "application/pdf");
+            }
+        }
+        #endregion
+
+
+
+        #region PRINT CHECKLIST1
+        public IActionResult PrintChecklist1(string[] token, int id)
+        {
+            using (MemoryStream stream = new System.IO.MemoryStream())
+            {
+                Document doc = new iTextSharp.text.Document(PageSize.A4);
+                doc.SetMargins(10f, 10f, 10f, 10f);
+                PdfWriter writer = PdfWriter.GetInstance(doc, stream);
+                doc.Open();
+
+              
 
                 doc.Close();
                 return File(stream.ToArray(), "application/pdf");

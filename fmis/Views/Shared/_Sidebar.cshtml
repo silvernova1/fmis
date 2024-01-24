@@ -1248,7 +1248,7 @@
 ">
                 <a href="#" class="dropdown-toggle">
                     <i class="menu-icon fa fa-hashtag"></i>
-                    <span class="menu-text"> BAC RES NO. </span>
+                    <span class="menu-text"> RMOP NO. </span>
                     <b class="arrow fa fa-angle-down"></b>
                 </a>
 
@@ -1359,10 +1359,24 @@
 ">
                         <a asp-controller="Procurement" asp-action="PublicBidding">
                             <i class="menu-icon fa fa-arrow-right blue"></i>
-                            PB (GOODS AND EQUIPMENT)
+                            PULIC BIDDING <br> (GOODS AND EQUIPMENT)
                         </a>
                         <b class="arrow"></b>
                     </li>
+
+                    <li class="@if (ViewBag.filter.sub2 == "PbInfra")
+                     @Html.Raw("active")
+
+
+">
+                        <a asp-controller="Procurement" asp-action="PublicBiddingInfra">
+                            <i class="menu-icon fa fa-arrow-right blue"></i>
+                            PULIC BIDDING <br> (INFRA)
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+
+
                     <li class="@if (ViewBag.filter.sub2 == "PsDbm")
                      @Html.Raw("active")
 
@@ -1400,6 +1414,7 @@
                         </a>
                         <b class="arrow"></b>
                     </li>
+
 
                 </ul>
             </li>
@@ -1512,7 +1527,7 @@
                 </ul>
             </li>
 
-            <li class="@if (ViewBag.filter.sub == "Index")
+           @*  <li class="@if (ViewBag.filter.sub == "Index")
                     @Html.Raw("active open")
 
 
@@ -1541,7 +1556,7 @@
                 </ul>
 
 
-            </li>
+            </li> *@
         }
 
 

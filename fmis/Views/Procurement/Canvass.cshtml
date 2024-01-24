@@ -9,12 +9,16 @@
     .ui-datepicker {
         width: 250px !important;
     }
+
+
 </style>
 
 <h3 class="grey lighter smaller">
     CANVASS
 </h3>
 <hr>
+
+
 
 <div class="col-xs-12">
     <div id="editModal" class="modal fade" style="display: none;">
@@ -93,7 +97,7 @@
 </p>
 <h1 style="margin-left : 200px; font-weight:bold;">2023 CANVASS LOG BOOK</h1>
 
-<table class="table table-hover" style="width: 900px">
+<table class="table table-hover" style="width: 1300px">
     <thead>
         <tr>
             <th>
@@ -116,6 +120,9 @@
             </th>
             <th>
                 ACTIONS
+            </th>
+            <th>
+                STATUS
             </th>
         </tr>
     </thead>
@@ -145,7 +152,16 @@
                     </td>
                     <td>
                         <a class="btn btn-xs btn-primary btn-edit" data-id="@item.Id">
-                            <i class="ace-icon fa fa-edit"></i>Edit
+                            <i class="ace-icon fa fa-edit"></i>
+                        </a>
+                    </td>
+                    <td>
+                        @* <a id="openModalBtn" class="btn btn-xs btn-success btn-recanvass" href="#reCanvassModal" data-toggle="modal">
+                            <i class="ace-icon fa fa-exchange"></i> STATUS
+                        </a> *@
+
+                        <a class="btn btn-success btn-sm" href="#recanvass-modal" role="button" data-toggle="modal">
+                            <i class="ace-icon fa fa-exchange "></i>STATUS
                         </a>
                     </td>
 
@@ -166,12 +182,33 @@
 </table>
 
 @await Html.PartialAsync("_AddCanvass")
-
-
-
+@await Html.PartialAsync("ReCanvassAdditional")
 
 <script>
     var itemId;
+
+    $(document).ready(function () {
+        // Attach click event to the button
+        $("#openModalBtn").on("click", function () {
+            // Make an AJAX call to retrieve data
+            $.ajax({
+             
+                url: '@Url.Action("ReCanvassAdditional", "Procurement")',
+                type: "GET",
+                success: function (data) {
+                    // Update the modal-body with the received data
+                    $("#reCanvassModal .modal-body").html(data);
+                    // Show the modal
+                    $("#reCanvassModal").modal("show");
+                },
+                error: function () {
+                    alert("Error fetching data.");
+                }
+            });
+        });
+    });
+
+
     $(document).ready(function () {
 
         $("#prNo").change(function () {
@@ -207,6 +244,11 @@
                 }
             });
         });
+
+
+        //RECANVASS
+
+
 
         $("#rpqDate").datepicker({
             dateFormat: "MM d, yy"
