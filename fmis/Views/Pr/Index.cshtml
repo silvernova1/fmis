@@ -20,7 +20,8 @@
 	.td-height {
 		height: 20px;
 	}
-		.pr-no-link {
+
+	.pr-no-link {
 		cursor: pointer;
 	}
 
@@ -63,10 +64,12 @@
 					<th>PR Number</th>
 					<th>
 						<i class="ace-icon fa fa-calendar bigger-110 hidden-480"></i>
-						Pr Date</th>
+						Pr Date
+					</th>
 					<th>
 						<i class="ace-icon fa fa-money bigger-110 hidden-480"></i>
-						Grand Total</th>
+						Grand Total
+					</th>
 					<th>
 						Purpose
 					</th>
@@ -76,11 +79,12 @@
 					</th>
 					<th>
 						<i class="ace-icon fa fa-user bigger-110 hidden-480"></i>
-						Requested by</th>
+						Requested by
+					</th>
 					@* <th>
-						<i class="ace-icon fa fa-check-square-o bigger-110 hidden-480"></i>
-						Status
-					</th> *@
+				<i class="ace-icon fa fa-check-square-o bigger-110 hidden-480"></i>
+				Status
+				</th> *@
 					<th>
 						ACTIONS
 					</th>
@@ -202,126 +206,126 @@
 										</div>
 
 										<div class="bs-stepper-content custom-stepper-content">
-												@if(rmop != null)
-												{
+											@if (rmop != null)
+											{
 												<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block rmop-date" data-prno="@items.Prno">
-														<div class="form-group">
-															<label for="inputMailForm">@rmop?.PrTrackingDate.ToString("MMM d, yyyy")</label>
-															<br />
+													<div class="form-group">
+														<label for="inputMailForm">@rmop?.PrTrackingDate.ToString("MMM d, yyyy")</label>
 														<br />
-															<b>Remarks</b>
+														<br />
+														<b>Remarks</b>
 														<div class="invalid-feedback">Sample Remarks</div>
-														</div>
 													</div>
-												}
-												else
-												{
+												</div>
+											}
+											else
+											{
 												<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block rmop-date" data-prno="@items.Prno">
-														<div class="form-group">
-															<label for="inputMailForm"></label>
-															<br />
+													<div class="form-group">
+														<label for="inputMailForm"></label>
 														<br />
-															<b></b>
-															<div class="invalid-feedback"></div>
-														</div>
-													</div>
-												}
-												@if (canvass != null)
-												{
-													<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block canvass-date" data-prno="@items.Prno">
-														<div class="form-group">
-															<label for="inputMailForm">@canvass?.SubmissionDate.ToString("MMM d, yyyy")</label>
-															<br />
-															<br />
-															<b>Remarks</b>
-															<div class="invalid-feedback">@canvass?.Remarks</div>
-														</div>
-													</div>
-												}
-												else
-												{
-													<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block canvass-date" data-prno="@items.Prno">
-														<div class="form-group">
-															<label for="inputMailForm"></label>
-															<br />
 														<br />
-															<b></b>
-															<div class="invalid-feedback"></div>
-														</div>
+														<b></b>
+														<div class="invalid-feedback"></div>
 													</div>
-												}
-												@if (twg != null)
-												{
-													<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block twg-date" data-prno="@items.Prno">
-														<div class="form-group">
-															<label for="inputMailForm">@twg?.TwgDate.ToString("MMM d, yyyy")</label>
-															<br />
+												</div>
+											}
+											@if (canvass != null)
+											{
+												<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block canvass-date" data-prno="@items.Prno">
+													<div class="form-group">
+														<label for="inputMailForm">@canvass?.SubmissionDate.ToString("MMM d, yyyy")</label>
 														<br />
-															<b>Remarks</b>
-															<div class="invalid-feedback">@twg?.Remarks</div>
-														</div>
+														<br />
+														<b>Remarks</b>
+														<div class="invalid-feedback">@canvass?.Remarks</div>
 													</div>
-												}
-												else
-												{
+												</div>
+											}
+											else
+											{
+												<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block canvass-date" data-prno="@items.Prno">
+													<div class="form-group">
+														<label for="inputMailForm"></label>
+														<br />
+														<br />
+														<b></b>
+														<div class="invalid-feedback"></div>
+													</div>
+												</div>
+											}
+											@if (twg != null)
+											{
 												<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block twg-date" data-prno="@items.Prno">
-														<div class="form-group">
-															<label for="inputMailForm"></label>
-															<br />
+													<div class="form-group">
+														<label for="inputMailForm">@twg?.TwgDate.ToString("MMM d, yyyy")</label>
 														<br />
-															<b></b>
-															<div class="invalid-feedback"></div>
-														</div>
+														<br />
+														<b>Remarks</b>
+														<div class="invalid-feedback">@twg?.Remarks</div>
 													</div>
-												}
-												@if (abstractNo != null)
-												{
-													<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block abstractNo-date" data-prno="@items.Prno">
-														<div class="form-group">
-															<label for="inputMailForm">@abstractNo?.AbstractDate.ToString("MMM d, yyyy")</label>
-															<br />
-															<br />
-															<b>Remarks</b>
-															<div class="invalid-feedback">@abstractNo?.Remarks</div>
-														</div>
+												</div>
+											}
+											else
+											{
+												<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block twg-date" data-prno="@items.Prno">
+													<div class="form-group">
+														<label for="inputMailForm"></label>
+														<br />
+														<br />
+														<b></b>
+														<div class="invalid-feedback"></div>
 													</div>
-												}
-												else
-												{
-													<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block abstractNo-date" data-prno="@items.Prno">
-														<div class="form-group">
-															<label for="inputMailForm"></label>
-															<br />
-															<br />
-															<b></b>
-															<div class="invalid-feedback"></div>
-														</div>
+												</div>
+											}
+											@if (abstractNo != null)
+											{
+												<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block abstractNo-date" data-prno="@items.Prno">
+													<div class="form-group">
+														<label for="inputMailForm">@abstractNo?.AbstractDate.ToString("MMM d, yyyy")</label>
+														<br />
+														<br />
+														<b>Remarks</b>
+														<div class="invalid-feedback">@abstractNo?.Remarks</div>
 													</div>
-												}
-												@if (po != null)
-												{
-													<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block po-date" data-prno="@items.Prno">
-														<div class="form-group">
-															<label for="inputMailForm">@po?.PoDate.ToString("MMM d, yyyy")</label>
-															<br />
-															<br />
-															<b>Remarks</b>
-															<div class="invalid-feedback">@po?.Remarks</div>
-														</div>
+												</div>
+											}
+											else
+											{
+												<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block abstractNo-date" data-prno="@items.Prno">
+													<div class="form-group">
+														<label for="inputMailForm"></label>
+														<br />
+														<br />
+														<b></b>
+														<div class="invalid-feedback"></div>
 													</div>
-												}
-												else
-												{
-													<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block po-date" data-prno="@items.Prno">
-														<div class="form-group">
-															<label for="inputMailForm"></label>
-															<br />
-															<br />
-															<b></b>
-															<div class="invalid-feedback"></div>
-														</div>
+												</div>
+											}
+											@if (po != null)
+											{
+												<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block po-date" data-prno="@items.Prno">
+													<div class="form-group">
+														<label for="inputMailForm">@po?.PoDate.ToString("MMM d, yyyy")</label>
+														<br />
+														<br />
+														<b>Remarks</b>
+														<div class="invalid-feedback">@po?.Remarks</div>
 													</div>
-												}
+												</div>
+											}
+											else
+											{
+												<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block po-date" data-prno="@items.Prno">
+													<div class="form-group">
+														<label for="inputMailForm"></label>
+														<br />
+														<br />
+														<b></b>
+														<div class="invalid-feedback"></div>
+													</div>
+												</div>
+											}
 										</div>
 									</div>
 								</div>
@@ -427,7 +431,7 @@ else
 												<td colspan="2"><b>Estimated Cost</b></td>
 											</tr>
 										</thead>
-										<tbody class="input_fields_wrap">
+										<tbody>
 											@if (items.PrItems != null)
 											{
 
@@ -624,7 +628,7 @@ else
 									<tbody class="input_fields_wrap">
 										<tr>
 											<td id="border-bottom">
-												<select id="expenses" asp-items="ViewBag.ExpenseId" style="width: 200px; height: 37px">
+												<select id="expenseSelect" asp-items="ViewBag.ExpenseId" style="width: 200px; height: 37px">
 													<option value="">Select Expense</option>
 												</select>
 											</td>
@@ -662,15 +666,14 @@ else
 											<td id="border-top"></td>
 											<td id="border-top"></td>
 											<td id="border-top" colspan="2"></td>
-											<td id="border-top"><button onclick="add();">Add new</button></td>
+											<td id="border-top"><button type="button" onclick="add();">Add new</button></td>
 										</tr>
 									</tbody>
 									<tfoot>
 										<tr>
 											<td colspan="6"><b style="float: right">GRAND TOTAL</b></td>
 											<td class="align-top">
-												<input type="hidden" name="amount" id="amount" autocomplete="off">
-												<strong style="color: red;"></strong><strong style="color:red" id="total"></strong>
+												<input type="text" name="amount" id="grandTotal" autocomplete="off">
 											</td>
 										</tr>
 										<tr>
@@ -745,19 +748,16 @@ else
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="~/js/signalr/signalr.js"></script>
 <script src="~/js/prStatus.js"></script>
-<script>
 
+<script>
 	$(document).ready(function () {
 		$('.select2basic').select2();
-	});
-
-	$(document).ready(function () {
 		$("#items").on("change", function () {
 			var selectedValue = $(this).val();
 
 			$.ajax({
 				type: "GET",
-				url: '@Url.Action("GetUnit","Pr")',
+				url: '@Url.Action("GetUnit", "Pr")',
 				data: { id: selectedValue },
 				success: function (response) {
 					$("#unit").val(response);
@@ -768,7 +768,7 @@ else
 
 			$.ajax({
 				type: "GET",
-				url: '@Url.Action("GetUnitCost","Pr")',
+				url: '@Url.Action("GetUnitCost", "Pr")',
 				data: { id: selectedValue },
 				success: function (response) {
 					$("#unitCost").val(response);
@@ -802,12 +802,12 @@ else
 
 	//items
 	$(document).ready(function () {
-		$("#expenses").change(function () {
+		$("#expenseSelect").change(function () {
 			var selectedExpenseId = $(this).val();
 			if (selectedExpenseId !== "") {
 				$.ajax({
 					type: "GET",
-					url: '@Url.Action("GetItemsId","Pr")',
+					url: '@Url.Action("GetItemsId", "Pr")',
 					data: { expenseId: selectedExpenseId },
 					success: function (data) {
 						$("#items").empty();
@@ -830,7 +830,8 @@ else
 	function add() {
 		rowIndex++; // Increment the index
 
-		const newRow = document.querySelector('.input_fields_wrap tr:first-child').cloneNode(true);
+		const originalRow = document.querySelector('.input_fields_wrap tr:first-child');
+		const newRow = originalRow.cloneNode(true);
 
 		const inputs = newRow.querySelectorAll('input, select');
 		inputs.forEach(input => {
@@ -839,15 +840,50 @@ else
 			// Update IDs and names of inputs to include the new index
 			const id = input.getAttribute('id');
 			const name = input.getAttribute('name');
-			if (id) input.setAttribute('id', id.replace('[0]', `[${rowIndex}]`));
-			if (name) input.setAttribute('name', name.replace('[0]', `[${rowIndex}]`));
+			if (id) input.setAttribute('id', id.replace(/\[0\]/g, `[${rowIndex}]`));
+			if (name) input.setAttribute('name', name.replace(/\[0\]/g, `[${rowIndex}]`));
 		});
 
-		const selectedExpenseId = newRow.querySelector('#expenses').value;
-		if (selectedExpenseId !== "") {
+		const qtyInput = newRow.querySelector('#qty');
+		const unitInput = newRow.querySelector('#unit');
+		const estimatedCostInput = newRow.querySelector('#estimated_cost');
+		const unitCostInput = newRow.querySelector('#unitCost');
+		if (qtyInput && unitInput && estimatedCostInput && unitCostInput) {
+			qtyInput.setAttribute('id', `qty_${rowIndex}`);
+			qtyInput.setAttribute('name', `PrItems[${rowIndex}].Qty`);
+
+			unitInput.addEventListener('input', updateEstimatedCost);
+			qtyInput.addEventListener('input', updateEstimatedCost);
+
+			unitCostInput.setAttribute('id', `unitCost_${rowIndex}`);
+			unitCostInput.setAttribute('name', `PrItems[${rowIndex}].UnitCost`);
+
+			unitCostInput.addEventListener('input', updateEstimatedCost);
+
+			function updateEstimatedCost() {
+				const qty = parseFloat(qtyInput.value) || 0;
+				const unitCost = parseFloat(unitCostInput.value) || 0;
+				const estimatedCost = qty * unitCost;
+
+				estimatedCostInput.value = estimatedCost.toFixed(2);
+			}
+
+			estimatedCostInput.setAttribute('id', `estimated_cost_${rowIndex}`);
+			estimatedCostInput.setAttribute('name', `PrItems[${rowIndex}].EstCost`);
+			estimatedCostInput.addEventListener('input', function () {
+				// Your logic when the estimated_cost input changes
+				console.log('Estimated Cost input changed:', this.value);
+				// Add more logic as needed
+			});
+		}
+
+		const selectedExpenseSelect = newRow.querySelector('#expenseSelect');
+
+		if (selectedExpenseSelect) {
+			const selectedExpenseId = selectedExpenseSelect.value;
 			$.ajax({
 				type: "GET",
-				url: '@Url.Action("GetItemsId","Pr")',
+				url: '@Url.Action("GetItemsId", "Pr")',
 				data: { expenseId: selectedExpenseId },
 				success: function (data) {
 					const newSelect = newRow.querySelector('#items');
@@ -855,7 +891,6 @@ else
 					data.forEach(item => {
 						newSelect.innerHTML += `<option value="${item.id}">${item.description}</option>`;
 					});
-
 					const tableBody = document.querySelector('.input_fields_wrap');
 					tableBody.appendChild(newRow);
 				},
@@ -867,12 +902,12 @@ else
 			tableBody.appendChild(newRow);
 		}
 
-		newRow.querySelector('#expenses').addEventListener('change', function () {
+		newRow.querySelector('#expenseSelect').addEventListener('change', function () {
 			const selectedExpenseId = this.value;
 			if (selectedExpenseId !== "") {
 				$.ajax({
 					type: "GET",
-					url: '@Url.Action("GetItemsId","Pr")',
+					url: '@Url.Action("GetItemsId", "Pr")',
 					data: { expenseId: selectedExpenseId },
 					success: function (data) {
 						const newSelect = newRow.querySelector('#items');
@@ -889,6 +924,34 @@ else
 				newSelect.innerHTML = '<option value="">Select Item</option>';
 			}
 		});
+
+
+		if (unitInput) {
+			newRow.querySelector('#items').addEventListener('change', function () {
+				const selectedValue = this.value;
+				$.ajax({
+					type: "GET",
+					url: '@Url.Action("GetUnit", "Pr")',
+					data: { id: selectedValue },
+					success: function (response) {
+						// Update the value of #unit in the new row
+						unitInput.value = response;
+					},
+					error: function (xhr, status, error) {
+					}
+				});
+
+				$.ajax({
+					type: "GET",
+					url: '@Url.Action("GetUnitCost", "Pr")',
+					data: { id: selectedValue },
+					success: function (response) {
+						unitCostInput.value = response;
+					},
+					error: function (xhr, status, error) {
+					}
+				});
+			});
+		}
 	}
-	//
 </script>

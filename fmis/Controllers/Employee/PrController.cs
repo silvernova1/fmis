@@ -96,14 +96,21 @@ namespace fmis.Controllers.Employee
             return RedirectToAction("Index");
         }
 
+		public List<Item> GetItemsId(int expenseId)
+        {
+			return _ppmpContext.item.Where(x => x.Expense_id == expenseId).Select(x => new Item { Id = x.Id, Description = x.Description }).ToList();
+        }
+
         [HttpGet]
         public IActionResult GetUnit(int id)
         {
 
-            var item = _ppmpContext.item.Select(x=> new Item { Id = x.Id, Description = x.Description }).FirstOrDefault(i => i.Id == id);
+            var item = _ppmpContext.item.Select(x=> new Item { Id = x.Id, Unit_measurement = x.Unit_measurement }).FirstOrDefault(i => i.Id == id).Unit_measurement;
             if (item != null)
             {
-                return Ok(item.Unit_measurement);
+				var unitM = item;
+
+				return Ok(item);
             }
             return NotFound();
         }
@@ -111,10 +118,10 @@ namespace fmis.Controllers.Employee
         public IActionResult GetUnitCost(int id)
         {
 
-            var item = _ppmpContext.item.Select(x => new Item { Id = x.Id, Description = x.Description }).FirstOrDefault(i => i.Id == id);
+            var item = _ppmpContext.item.Select(x => new Item { Id = x.Id, Unit_cost = x.Unit_cost }).FirstOrDefault(i => i.Id == id).Unit_cost;
             if (item != null)
             {
-                return Ok(item.Unit_cost);
+                return Ok(item);
             }
             return NotFound();
         }
@@ -142,10 +149,6 @@ namespace fmis.Controllers.Employee
                             Fullname = x.Fname + " " + x.Lname + " " + x.Lname
                         };
             ViewBag.Approval = new SelectList(employee, "Id", "Fullname");
-        }
-        public List<Item> GetItemsId(int expenseId)
-        {
-			return _ppmpContext.item.Where(x => x.Expense_id == expenseId).Select(x => new Item { Id = x.Id, Description = x.Description }).ToList();
         }
 
 

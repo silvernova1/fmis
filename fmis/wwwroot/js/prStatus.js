@@ -1,5 +1,5 @@
 ﻿const connection = new signalR.HubConnectionBuilder()
-    .withUrl("/dummy/updatePrHub")
+    .withUrl("/updatePrHub")
     .build();
 
 connection.on("PrUpdateRmop", (prNo, htmlContent) => {
