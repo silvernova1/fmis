@@ -1,9 +1,8 @@
-﻿@model List<fmis.Models.Procurement.RmopPsDbm>
+﻿@model List<fmis.Models.Procurement.RmopPb>
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewData["Title"] = "Procurement" + " " + "(Ps-Dbm)";
+    ViewData["Title"] = "Procurement" + " " + "(PB Infra)";
 }
-
 
 <style>
 
@@ -91,7 +90,7 @@
 
 </style>
 <h3 class="grey lighter smaller">
-    RMOP PS-DBM
+    RMOP PUBLIC BIDDING (INFRA)
 </h3>
 <hr>
 <div class="container-fluid">
@@ -117,25 +116,16 @@
                     </div>
                     <br />
                     <h5 class="TimesNewRoman" style="font-weight:bold">
-                        “RECOMMENDING THE USE OF ALTERNATIVE MODE OF PROCUREMENT  <br />
-                        (PS-DBM), IF NOT AVAILBLE SHOPPING UNDER SEC. 52.1 OF THE REVISED   <br />
-                        IMPLEMENTING RULES AND REGULATIONS OF RA 9184.” <br />
+                        “RECOMMENDING THE USE OF COMPETITIVE BIDDING (PUBLIC  <br />
+                        BIDDING) UNDER SEC. 10 OF THE REVISED IMPLEMENTING RULES  <br />
+                        AND REGULATIONS OF RA 9184.” <br />
                         __________________________________________________________________________________
                     </h5>
                     <br />
                 </center>
                 <div class="justify">
-                    <h5 style="margin-left:300px;" class="TimesNewRoman"><b>WHEREAS,</b> pursuant to Sec. 48.2, in relation to Sec. 10 of the IRR, as a general rule, the  </h5>
-                    <h5 style="margin-left:245px;" class="TimesNewRoman"> Procuring Entity shall adopt competitive bidding as the general method of procurement and that alternative </h5>
-                    <h5 style="margin-left:245px;" class="TimesNewRoman"> methods of procurement shall be resorted to only in highly exceptional cases provided for in the rules;  </h5>
-                    <br />
-                    <h5 style="margin-left:300px;" class="TimesNewRoman"> <b>WHEREAS,</b> Sec. 52.1 of the IRR defines Shopping as the method of procurement of Goods </h5>
-                    <h5 style="margin-left:245px;" class="TimesNewRoman"> whereby the Procuring Entity simply requests for the submission of price quotations for readily available off-  </h5>
-                    <h5 style="margin-left:245px;" class="TimesNewRoman"> the-shelf goods or ordinary/regular equipment to be procured directly from suppliers of known qualifications </h5>
-                    <h5 style="margin-left:245px;" class="TimesNewRoman"> and shall only be employed when any of the following cases are attendant, thus: (1) <i>when there is an</i> </h5>
-                    <h5 style="margin-left:245px;" class="TimesNewRoman"> <i>unforeseen contingency requiring immediate purchase, provided, that the amount shall not exceed the </i> </h5>
-                    <h5 style="margin-left:245px;" class="TimesNewRoman"> <i>thresholds prescribed by the rules and (2) procurement of ordinary or regular office supplies and equipment  </i> </h5>
-                    <h5 style="margin-left:245px;" class="TimesNewRoman"> <i>not available in the Procurement Service involving an amount not exceeding the thresholds as prescribed;  </i> </h5>
+                    <h5 style="margin-left:300px;" class="TimesNewRoman"><b>WHEREAS,</b> pursuant to Sec. 10 of the IRR, all procurement shall be done through  </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> competitive bidding, except as provided in Rule XVI;  </h5>
                     <br />
                     <h5 style="margin-left:300px;" class="TimesNewRoman">
                         <b>WHEREAS,</b> corollary thereto, Purchase Request No.
@@ -143,26 +133,23 @@
                         <input type="hidden" name="PrNoOne" id="PrNoOneHidden" />
                         for the Procurement of
                     </h5>
-                    <input type="text" name="PrDescriptionOne" style="border: none; border-bottom: 1px solid black; text-align: center; margin-left: 245px; width: 530px; font-family: 'Times New Roman'; font-size: 14px;"> in the amount of
-                    <h5 style="margin-left:245px;" class="TimesNewRoman"> PHP <input type="text" style="border: none; border-bottom: 1px solid black; width: 80px;" name="PrAmountOne"> was referred to the Bids and Awards Committee for processing;   </h5>
+                  @*   <input type="text" name="PrDescriptionOne" style="border: none; border-bottom: 1px solid black; text-align: center; margin-left: 245px; width: 580px; font-family: 'Times New Roman'; font-size: 14px;"> *@
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> ________________________________________________________________________ in the</h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> amount of PHP <input type="text" style="border: none; border-bottom: 1px solid black; width: 80px;" name="PrAmountOne"> was referred to the Bids and Awards Committee for processing;</h5>
                     <br />
-                    <h5 style="margin-left:300px;" class="TimesNewRoman"><b>WHEREAS,</b> despite diligent efforts, the BAC found the items covered in the above-stated   </h5>
-                    <h5 style="margin-left:245px;" class="TimesNewRoman"> Purchase Request were not available in the Procurement Service – Department of Budget and Management </h5>
-                    <h5 style="margin-left:245px;" class="TimesNewRoman"> (PS-DBM);  </h5>
+                    <h5 style="margin-left:300px;" class="TimesNewRoman"> <b>WHEREAS,</b> after evaluation of the purchase request vis-à-vis the implementing  </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> rules and finding no substantial ground to depart from the general rule, the BAC has come to a    </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> resolution that Competitive Bidding, as the Mode of Procurement, be adopted for the purchase   </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> request referred to in the immediately preceding clause; </h5>
                     <br />
-                    <h5 style="margin-left:300px;" class="TimesNewRoman"><b>WHEREAS,</b> after evaluating the options provided under the rules and confirming the existence   </h5>
-                    <h5 style="margin-left:245px;" class="TimesNewRoman"> of the conditions allowing the same, the BAC has come to a resolution that resort to the Alternative Mode of  </h5>
-                    <h5 style="margin-left:245px;" class="TimesNewRoman"> Procurement: Shopping under Sec. 52.1 of the IRR would be most advantageous to the government and is   </h5>
-                    <h5 style="margin-left:245px;" class="TimesNewRoman"> essentially the most applicable recourse given the availing circumstances   </h5>
-                    <br />
-                    <h5 style="margin-left:300px;" class="TimesNewRoman"> <b>NOW THEREFORE,</b> above premises considered, resolved as it is hereby resolved, to  </h5>
-                    <h5 style="margin-left:245px;" class="TimesNewRoman"> recommend the use of the Alternative Mode of Procurement: Shopping under Sec. 52.1 of the Revised   </h5>
-                    <h5 style="margin-left:245px;" class="TimesNewRoman"> Implementing  Rules and Regulations of the Republic Act No. 9184 for Purchase Request No.    </h5>
+                    <h5 style="margin-left:300px;" class="TimesNewRoman"> <b>NOW THEREFORE,</b> above premises considered, resolved as it is hereby resolved, </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> to recommend the use of Competitive Bidding (Public Bidding) under Sec. 10 of the Revised  </h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"> Implementing  Rules and Regulations of the Republic Act No. 9184 for Purchase Request No.   </h5>
                     <h5 style="margin-left:245px;" class="TimesNewRoman">
                         <b id="prNoTwo" data-type="select">______ </b>
-                        <input type="hidden" name="PrNoTwo" id="PrNoTwoHidden" />, in the amount of PHP <input type="text" style="border: none; border-bottom: 1px solid black; width: 100px;" name="PrAmountTwo"> for the  Procurement of
+                        <input type="hidden" name="PrNoTwo" id="PrNoTwoHidden" />, in the amount of PHP <input type="text" style="border: none; border-bottom: 1px solid black; width: 120px;" name="PrAmountTwo"> for the  Procurement of
                     </h5>
-                    <h5 style="margin-left:245px;" class="TimesNewRoman"> <input type="text" style="border: none; border-bottom: 1px solid black; width: 580px;" name="PrDescriptionTwo"> .</h5>
+                    <h5 style="margin-left:245px;" class="TimesNewRoman"><input type="text" style="border: none; border-bottom: 1px solid black; width: 580px;" name="PrDescriptionTwo">.</h5>
                     <br />
                     @{
                         // Get the current year
@@ -174,36 +161,38 @@
                 </div>
                 <div class="grid-container">
                     <div class="grid-item" style="margin-left:150px;">
-                        <h5 class="TimesNewRoman" style="font-weight:bold; white-space: nowrap;">ATTY. MARISSA C. GOROSIN </h5>
+                        <h5 class="TimesNewRoman" style="font-weight:bold"> ENGR. JOEY SALAGANTING</h5>
                         <p class="TimesNewRoman">Provisional Member</p>
                     </div>
                     <div class="grid-item">
-                        <h5 class="TimesNewRoman" style="font-weight:bold">MR. RAMIL R. ABREA</h5>
+                        <h5 class="TimesNewRoman" style="font-weight:bold">ATTY. MARISSA C. GOROSIN</h5>
                         <p class="TimesNewRoman">Provisional Member</p>
                     </div>
                     <div class="grid-item" style="margin-right:150px;">
-                        <h5 class="TimesNewRoman" style="font-weight:bold">MR. ROLDAN A. CUBILLO</h5>
+                        <h5 class="TimesNewRoman" style="font-weight:bold">MR. RAMIL R. ABREA</h5>
                         <p class="TimesNewRoman">Member</p>
                     </div>
 
                     <div class="grid-item" style="margin-left:150px;">
+                        <h5 class="TimesNewRoman" style="font-weight:bold">MR. ROLDAN A. CUBILLO</h5>
+                        <p class="TimesNewRoman">Member </p>
+                    </div>
+
+                    <div class="grid-item">
                         <h5 class="TimesNewRoman" style="font-weight:bold">ATTY. JO DAVID Z. BORCES</h5>
                         <p class="TimesNewRoman">Member</p>
+                        <br />
+                        <br />
+                        <br />
+                        <h5 class="TimesNewRoman" style="font-weight:bold">DR. JONATHAN NEIL V. ERASMO</h5>
+                        <p class="TimesNewRoman">Chairperson</p>
+                        <br />
+                      
                     </div>
-                    <div class="grid-item">
+
+                    <div class="grid-item" style="margin-right:150px;">
                         <h5 class="TimesNewRoman" style="font-weight:bold">DR. SOPHIA M. MANCAO</h5>
                         <p class="TimesNewRoman">Vice-Chairperson</p>
-                        <br />
-                        <br />
-                        <br />
-                        <h5 class="TimesNewRoman" style="margin-right:300px;">Approved:</h5>
-                        <br />
-                        <h5 class="TimesNewRoman" style="font-weight:bold">JAIME S. BERNADAS, MD, MGM, CESO III</h5>
-                        <p class="TimesNewRoman">Director IV</p>
-                    </div>
-                    <div class="grid-item" style="margin-right:150px;">
-                        <h5 class="TimesNewRoman" style="font-weight:bold; white-space: nowrap;">DR. JONATHAN NEIL V. ERASMO</h5>
-                        <p class="TimesNewRoman">Chairperson</p>
                     </div>
                 </div>
                 <br />
@@ -234,7 +223,7 @@
                                     <td>@item.PrNoOne</td>
                                     <td>@item.PrAmountOne.ToString("##,#00.00")</td>
                                     <td>
-                                        <a class="btn btn-xs btn-success" target="_blank" href="@Url.Action("PrintPsDbm","Procurement",new { id = @item.Id })" data-bs-toggle="print" title="Print">
+                                        <a class="btn btn-xs btn-success" target="_blank" href="@Url.Action("PrintPublicBiddingInfra","Procurement",new { id = @item.Id })" data-bs-toggle="print" title="Print">
                                             <i class="ace-icon fa fa-file-pdf-o"></i>
                                         </a>
                                     </td>
@@ -259,6 +248,7 @@
         </div>
     </div>
 </div>
+
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
@@ -301,18 +291,14 @@
             e.preventDefault();
 
             $.ajax({
-                url: '@Url.Action("SaveRmopPsDbm", "Procurement")',
+                url: '@Url.Action("SaveRmopPb", "Procurement")',
                 type: 'POST',
                 data: $(this).serialize(),
                 success: function (result) {
-                    //var form = $(this);
-                    //var action = form.attr('action');
-                    //var data = form.serialize();
-
                     if (result.success) {
                         Lobibox.notify('success', {
                             title: 'Success',
-                            msg: 'RMOP PS-DBM saved successfully.'
+                            msg: 'RMOP DIRECT CONTRACTING (DRUGS AND MEDS) saved successfully.'
                         });
                         setTimeout(function () {
                             location.reload();

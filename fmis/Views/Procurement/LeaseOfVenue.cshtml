@@ -161,7 +161,11 @@
                     </h5>
                     <h5 style="margin-left:245px;" class="TimesNewRoman"><input type="text" style="border: none; border-bottom: 1px solid black; width: 100px;" name="PrAmountTwo"> for the Procurement of <input type="text" style="border: none; border-bottom: 1px solid black; width: 340px;" name="PrDescriptionTwo"> </h5>
                     <br />
-                    <h5 style="margin-left:320px;" class="TimesNewRoman"> <input type="text" style="border: none; border-bottom: 1px solid black; width: 150px;" name="PrDate"> 2023 , Cebu City, Philippines. </h5>
+                    @{
+                        // Get the current year
+                        int currentYear = DateTime.Now.Year;
+                    }
+                    <h5 style="margin-left:320px;" class="TimesNewRoman"> <input type="text" style="border: none; border-bottom: 1px solid black; width: 120px;" name="PrDate"> @currentYear , Cebu City, Philippines. </h5>
                     <br />
                     <br />
                 </div>

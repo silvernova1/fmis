@@ -1,14 +1,14 @@
 ﻿@model List<fmis.Models.Procurement.BacResNo>
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewData["Title"] = "Procurement" + " " + "(BacResNo)";
+    ViewData["Title"] = "Procurement" + " " + "(RMOP No.)";
 }
 
 
 
 
 <h3 class="grey lighter smaller">
-    BAC RESOLUTION NO.
+    RMOP NO.
 </h3>
 <hr>
 
@@ -26,7 +26,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h3 class="smaller lighter blue no-margin">Update Bac Resolution No.</h3>
+                    <h3 class="smaller lighter blue no-margin">Edit RMOP No.</h3>
                 </div>
                 <form id="editForm">
                     <div class="modal-body">
@@ -35,7 +35,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="BacResNumber" style="font-weight:bold">BAC RES NO. </label>
+                                        <label for="BacResNumber" style="font-weight:bold">RMOP NO. </label>
                                         <input type="text" class="form-control" id="bacResNumber" name="bacResNumber" required>
                                     </div>
                                 </div>
@@ -43,7 +43,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-xs btn-primary" id="saveChanges">Update <span class="fa fa-check-square-o"></span> </button>
+                        <button type="button" class="btn btn-xs btn-primary" id="saveChanges"> <span class="fa fa-check-square-o"></span> Edit </button>
                         <a data-dismiss="modal" class="btn btn-xs btn-danger">Cancel</a>
                     </div>
                 </form>
@@ -63,7 +63,7 @@
     <thead>
         <tr>
             <th>
-                BAC RESOLUTION NO.
+                RMOP NO.
             </th>
             <th>
                 ACTIONS
@@ -81,7 +81,7 @@
                     </td>
                     <td>
                         <a class="btn btn-xs btn-primary btn-edit" data-id="@item.Id">
-                            <i class="ace-icon fa fa-edit"></i>Edit
+                            <i class="ace-icon "></i><span class="fa fa-check-square-o"></span> Edit
                         </a>
                     </td>
                 </tr>
