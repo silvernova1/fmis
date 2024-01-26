@@ -28,7 +28,7 @@
                         <br />
                         <br />
                         <select class="form-control users" style="width: 100%;" name="userId">
-                            @foreach(var user in Model.Users)
+                            @foreach (var user in Model.Users.Where(x => !ViewBag.userId.Contains(x.Id.ToString())))
                             {
                                 <option value="@user.Id">@user.Fname, @user.Lname</option>
                             }
@@ -95,12 +95,12 @@
                         }
                     </td>
                     <td>
-                        <a class="btn btn-xs btn-danger" href="@Url.Action("DeleteUser","IndexOfPayment",new { id = @item.Id })"
-                           onclick=" if (confirm('Are you sure you want to delete this into the database?')) {
-                                          // Save it!
-                                         Lobibox.notify('error', {
-                                               title: 'Deleted',
-                                                msg: 'Fund Code Successfully Deleted!',
+                        <a class="btn btn-xs btn-danger" href="@Url.Action("DeletePuUser","Procurement",new { id = @item.Id })"
+                           onclick=" if (confirm('Are you sure you want this to delete this user?')) {
+                                         Lobibox.notify('success', {
+                                               title: 'Success',
+                                               msg: 'User deleted successfully.',
+                                               sound: false
                                         });
                                         }
                                             else

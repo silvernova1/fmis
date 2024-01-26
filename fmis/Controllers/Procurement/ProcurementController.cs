@@ -3560,26 +3560,32 @@ namespace fmis.Controllers.Procurement
         #region PU USERS
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         [Route("Procurement/Users")]
-        public IActionResult PuUser()
+        public async Task<IActionResult> PuUser(string selectedEmployee)
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Users", "");
 
-            var dtsUser = _dtsContext.users.ToList();
-            var puUser = _context.PuUser.ToList();
+            var user = UserRole;
+
+            var users = _dtsContext.users
+                .Where(u => string.IsNullOrEmpty(selectedEmployee) || u.Username.Contains(selectedEmployee) || u.Email.Contains(selectedEmployee))
+            .OrderBy(x => x.Fname)
+                .ToList();
+
+            var puUser = await _context.PuUser.ToListAsync();
 
             var viewModel = new CombineIndexFmisUser
             {
-                Users = dtsUser,
-                PuUser = puUser,
+                Users = users,
+                PuUser = puUser
             };
 
-            Console.WriteLine(UserRole);
+            ViewBag.userId = _context.PuUser.Select(x => x.UserId).ToList();
 
             return View(viewModel);
         }
         #endregion
 
-        #region SAVE PU USERS
+        #region SAVE AND DELETE PU USERS
         [HttpPost]
         public IActionResult SavePuUsers(int userId)
         {
@@ -3591,7 +3597,7 @@ namespace fmis.Controllers.Procurement
             {
                 var puUser = new PuUser
                 {
-                    UserId = dtrUser.UserId,
+                    UserId = dtrUser.Id.ToString(),
                     Username = dtrUser.Username,
                     Password = dtrUser.Password,
                     Email = dtrUser.Email,
@@ -3609,6 +3615,21 @@ namespace fmis.Controllers.Procurement
             return Json(new { success = false });
 
         }
+
+
+        public async Task<IActionResult> DeletePuUser(int id)
+        {
+            var puUser = _context.PuUser.FirstOrDefault(x=>x.Id == id);
+
+            _context.Remove(puUser);
+            await _context.SaveChangesAsync();
+
+            await Task.Delay(2000);
+
+            return RedirectToAction("PuUser");
+        }
+
+
         #endregion
 
         #region LOGIN
