@@ -11,20 +11,15 @@ using fmis.Data.MySql;
 using fmis.Filters;
 using fmis.Models.Accounting;
 using fmis.Models.ppmp;
-
 using fmis.Services;
-
 using iTextSharp.text.pdf;
 using iTextSharp.text;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Azure;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 using System;
-
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
@@ -70,14 +65,17 @@ namespace fmis.Controllers.Procurement
 
 		}
 
+        #region PR STATUS
         public IActionResult PrStatus(int id)
         {
             var active = _context.RmopAta.FirstOrDefault(x=>x.Id == id);
 
             return Ok();
         }
+        #endregion
 
-		[HttpGet]
+        #region GET CHECKLIST
+        [HttpGet]
 		public IActionResult GetChecklist(int id)
 		{
 			var prChecklist = _context.PuChecklist
@@ -87,8 +85,10 @@ namespace fmis.Controllers.Procurement
 
 			return Json(prChecklist);
 		}
+        #endregion
 
-		public IActionResult SaveChecklist(PuChecklist puChecklist)
+        #region SAVE CHECKLIST
+        public IActionResult SaveChecklist(PuChecklist puChecklist)
         {
             if (ModelState.IsValid)
             {
@@ -113,10 +113,9 @@ namespace fmis.Controllers.Procurement
 
             return Json(new { success = false } );
         }
+        #endregion
 
-
-        //INDEX
-        #region
+        #region INDEX
         public IActionResult Index()
         {
 
@@ -124,9 +123,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-
-        //CHECKLIST1
-        #region
+        #region CHECKLIST1
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult Checklist1()
         {
@@ -137,8 +134,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-        //CHECKLIST2
-        #region
+        #region CHECKLIST2
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult Checklist2()
         {
@@ -149,8 +145,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-        //CHECKLIST3
-        #region
+        #region CHECKLIST3
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult Checklist3()
         {
@@ -161,8 +156,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-        //CHECKLIST4
-        #region
+        #region CHECKLIST4
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult Checklist4()
         {
@@ -173,8 +167,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-        //CHECKLIST5
-        #region
+        #region CHECKLIST5
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult Checklist5()
         {
@@ -185,8 +178,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-        //CHECKLIST6
-        #region
+        #region CHECKLIST6
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult Checklist6()
         {
@@ -197,8 +189,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-        //CHECKLIST7
-        #region
+        #region CHECKLIST7
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult Checklist7()
         {
@@ -209,8 +200,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-        //CHECKLIST8
-        #region
+        #region CHECKLIST8
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult Checklist8()
         {
@@ -221,8 +211,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-        //CHECKLIST9
-        #region
+        #region CHECKLIST9
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult Checklist9()
         {
@@ -233,8 +222,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-        //CHECKLIST10
-        #region
+        #region CHECKLIST10
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult Checklist10()
         {
@@ -245,8 +233,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-        //CHECKLIST11
-        #region
+        #region CHECKLIST11
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult Checklist11()
         {
@@ -257,8 +244,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-        //CHECKLIST12
-        #region
+        #region CHECKLIST12
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult Checklist12()
         {
@@ -269,8 +255,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-        //CHECKLIST13
-        #region
+        #region CHECKLIST13
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult Checklist13()
         {
@@ -281,8 +266,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-        //CHECKLIST14
-        #region
+        #region CHECKLIST14
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult Checklist14()
         {
@@ -293,8 +277,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-        //CHECKLIST15
-        #region
+        #region CHECKLIST15
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult Checklist15()
         {
@@ -305,8 +288,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-        //CHECKLIST16
-        #region
+        #region CHECKLIST16
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult Checklist16()
         {
@@ -317,8 +299,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-        //CHECKLIST17
-        #region
+        #region CHECKLIST17
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult Checklist17()
         {
@@ -329,8 +310,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-        //CHECKLIST18
-        #region
+        #region CHECKLIST18
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult Checklist18()
         {
@@ -341,9 +321,40 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
+        #region CHECKLIST19
+        [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
+        public IActionResult Checklist19()
+        {
+            ViewBag.filter = new FilterSidebar("Procurement", "Checklist", "Checklist19");
 
-        //LOGBOOK BAC RES NO
-        #region
+            PrDropDownList();
+            return View();
+        }
+        #endregion
+
+        #region CHECKLIST20
+        [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
+        public IActionResult Checklist20()
+        {
+            ViewBag.filter = new FilterSidebar("Procurement", "Checklist", "Checklist20");
+
+            PrDropDownList();
+            return View();
+        }
+        #endregion
+
+        #region CHECKLIST21
+        [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
+        public IActionResult Checklist21()
+        {
+            ViewBag.filter = new FilterSidebar("Procurement", "Checklist", "Checklist21");
+
+            PrDropDownList();
+            return View();
+        }
+        #endregion
+
+        #region LOGBOOK BAC RES NO
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult BacResolutionNo()
         {
@@ -397,10 +408,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-
-
-        //RMOP SIGNATORY
-        #region
+        #region RMOP SIGNATORY
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult RmopSignatory()
         {
@@ -445,8 +453,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-        //RMOP SIGNATORY EDIT
-        #region
+        #region RMOP SIGNATORY EDIT
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult RmopSignatoryEdit()
         {
@@ -455,9 +462,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-
-        //RMOP AGENCY TO AGENCY
-        #region
+        #region RMOP AGENCY TO AGENCY
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult AgencyToAgency()
         {
@@ -501,8 +506,7 @@ namespace fmis.Controllers.Procurement
 
         #endregion
 
-        //RMOP DIRECT CONTRACTING
-        #region
+        #region RMOP DIRECT CONTRACTING
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult DirectContracting()
         {
@@ -533,9 +537,7 @@ namespace fmis.Controllers.Procurement
 
         #endregion
 
-
-        //RMOP DIRECT EMERGENCY CASES
-        #region
+        #region RMOP DIRECT EMERGENCY CASES
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult EmergencyCases()
         {
@@ -566,9 +568,7 @@ namespace fmis.Controllers.Procurement
 
         #endregion
 
-
-        //RMOP LEASE OF VENUE
-        #region
+        #region RMOP LEASE OF VENUE
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult LeaseOfVenue()
         {
@@ -599,8 +599,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-        //RMOP PUBLIC BIDDING
-        #region
+        #region RMOP PUBLIC BIDDING GOODS AND EQUIPMENT
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult PublicBidding()
         {
@@ -648,9 +647,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-
-        //RMOP PS-DBM
-        #region
+        #region RMOP PS-DBM
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult PsDbm()
         {
@@ -680,9 +677,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-
-        //RMOP SCIENTIFIC SCHOLARLY
-        #region
+        #region RMOP SCIENTIFIC SCHOLARLY
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult ScientificScholarly()
         {
@@ -714,8 +709,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-        //RMOP SMALL VALUE
-        #region
+        #region RMOP SMALL VALUE
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult SmallValue()
         {
@@ -747,8 +741,6 @@ namespace fmis.Controllers.Procurement
             return Json(new { success = false });
         }
         #endregion
-
-
 
         #region CANVASS
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
@@ -837,17 +829,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-        [HttpGet]
-        public IActionResult ReCanvassAdditional()
-        {
-            // You can pass any necessary model or data to the partial view
-            return PartialView("ReCanvassAdditional");
-        }
-
-
-
-        //LOGBOOK CANVASS EDIT
-        #region
+        #region LOGBOOK CANVASS EDIT
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult CanvassEdit()
         {
@@ -856,9 +838,16 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
+        #region RECANVASS ADDITIONAL
+        [HttpGet]
+        public IActionResult ReCanvassAdditional()
+        {
+            // You can pass any necessary model or data to the partial view
+            return PartialView("ReCanvassAdditional");
+        }
+        #endregion
 
-        //LOGBOOK ABSTRACT
-        #region
+        #region LOGBOOK ABSTRACT
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult Abstract()
         {
@@ -944,8 +933,7 @@ namespace fmis.Controllers.Procurement
 
         #endregion
 
-        //LOGBOOK ABSTRACT EDIT
-        #region
+        #region LOGBOOK ABSTRACT EDIT
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult AbstractEdit()
         {
@@ -1067,8 +1055,7 @@ namespace fmis.Controllers.Procurement
 
         #endregion
 
-        //LOGBOOK PURCHASE ORDER EDIT
-        #region
+        #region LOGBOOK PURCHASE ORDER EDIT
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult PurchaseOrderEdit()
         {
@@ -1077,8 +1064,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-        //LOGBOOK TWF
-        #region
+        #region LOGBOOK TWG
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult Twg()
         {
@@ -1162,8 +1148,7 @@ namespace fmis.Controllers.Procurement
 
         #endregion
 
-        //LOGBOOK PURCHASE ORDER EDIT
-        #region
+        #region LOGBOOK TWG EDIT
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult TwgEdit()
         {
@@ -1288,15 +1273,16 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
+        #region STEPPER
         public IActionResult Stepper()
         {
             ViewBag.Step1Status = "completed";
             ViewBag.Step2Status = "completed";
             return View();
         }
+        #endregion
 
-
-
+        #region PING IP ADDRESS
         [HttpPost]
         public async Task<IActionResult> PingIpAddress(string ipAddress)
         {
@@ -1304,7 +1290,9 @@ namespace fmis.Controllers.Procurement
 
             return Json(result);
         }
+        #endregion
 
+        #region PING IP ASYNC
         private async Task<string> PingIpAsync(string ipAddress)
         {
             using (var ping = new Ping())
@@ -1320,7 +1308,7 @@ namespace fmis.Controllers.Procurement
                 }
             }
         }
-
+        #endregion
 
         #region DROPDOWN LIST
         private void CanvassWithDate()
@@ -1420,8 +1408,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-        //PRINT
-        #region
+        #region PRINT NOA
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         public IActionResult Print()
         {
@@ -1464,6 +1451,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
+        #region SUPPLIER DROPDOWN LIST
         private void SupplierDdl()
         {
             ViewBag.Supplier = new SelectList((from supplier in _context.Supplier.ToList()
@@ -1477,9 +1465,9 @@ namespace fmis.Controllers.Procurement
                                      null);
 
         }
+        #endregion
 
-        //PRINT PU
-        #region
+        #region PRINT SUPPLIER
         public IActionResult PrintPu(int supplierValue)
         {
             var supName = _context.Supplier.FirstOrDefault(x => x.Id == supplierValue).SupplierName;
@@ -1592,8 +1580,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-        //PRINT RECOMMENDATION GOODS
-        #region
+        #region PRINT RECOMMENDATION GOODS
         public IActionResult PrintRecommendationGoods(int gasValue, DateTime dateValue)
         {
             var prNo = _context.Pr.FirstOrDefault(x => x.Id == gasValue).Prno;
@@ -1722,8 +1709,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-        //PRINT RECOMMENDATION MEDS
-        #region
+        #region PRINT RECOMMENDATION MEDS
         public IActionResult PrintRecommendationMeds(int gasValue, DateTime dateValue)
         {
             var prNo = _context.Pr.FirstOrDefault(x => x.Id == gasValue).Prno;
@@ -1851,8 +1837,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-        //PRINT TWG GOODS
-        #region
+        #region PRINT TWG GOODS
         public IActionResult PrintTWGGoods(int gasValue, DateTime dateValue)
         {
             var prNo = _context.Pr.FirstOrDefault(x => x.Id == gasValue).Prno;
@@ -1977,8 +1962,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-        //PRINT TWG GOODS
-        #region
+        #region PRINT TWG GOODS
         public IActionResult PrintTWGMeds(int gasValue, DateTime dateValue)
         {
             var prNo = _context.Pr.FirstOrDefault(x => x.Id == gasValue).Prno;
@@ -2106,8 +2090,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-        // PRINT AGENCY TO AGENCY
-        #region
+        #region PRINT AGENCY TO AGENCY
         public IActionResult PrintAgencyToAgency(string[] token, int id)
         {
             using (MemoryStream stream = new System.IO.MemoryStream())
@@ -2265,8 +2248,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-        //PRINT DIRECT CONTRACTING
-        #region
+        #region PRINT DIRECT CONTRACTING
         public IActionResult PrintDirectContracting(string[] token, int id)
         {
             using (MemoryStream stream = new System.IO.MemoryStream())
@@ -2426,8 +2408,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-        //PRINT EMERGENCY CASES
-        #region
+        #region PRINT EMERGENCY CASES
         public IActionResult PrintEmergencyCases(string[] token, int id)
         {
             using (MemoryStream stream = new System.IO.MemoryStream())
@@ -2584,8 +2565,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-        //PRINT LEASE OF VENUE
-        #region
+        #region PRINT LEASE OF VENUE
         public IActionResult PrintLeaseOfVenue(string[] token, int id)
         {
             using (MemoryStream stream = new System.IO.MemoryStream())
@@ -2732,8 +2712,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-        //PRINT PUBLIC BIDDING
-        #region
+        #region PRINT PUBLIC BIDDING
         public IActionResult PrintPublicBidding(string[] token, int id)
         {
             using (MemoryStream stream = new System.IO.MemoryStream())
@@ -3006,9 +2985,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-
-        //PRINT PS DBM
-        #region
+        #region PRINT PS DBM
         public IActionResult PrintPsDbm(string[] token, int id)
         {
             using (MemoryStream stream = new System.IO.MemoryStream())
@@ -3172,8 +3149,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-        //PRINT SCIENTIFIC SCHOLARLY
-        #region
+        #region PRINT SCIENTIFIC SCHOLARLY
         public IActionResult PrintScientificScholarly(string[] token, int id)
         {
             using (MemoryStream stream = new System.IO.MemoryStream())
@@ -3323,8 +3299,7 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-        //PRINT SMALL VALUE
-        #region
+        #region PRINT SMALL VALUE
         public IActionResult PrintSmallValue(string[] token, int id)
         {
             using (MemoryStream stream = new System.IO.MemoryStream())
@@ -3470,9 +3445,8 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
-
-
-        public IActionResult PrintChecklist1(string[] token, int id)
+        #region PRINT CHECKLIST 1
+        public IActionResult PrintChecklist1()
         {
             using (MemoryStream stream = new System.IO.MemoryStream())
             {
@@ -3482,14 +3456,108 @@ namespace fmis.Controllers.Procurement
                 doc.Open();
 
 
+                void CheckboxParagraph(string text, bool isChecked = false)
+                {
+                    // Create a PdfPCell with a checkbox
+                    PdfPCell cell = new PdfPCell();
+                    cell.AddElement(new Chunk("\u2610", FontFactory.GetFont(FontFactory.ZAPFDINGBATS, 10f)));
+                    cell.AddElement(new Phrase(text, FontFactory.GetFont(FontFactory.HELVETICA, 10f, Font.NORMAL)));
+
+                    // Set the checkbox as checked if needed
+                    if (isChecked)
+                    {
+                        cell = new PdfPCell();
+                        cell.AddElement(new Chunk("\u2611", FontFactory.GetFont(FontFactory.ZAPFDINGBATS, 10f)));
+                        cell.AddElement(new Phrase(text, FontFactory.GetFont(FontFactory.HELVETICA, 10f, Font.NORMAL)));
+                    }
+
+                    // Add the PdfPCell to the document
+                    doc.Add(cell);
+                }
+
+
+                void CParagraph(string text, bool isBold = false)
+                {
+                    Font font = isBold ? FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10f) : new Font(Font.FontFamily.HELVETICA, 10f, Font.NORMAL);
+                    Paragraph centeredParagraph = new Paragraph(text, font);
+                    centeredParagraph.Alignment = Element.ALIGN_CENTER;
+                    doc.Add(centeredParagraph);
+                }
+
+
+                // Method to add justified paragraph with bold text
+                void JParagraph(string text, bool isBold = false, bool centerAligned = false)
+                {
+                    Font font = isBold ? FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10f) : new Font(Font.FontFamily.HELVETICA, 10f, Font.NORMAL);
+                    Paragraph justifiedParagraph = new Paragraph(text, font);
+
+                    // Set alignment based on centerAligned parameter
+                    justifiedParagraph.Alignment = centerAligned ? Element.ALIGN_CENTER : Element.ALIGN_JUSTIFIED;
+
+                    doc.Add(justifiedParagraph);
+                }
+
+
+                CParagraph("P.U CHECKLIST #1", isBold: true);
+                CParagraph("PURCHASE REQUEST (PR) FOR", isBold: true);
+                CParagraph("JOB ORDER FOR VENUE,", isBold: true);
+                CParagraph("MEALS, AND ACCOMMODATION", isBold: true);
+                CParagraph("PR NO. :    42424", isBold: true);
+                CParagraph("DATE : 42424242", isBold: true);
+                CParagraph("SUPPORTING DOCUMENTS/DETAILS", isBold: true);
+                CParagraph("\n");
+
+
+                CheckboxParagraph("                                             Complete signatures incl. approval");
+                JParagraph("                                             Complete with PR #, date, unit cost and correct total cost");
+                JParagraph("                                             Title of Activity");
+                JParagraph("                                             Meals and meal type");
+                JParagraph("                                             Number of EXPECTED pax");
+                JParagraph("                                             Number of GUARANTEED pax");
+                JParagraph("                                             Date/Period of Activity");
+                JParagraph("                                             Specify - Meals and Accommodation");
+                JParagraph("                                             Check-in and Check-out time");
+                JParagraph("                                             Specify - Meals only");
+                JParagraph("                                             Preferred Menu, if desired");
+                JParagraph("                                             Specify - Venue and Meals only");
+                JParagraph("                                             Specify - Accommodation only");
+                JParagraph("                                             Room Sharing");
+                JParagraph("                                             Specify - Venue only");
+                JParagraph("                                             Location of venue/hotel/office");
+                JParagraph("                                             Classification of hotel/venue");
+                JParagraph("                                             Function room preference");
+                JParagraph("                                             Funding source");
+                JParagraph("\n");
+
+                JParagraph("                                             Specify others amenities, if applicable");
+                JParagraph("                                             Others");
+                JParagraph("\n");
+
+                JParagraph("                                             CONCEPT NOTE (CN)");
+                JParagraph("                                             Complete signatures incl. approval");
+                JParagraph("                                             Specs/details in CN match specs in PR");
+                JParagraph("                                             Approved Realignment, If applicable");
+                JParagraph("                                             Approved WFP/Supplemental WFP");
+                JParagraph("                                             Approved PPMP/Supplemental PPMP");
+                JParagraph("                                             Others");
+                JParagraph("\n");
+
+
+                CParagraph("REMARKS:");
+                CParagraph("COMPLETE");
+                CParagraph("Please comply with item(s) marked X on or before");
+                CParagraph("\n");
+
+                CParagraph("CHECKED/REVIEWED BY:");
+                CParagraph("STEFANIE LORRAINE D. TRINIDAD");
 
                 doc.Close();
                 return File(stream.ToArray(), "application/pdf");
             }
         }
+        #endregion
 
-
-       
+        #region PU USERS
         [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
         [Route("Procurement/Users")]
         public IActionResult PuUser()
@@ -3509,7 +3577,9 @@ namespace fmis.Controllers.Procurement
 
             return View(viewModel);
         }
+        #endregion
 
+        #region SAVE PU USERS
         [HttpPost]
         public IActionResult SavePuUsers(int userId)
         {
@@ -3534,12 +3604,14 @@ namespace fmis.Controllers.Procurement
 
                 return Json(new { success = true });
             }
+           
 
             return Json(new { success = false });
 
         }
-     
+        #endregion
 
+        #region LOGIN
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Login()
@@ -3555,7 +3627,9 @@ namespace fmis.Controllers.Procurement
                 return View();
             }
         }
+        #endregion
 
+        #region LOGIN POST
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
@@ -3590,9 +3664,9 @@ namespace fmis.Controllers.Procurement
             ModelState.AddModelError("Username", "Username or Password is Incorrect");
             return View(model);
         }
-   
+        #endregion
 
-
+        #region LOGOUT GET
         [HttpGet]
         public async Task<IActionResult> Logout(string returnUrl)
         {
@@ -3600,14 +3674,16 @@ namespace fmis.Controllers.Procurement
 
             return await Logout();
         }
+        #endregion
 
+        #region LOGOUT POST
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync("Scheme4");
             return RedirectToAction("Login", "Procurement");
         }
-
+        #endregion
 
         #region NOT FOUND
         public new IActionResult NotFound()
