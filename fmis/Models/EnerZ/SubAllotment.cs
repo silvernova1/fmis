@@ -33,6 +33,8 @@ namespace fmis.Models
         public int RespoId { get; set; }
         public RespoCenter RespoCenter { get; set; }
 
+        public int? SectionId { get; set; }
+
         [ForeignKey("Prexc")]
         public int prexcId { get; set; }
         public Prexc prexc { get; set; }

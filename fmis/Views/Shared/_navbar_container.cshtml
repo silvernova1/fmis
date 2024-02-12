@@ -56,6 +56,30 @@
                 </div>
             </div>
         }
+        else if (User.FindFirstValue(ClaimTypes.Role) == "accounting_admin")
+        {
+            <div class="navbar-container ace-save-state" id="navbar-container">
+                <div class="navbar-header" style="padding: 10px">
+                    <img src="~/assets/images/maiff_banner.png" class="img-responsive" />
+                </div>
+            </div>
+        }
+        else if (User.FindFirstValue(ClaimTypes.Role) == "pu_admin" || User.FindFirstValue(ClaimTypes.Role) == "pu_user")
+        {
+            <div class="navbar-container ace-save-state" id="navbar-container">
+                <div class="navbar-header" style="padding: 10px">
+                    <img src="~/assets/images/pu_banner.png" class="img-responsive" />
+                </div>
+            </div>
+        }
+        else if (User.FindFirstValue(ClaimTypes.Role) == "maiff_admin")
+        {
+            <div class="navbar-container ace-save-state" id="navbar-container">
+                <div class="navbar-header" style="padding: 10px">
+                    <img src="~/assets/images/maipp_banner.png" class="img-responsive" />
+                </div>
+            </div>
+        }
         else
         {
             <div class="navbar-container ace-save-state" id="navbar-container">

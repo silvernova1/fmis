@@ -1,0 +1,139 @@
+﻿@model List<fmis.Models.Procurement.Canvass>
+
+<style>
+    .ui-datepicker {
+        width: 250px !important;
+    }
+
+    .stepper-container {
+        display: flex;
+        align-items: center;
+        justify-content: center; /* Center the stepper horizontally */
+    }
+
+    .circle {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: #3498db;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+
+        /* Additional styling for the numbers inside the circle */
+        .circle span {
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+    .connector {
+        height: 2px;
+        width: 100px; /* Adjust the width based on your design preference */
+        background-color: #3498db;
+    }
+
+        /* Styling for connectors between circles */
+        .connector:not(:last-child) {
+            margin-right: -15px; /* Adjusted margin for better alignment */
+        }
+</style>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css" rel="stylesheet" />
+<div class="col-xs-12">
+    <div id="recanvass-modal" class="modal fade" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 class="smaller lighter blue no-margin">Additional or Re Canvass</h3>
+                </div>
+                <form asp-action="" method="post">
+                    <div class="modal-body">
+                        <div id="stepper1 col-xs-12" class="bs-stepper linear">
+                            <div class="bs-stepper-header" role="tablist">
+                                <div class="step rmop-step" >
+                                    <button type="button" class="step-trigger" role="tab" aria-controls="test-l-1" aria-selected="false" disabled="disabled">
+                                        <span class="bs-stepper-circle">1</span>
+                                        <span class="bs-stepper-label">1ST</span>
+                                    </button>
+                                </div>
+                                <div class="bs-stepper-line"></div>
+                                <div class="step canvass-step" >
+                                    <button type="button" class="step-trigger" role="tab" aria-controls="test-l-2" aria-selected="false" disabled="disabled">
+                                        <span class="bs-stepper-circle">2</span>
+                                        <span class="bs-stepper-label">2ND </span>
+                                    </button>
+                                </div>
+                                <div class="bs-stepper-line"></div>
+                                <div class="step twg-step">
+                                    <button type="button" class="step-trigger" role="tab" aria-controls="test-l-2" aria-selected="false" disabled="disabled">
+                                        <span class="bs-stepper-circle">3</span>
+                                        <span class="bs-stepper-label">3RD</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                         <hr />
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">RPQ NO. </label>
+                                        <input type="text" class="form-control" name="RpqNo" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">RPQ DATE </label>
+                                        <input type="text" class="form-control" id="rpqdate" name="rpqdate">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold"> ITEM/DESCRIPTION: </label>
+                                        <input type="text" class="form-control" name="ItemDesc" required>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold"> PR NO  </label>
+                                        <select class="form-control" name="PrNo" id="PrNo" asp-items="ViewBag.Pr">
+                                            <option value="">Select Pr No.</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold"> PR DATE </label>
+                                        <input type="text" class="form-control" id="Date" name="PrDate" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">RMOP</label>
+                                        <select class="form-control" name="Rmop">
+                                            <option value="AGENCY TO AGENCY">AGENCY TO AGENCY</option>
+                                            <option value="DIRECT CONTRACTING (DRUGS AND MEDS)">DIRECT CONTRACTING (DRUGS AND MEDS)</option>
+                                            <option value="EMERGENCY CASES (DRUGS AND MEDS)">EMERGENCY CASES (DRUGS AND MEDS)</option>
+                                            <option value="LEASE OF VENUE (GOODS)">LEASE OF VENUE (GOODS)</option>
+                                            <option value="PUBLIC BIDDING (GOODS AND EQUIPMENT)">PUBLIC BIDDING (GOODS AND EQUIPMENT)</option>
+                                            <option value="PS-DBM">PS-DBM</option>
+                                            <option value="SCIENTIFIC SCHOLARLY">SCIENTIFIC SCHOLARLY</option>
+                                            <option value="SMALL VALUE PROCUREMENT (GOODS AND EQUIPMENT)">SMALL VALUE PROCUREMENT (GOODS AND EQUIPMENT)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </form>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-xs btn-primary">Submit <span class="fa fa-check-square-o"></span> </button>
+                    <a data-dismiss="modal" class="btn btn-xs btn-danger">Cancel</a>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="~/js/signalr/signalr.js"></script>
+<script src="~/js/prStatus.js"></script>

@@ -1,0 +1,162 @@
+﻿@model List<fmis.Models.Procurement.BacResNo>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Procurement" + " " + "(RMOP No.)";
+}
+
+
+
+
+<h3 class="grey lighter smaller">
+    RMOP NO.
+</h3>
+<hr>
+
+<div class="modal fade"  tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div id="modalContent"></div>
+        </div>
+    </div>
+</div>
+
+<div class="col-xs-12">
+    <div id="editModal" class="modal fade" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 class="smaller lighter blue no-margin">Edit RMOP No.</h3>
+                </div>
+                <form id="editForm">
+                    <div class="modal-body">
+                        <div>
+                            <br />
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="BacResNumber" style="font-weight:bold">RMOP NO. </label>
+                                        <input type="text" class="form-control" id="bacResNumber" name="bacResNumber" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-xs btn-primary" id="saveChanges"> <span class="fa fa-check-square-o"></span> Edit </button>
+                        <a data-dismiss="modal" class="btn btn-xs btn-danger">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<p>
+    <a class="btn btn-success btn-sm" href="#my-modal" role="button" data-toggle="modal">
+        <i class="ace-icon fa fa-plus "></i>Create New
+    </a>
+</p>
+<br />
+<table class="table table-hover" style="width: 900px">
+    <thead>
+        <tr>
+            <th>
+                RMOP NO.
+            </th>
+            <th>
+                ACTIONS
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if(Model.Count > 0)
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item?.BacResNumber
+                    </td>
+                    <td>
+                        <a class="btn btn-xs btn-primary btn-edit" data-id="@item.Id">
+                            <i class="ace-icon "></i><span class="fa fa-check-square-o"></span> Edit
+                        </a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="2">
+                    <div class="alert alert-danger">
+                        No data found.
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Html.PartialAsync("_AddBacResNo")
+
+
+
+<script>
+    var itemId;
+
+    $(document).ready(function () {
+        $(".btn-edit").click(function () {
+            itemId = $(this).data("id");
+
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetItem", "Procurement")',
+                data: { id: itemId },
+                success: function (data) {
+                    $("#bacResNumber").val(data.bacResNumber);
+                    $("#editModal").modal("show");
+                }
+            });
+        });
+
+        $("#saveChanges").click(function () {
+            var newData = {
+                Id: itemId,
+                BacResNumber: $("#bacResNumber").val()
+            };
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("UpdateBacResNo", "Procurement")',
+                data: JSON.stringify(newData),
+                contentType: "application/json; charset=utf-8",
+                success: function (result) {
+                    if (result.success) {
+                        Lobibox.notify('success', {
+                            title: 'Success',
+                            msg: 'Data saved successfully..',
+                            sound: false
+                        });
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1500);
+                    } else {
+                        Lobibox.notify('error', {
+                            title: 'Error',
+                            msg: 'Error submitting the form..',
+                            sound: false
+                        });
+                        setTimeout(function () {
+                            $("#editModal").modal("hide");
+                            location.reload();
+                        }, 1000);
+                    }
+                }
+            });
+        });
+    });
+</script>
+

@@ -23,7 +23,7 @@
 </style>
 <center><h3 class="grey lighter smaller">Create Index of Payment </h3></center>
 <hr />
-<div class="container" style="height: 1000px;">
+<div class="container" id="container" style="height: 1000px;">
     <form asp-action="Create" style="position:center;">
         <div class="col-md-12">
             <div class="col-md-3">
@@ -106,14 +106,21 @@
             <div class="col-md-3" name="hidden-panel1" id="hidden-panel1">
                 <div class="form-group">
                     <label>PO #:</label>
-                    <textarea asp-for="PoNumber" id="poNumber" class="form-control" onchange="DataCheck()" style="resize: none; overflow: auto; height:35px" />
+                    <div class="row">
+                        <div class="col-md-8">
+                            <textarea asp-for="PoNumbers[0].PoNum" id="poNumber" class="form-control" style="resize: none; overflow: auto; height:35px" />
+                        </div>
+                        <div class="col-md-4">
+                            <button type="button" onclick="addNewPo()">+</button>
+                        </div>
+                     </div>
                 </div>
-                <div class="row">
+                @*<div class="row">
                     <label class="col-sm-2"></label>
                     <div class="col-sm-10">
                         <p id="Status" />
                     </div>
-                </div>
+                </div>*@
             </div>
             <div class="col-md-3" name="hidden-panel2" id="hidden-panel2">
                 <div class="form-group">
@@ -130,14 +137,21 @@
             <div class="col-md-3" name="hidden-panel5" id="hidden-panel5">
                 <div class="form-group">
                     <label>INVOICE #:</label>
-                    <textarea asp-for="InvoiceNumber" id="invoice" type="text" class="form-control" onchange="InvoiceCheck()" style="resize: none; overflow: auto; height:35px" />
-                </div>
-                <div class="row">
-                    <label class="col-sm-2"></label>
-                    <div class="col-sm-10">
-                        <p id="InvoiceCheck" />
+                    <div class="row">
+                        <div class="col-md-8">
+                            <textarea asp-for="Invoices[0].InvoiceNumber" id="invoice" type="text" class="form-control" style="resize: none; overflow: auto; height: 35px"></textarea>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="button" onclick="addNewTextarea()">+</button>
+                        </div>
                     </div>
                 </div>
+                @*<div class="row">
+                    <label class="col-sm-2"></label>
+                    <div class="col-sm-10">
+                        <p id="InvoiceCheck"></p>
+                    </div>
+                </div>*@
             </div>
             <div class="col-md-3" name="hidden-panel4" id="hidden-panel4">
                 <div class="form-group">
@@ -329,15 +343,52 @@
             </div>
         </div>
 
-        @*<button id="myButton" type="button" @(ViewBag.IsDisabled ? "disabled" : "")>Click me</button>*@
-
-
     </form>
 </div>
 
 
 
 <script>
+    //addNewPo po number
+    var currentPoIndex = 0;
+
+    function addNewPo() {
+        currentPoIndex++;
+
+        var newTextArea = document.createElement("textarea");
+        newTextArea.id = "poNumber" + currentPoIndex;
+        newTextArea.name = "PoNumbers[" + currentPoIndex + "].PoNum";
+        newTextArea.type = "text";
+        newTextArea.style = "resize: none; overflow: auto; height: 35px";
+        newTextArea.addEventListener("change", DataCheck);
+
+        var parentDiv = document.getElementById("hidden-panel1");
+        parentDiv.appendChild(newTextArea);
+
+        var container = document.getElementById("container");
+        var currentHeight = container.clientHeight;
+        container.style.height = (currentHeight + 50) + "px";
+    }
+    //invoice number
+    var currentInvoiceIndex = 0;
+
+    function addNewTextarea() {
+        currentInvoiceIndex++;
+
+        var newTextArea = document.createElement("textarea");
+        newTextArea.id = "invoice" + currentInvoiceIndex;
+        newTextArea.name = "Invoices[" + currentInvoiceIndex + "].InvoiceNumber";
+        newTextArea.type = "text";
+        newTextArea.style = "resize: none; overflow: auto; height: 35px";
+        newTextArea.addEventListener("change", InvoiceCheck);
+
+        var parentDiv = document.getElementById("hidden-panel5");
+        parentDiv.appendChild(newTextArea);
+
+        var container = document.getElementById("container");
+        var currentHeight = container.clientHeight;
+        container.style.height = (currentHeight + 50) + "px";
+    }
     //period cover
     $(function () {
         $('input[name="periodCover"]').daterangepicker({

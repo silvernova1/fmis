@@ -1,14 +1,4 @@
-﻿ @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
-@inject fmis.Data.MyDbContext _context
-@using Microsoft.EntityFrameworkCore;
-
-
-@functions{
-    public string GetAntiXsrfRequestToken()
-    {
-        return Xsrf.GetAndStoreTokens(Context).RequestToken;
-    }
-}
+﻿
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,8 +9,12 @@
 
 
     <!-- bootstrap & fontawesome -->
-    <link rel="stylesheet" href="~/assets/css/bootstrap.min.css" />
+    @*<link rel="stylesheet" href="~/assets/css/bootstrap.min.css" />*@
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="~/assets/font-awesome/4.5.0/css/font-awesome.min.css" />
+
+    <!-- Checklist CSS-->
+    <link rel="stylesheet" href="~/assets/css/checklist.css" />
 
     <!-- handsontable styles -->
     @*  <link rel="stylesheet" href="~/css/handsontable.css" />*@
@@ -47,13 +41,14 @@
 
     <link rel="stylesheet" href="~/main/main.css" />
 
+
     <script src="~/assets/js/ace-extra.min.js"></script>
     <script src="~/assets/js/jquery-2.1.4.min.js"></script>
     <script src="~/assets/plugins/inputmask/jquery.inputmask.js"></script>
     <script type="text/javascript">
         if ('ontouchstart' in document.documentElement) document.write("<script src='assets/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
     </script>
-    <script src="~/assets/js/bootstrap.min.js"></script>
+    
 
     <!-- handsontable scripts -->
     @*<script src="~/js/handsontable.js"></script>*@
@@ -69,6 +64,17 @@
     <script src="~/assets/js/jquery.flot.pie.min.js"></script>
     <script src="~/assets/js/jquery.flot.resize.min.js"></script>
 
+    <!-- newly added -->
+    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+
+    <!-- jQuery UI -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    @*<script src="~/assets/js/bootstrap.min.js"></script>*@
+
+
+   
     <!-- ace scripts -->
     <script src="~/assets/js/ace-elements.min.js"></script>
     <script src="~/assets/js/ace.min.js"></script>
@@ -89,10 +95,9 @@
         <script type="text/javascript">
             try { ace.settings.loadState('main-container') } catch (e) { }
         </script>
-        @if(!User.IsInRole("app_admin"))
-        {
+     
             <partial name="~/Views/Shared/_Sidebar.cshtml" />
-        }
+     
 
         <div class="main-content">
             <div class="main-content-inner">
@@ -151,9 +156,7 @@
                         <span class="blue bolder">FMIS - </span>
                         Department of Health Central Visayas CHD  &copy; 2021
                     </span>
-
                     &nbsp; &nbsp;
-
                 </div>
             </div>
         </div>
@@ -181,8 +184,7 @@
     </div>
     @await RenderSectionAsync("Scripts", required: false)
 
-    <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
-    <script src="~/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js//signalr/signalr.js"></script>
     <script src="~/js/site.js"></script>
 </body>
 </html>
@@ -213,21 +215,6 @@
         });
     }
 
-    function logout() {
-        event.preventDefault();
-        $.ajax({
-            type: "POST",
-            headers: { "RequestVerificationToken": '@GetAntiXsrfRequestToken()' },
-            url: "/Identity/Account/Logout?returnUrl=%2FHome%2FDashboard%3Fpage%3D%252FIndex",
-            data: {
-                "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val()
-            },
-            success: function (result) {
-                location.reload();
-            },
-            error: function (result) {
-                console.log(result.responseText);
-            }
-        });
-    }
+   /* 
+    }*/
 </script>

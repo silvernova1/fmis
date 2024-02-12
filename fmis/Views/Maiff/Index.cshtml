@@ -1,0 +1,180 @@
+﻿@* @model fmis.Models.Maiff.MaiffDv *@
+@model IEnumerable<fmis.Models.Maiff.MaiffDv> 
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "(Maiff Dv)";
+}
+
+
+
+
+<h3 class="grey lighter smaller">
+    DISBURSEMENT VOUCHER (MAIFF)
+</h3>
+<hr>
+
+<div class="modal fade" id="EditModalTwg" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div id="modalContentEdit"></div> <!-- Placeholder for CanvassEdit content -->
+        </div>
+    </div>
+</div>
+
+<p>
+    <a class="btn btn-success btn-sm" href="#my-modal" role="button" data-toggle="modal">
+        <i class="ace-icon fa fa-plus "></i>Create New
+    </a>
+</p>
+<br />
+<table class="table table-hover">
+    <thead>
+        <tr>
+   
+            <th>
+                Payee
+                
+            </th>
+            <th>
+                Address
+            </th>
+            <th>
+                Date
+            </th>
+            <th>
+                Saa Number
+            </th>
+            <th>
+                Amount 1
+            </th>
+            <th>
+                Amount 2
+            </th>
+            <th>
+                Amount 3
+            </th>
+            <th>
+                Total Amount
+            </th>
+            <th>
+                Deduction (Vat/Ewt)
+            </th>
+            <th>
+                Deduction Amount
+            </th>
+            <th>
+               Total Deduction Amount
+            </th>
+            <th>
+                Overall Total Amount
+            </th>
+            <th>
+                Month(from)
+            </th>
+          
+            <th>
+                Month(to)
+            </th>
+            <th>
+                Actions
+            </th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+       
+            <tr>
+                <td>
+                    @item.Payee
+                </td>
+                <td style="width: 200px;">
+                    @item.Address
+                </td>
+                <td>
+                    @item.Date.ToString("MM/dd/yyyy")
+                </td>
+                <td style="width: 150px;">
+                    @foreach (var saaCode in item.SaaNumber.Split(','))
+                    {
+                        <div>@saaCode.Trim()</div>
+                    }
+                </td>
+                <td >
+                    @(item.Amount1 != 0 ? item.Amount1.ToString("C2") : "")
+                </td>
+                <td >
+                    @(item.Amount2 != 0 ? item.Amount2.ToString("C2") : "")
+                </td>
+                <td >
+                    @(item.Amount3 != 0 ? item.Amount3.ToString("C2") : "")
+                </td>
+                <td>
+                    
+                    @item.TotalAmount.ToString("C2")
+                </td>
+                <td >
+                    @if (!string.IsNullOrEmpty(item.Deduction1))
+                    {
+                        <text>%@item.Deduction1 Vat </text>
+                        <br />
+                    }
+                    @if (!string.IsNullOrEmpty(item.Deduction2))
+                    {
+                        <text>%@item.Deduction2 Ewt </text>
+                    }
+                </td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.DeductionAmount1.ToString()))
+                    {
+                        <text>@item.DeductionAmount1.ToString("C2")  </text>
+                        <br />
+                    }
+                    @if (!string.IsNullOrEmpty(item.DeductionAmount2.ToString()))
+                    {
+                        <text>@item.DeductionAmount2.ToString("C2")  </text>
+                    }
+                </td>
+
+                <td >
+                    @item.TotalDeductionAmount.ToString("C2")
+                </td>
+                <td>
+                    @item.OverallTotalAmount.ToString("C2")
+                </td>
+                <td>
+                    @item.MonthYearFrom.ToString("MM/yyyy")
+                </td>
+                <td>
+                    @item.MonthYearTo.ToString("MM/yyyy")
+                </td>
+              
+                <td style="width: 100px">
+                    <a class="btn btn-xs btn-primary btn-edit" onclick="openEditPurchaseOrderNoModal()">
+                        <i class="ace-icon fa fa-edit"></i>
+                    </a>
+                    <a class="btn btn-xs btn-success" target="_blank" href="@Url.Action("PrintMaiffDv","Maiff",new { id = @item.Id })" data-bs-toggle="print" title="Print">
+                        <i class="ace-icon fa fa-file-pdf-o"></i>
+                    </a>
+                </td>
+  
+             </tr>
+           
+        }
+
+    </tbody>
+</table>
+
+<div class="col-xs-12">
+    <div id="my-modal" class="modal fade" style="display: none;">
+            <div class="modal-dialog">
+                <div class="modal-content modal-lg">
+                @await Html.PartialAsync("Create", new fmis.Models.Maiff.MaiffDv())
+                </div>
+            </div>
+    </div>
+
+</div>
+

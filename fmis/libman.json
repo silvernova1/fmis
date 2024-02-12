@@ -3,19 +3,15 @@
   "defaultProvider": "unpkg",
   "libraries": [
     {
-      "library": "@microsoft/signalr@latest",
-      "destination": "wwwroot/js/signalr/",
-      "files": [
-        "dist/browser/signalr.js",
-        "dist/browser/signalr.min.js"
-      ]
-    },
-    {
       "library": "@microsoft/signalr@6.0.6",
       "destination": "wwwroot/microsoft/signalr/",
       "files": [
         "dist/browser/signalr.js"
       ]
+    },
+    {
+      "library": "@microsoft/signalr@latest",
+      "destination": "wwwroot/js/signalr/"
     }
   ]
 }

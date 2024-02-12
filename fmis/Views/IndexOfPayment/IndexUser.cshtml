@@ -1,0 +1,142 @@
+﻿@model fmis.Models.UserModels.CombineIndexFmisUser
+
+@{
+    ViewData["Title"] = "Users";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+
+
+<style>
+    .hr {
+        border: 1px solid black;
+    }
+
+    #nav {
+        font-size: 12pt;
+    }
+
+    .pbutton {
+        margin-left: 3px;
+    }
+</style>
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" asp-action="SaveUsers" id="employeeSearchForm">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="select2Input">Add Employee</label>
+                    <br />
+                        <br />
+                    <select id="select2Input" class="js-example-basic-single" style="width: 100%;" name="selectedEmployee">
+                            @foreach (var user in Model.Users.Where(x => !ViewBag.userId.Contains(x.Id.ToString())))
+                            {
+                                <option value="@user.Id">@user.Fname, @user.Lname</option>
+                            }
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+<h3 class="grey lighter smaller">
+    Index of Payment Users
+</h3>
+<hr>
+
+<div class="row">
+    <div class="col-md-1">
+        <div class="form-group form-inline" style="margin-bottom: 10px;">
+            <a class="btn btn-success btn-sm" data-toggle="modal" data-target="#myModal">
+                <i class="ace-icon fa fa-plus "></i>Create New Users
+            </a>
+        </div>
+    </div>
+</div>
+<br />
+
+
+<table class="table table-striped" style="width: 900px">
+    <thead>
+        <tr>
+            <th>
+                Username
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                Action
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in Model.ListUser)
+        {
+            @if(item.Username != "hr_admin")
+            {
+                <tr>
+                    <td>@item.Username</td>
+                    <td>
+                        @if (item.Fname is null && item.Lname is null)
+                        {
+                            @("-")
+                            ;
+                        }
+                        else
+                        {
+                            @(@item.Fname + " " + @item.Lname)
+                        }
+                    </td>
+                    <td>
+                        <a class="btn btn-xs btn-danger" href="@Url.Action("DeleteUser","IndexOfPayment",new { id = @item.Id })"
+                   onclick=" if (confirm('Are you sure you want to delete this into the database?')) {
+                                          // Save it!
+                                         Lobibox.notify('error', {
+                                               title: 'Deleted',
+                                                msg: 'Fund Code Successfully Deleted!',
+                                        });
+                                        }
+                                            else
+                                        {
+                                          return false
+                                        };">
+                            <i class="ace-icon fa fa-trash"></i>Delete
+                        </a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+
+@section Scripts
+    {
+    <script src="~/lib/select2/js/select2.full.min.js"></script>
+    <script src="~/js/select2.js"></script>
+}
+    <script>
+        $(document).ready(function () {
+            $('.js-example-basic-single').select2({
+                width: '100%'
+            });
+        });
+    </script>

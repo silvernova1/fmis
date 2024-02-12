@@ -1,0 +1,171 @@
+﻿@model List<fmis.Models.ppmp.AppExpense>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Generate APP";
+}
+<style>
+    .custom-table td {
+        padding: 5px;
+    }
+
+    .text-right {
+        text-align: right;
+    }
+
+    #scroll-down-arrow {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        font-size: 24px;
+        cursor: pointer;
+        z-index: 999;
+    }
+
+    .hidden {
+        display: none;
+    }
+</style>
+
+
+<div class="text-right">
+    <form asp-controller="App" asp-action="GenerateApp" method="post" target="_blank">
+        <button type="submit">Generate PDF</button>
+    </form>
+</div>
+<hr />
+
+<div id="scroll-down-arrow">&#8595;</div>
+
+
+
+<form asp-controller="App" asp-action="UpdateAppExpense" method="post" id="myForm">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Procurement Project</th>
+                <th>PMO/End User</th>
+                <th>Yes</th>
+                <th>No</th>
+                <th>Mode of Procurement</th>
+                <th>Advertising/Posting IB/REI</th>
+                <th>Submission/ Opening of Bids</th>
+                <th>Notice of Award</th>
+                <th>Contract Signing</th>
+                <th>Source of Funds</th>
+                <th>Total</th>
+                <th>MOOE</th>
+                <th>CO</th>
+                <th>Remarks (Brief description of the Project</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (var i = 0; i < Model?.Count; i++)
+            {
+                <tr>
+                    <td style="width: 100px;"></td>
+                    <td style="width: 250px;">
+                        <strong><input type="text" name="appExpenses[@i].Description" value="@Model[i].Description" class="form-control" /></strong>
+                        <input type="hidden" name="appExpenses[@i].Id" asp-for="@Model[i].Id"/>
+                    </td>
+                </tr>
+
+                @for (var j = 0; j < Model[i].AppModels.Count; j++)
+                {
+
+                    <tr>
+                        <input type="hidden" name="AppExpenses[@i].AppModels[@j].Id" asp-for="@Model[i].AppModels[j].Id" />
+                        <td style="width: 100px;"><input type="text" name="appExpenses[@i].AppModels[@j].Uacs" value="@Model[i].AppModels[j].Uacs" /></td>
+                        <td style="width: 250px;"><input type="text" name="appExpenses[@i].AppModels[@j].ProcurementProject" value="@Model[i].AppModels[j].ProcurementProject" class="form-control" /></td>
+                        <td style="width: 130px;"><input type="text" name="appExpenses[@i].AppModels[@j].EndUser" value="@Model[i].AppModels[j].EndUser" class="form-control" /></td>
+                        <td style="width: 80px;"><input type="text" name="appExpenses[@i].AppModels[@j].EarlyProcured" value="@Model[i].AppModels[j].EarlyProcured" class="form-control" /></td>
+                        <td style="width: 80px;"><input type="text" name="appExpenses[@i].AppModels[@j].NotEarlyProcurered" value="@Model[i].AppModels[j].NotEarlyProcurered" class="form-control" /></td>
+                        <td style="width: 130px;"><input type="text" name="appExpenses[@i].AppModels[@j].ModeOfProcurement" value="@Model[i].AppModels[j].ModeOfProcurement" class="form-control" /></td>
+                        <td style="width: 120px;"><input type="text" name="appExpenses[@i].AppModels[@j].Advertising" value="@Model[i].AppModels[j].Advertising?.ToString("yyyy-MM-dd")" class="form-control advertising" /></td>
+                        <td style="width: 120px;"><input type="text" name="appExpenses[@i].AppModels[@j].Submission" value="@Model[i].AppModels[j].Submission?.ToString("yyyy-MM-dd")" class="form-control submission" /></td>
+                        <td style="width: 120px;"><input type="text" name="appExpenses[@i].AppModels[@j].NoticeOfAward" value="@Model[i].AppModels[j].NoticeOfAward?.ToString("yyyy-MM-dd")" class="form-control submission" /></td>
+                        <td style="width: 120px;"><input type="text" name="appExpenses[@i].AppModels[@j].ContractSigning" value="@Model[i].AppModels[j].ContractSigning?.ToString("yyyy-MM-dd")" class="form-control contract" /></td>
+                        <td style="width: 80px;"><input type="text" name="appExpenses[@i].AppModels[@j].FundSource" value="@Model[i].AppModels[j].FundSource" class="form-control" /></td>
+                        <td style="width: 140px;"><input type="text" name="appExpenses[@i].AppModels[@j].Total" value="@Model[i].AppModels[j].Total" class="form-control" /></td>
+                        <td style="width: 130px;"><input type="text" name="appExpenses[@i].AppModels[@j].Mooe" value="@Model[i].AppModels[j].Mooe" class="form-control" /></td>
+                        <td style="width: 130px;"><input type="text" name="appExpenses[@i].AppModels[@j].Co" value="@Model[i].AppModels[j].Co" class="form-control" /></td>
+                        @*<td style="width: 130px;">
+                            <textarea name="appExpenses[@i].AppModels[@j].Remarks" class="form-control" rows="4" cols="50">@Model[i].AppModels[j].Remarks</textarea>
+                        </td>*@
+                        <td style="width: 130px;">
+                            <input type="text" name="appExpenses[@i].AppModels[@j].Remarks" value="@Model[i].AppModels[j].Remarks" class="form-control" />
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    <div style="text-align: right;">
+        <button class="btn btn-primary" type="button" id="submitButton">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            <span id="buttonText">Saving All Changes</span>
+        </button>
+    </div>
+</form>
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+        $('#submitButton').on('click', function () {
+            $('#submitButton').prop('disabled', true);
+            $('#submitButton .spinner-border').css('display', 'inline-block');
+            $('#buttonText').text('Saving Changes...');
+
+            $('#myForm').submit();
+        });
+    });
+
+    $(document).ready(function () {
+        $('.advertising').datepicker({
+            dateFormat: 'yy-mm-dd'
+        });
+    });
+    $(function () {
+        $(".submission").datepicker({
+            dateFormat: 'yy-mm-dd'
+        });
+    });
+    $(function () {
+        $(".notice").datepicker({
+            dateFormat: 'yy-mm-dd'
+        });
+    });
+    $(function () {
+        $(".contract").datepicker({
+            dateFormat: 'yy-mm-dd'
+        });
+    });
+    //
+    document.getElementById('scroll-down-arrow').addEventListener('click', function () {
+        const targetElement = document.getElementById('submitButton');
+
+        if (targetElement) {
+            targetElement.scrollIntoView({ behavior: 'smooth' });
+            this.classList.add('hidden');
+        }
+    });
+    function checkScrollPosition() {
+        const scrollY = window.scrollY;
+
+        const threshold = 200;
+
+        const arrow = document.getElementById('scroll-down-arrow');
+
+        if (scrollY > threshold) {
+            arrow.classList.remove('hidden');
+        } else {
+            arrow.classList.add('hidden');
+        }
+    }
+
+    window.addEventListener('scroll', checkScrollPosition);
+</script>

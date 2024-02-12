@@ -3,6 +3,7 @@
 @model List<fmis.Models.pr.Pr>
 @inject PpmpContext PpmpContext
 @inject DtsContext dts
+@inject MyDbContext context
 @{
 	Layout = "~/Views/Shared/_Layout.cshtml";
 	ViewData["Title"] = "PR";
@@ -19,11 +20,29 @@
 	.td-height {
 		height: 20px;
 	}
-		.pr-no-link {
+
+	.pr-no-link {
 		cursor: pointer;
+	}
+
+	.step-date {
+		margin-top: -20px;
+		font-size: 12px;
+		color: #777;
+	}
+
+	.custom-stepper-content {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+	}
+
+	.custom-modal-dialog {
+		max-width: 800px;
 	}
 </style>
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css" rel="stylesheet" />
 
 <div class="col-xs-12">
 	<button class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
@@ -35,6 +54,7 @@
 <br />
 <br />
 
+
 @if (Model.Count > 0)
 {
 	<div class="col-xs-12">
@@ -44,10 +64,12 @@
 					<th>PR Number</th>
 					<th>
 						<i class="ace-icon fa fa-calendar bigger-110 hidden-480"></i>
-						Pr Date</th>
+						Pr Date
+					</th>
 					<th>
 						<i class="ace-icon fa fa-money bigger-110 hidden-480"></i>
-						Grand Total</th>
+						Grand Total
+					</th>
 					<th>
 						Purpose
 					</th>
@@ -57,11 +79,12 @@
 					</th>
 					<th>
 						<i class="ace-icon fa fa-user bigger-110 hidden-480"></i>
-						Requested by</th>
-					<th>
-						<i class="ace-icon fa fa-check-square-o bigger-110 hidden-480"></i>
-						Status
+						Requested by
 					</th>
+					@* <th>
+				<i class="ace-icon fa fa-check-square-o bigger-110 hidden-480"></i>
+				Status
+				</th> *@
 					<th>
 						ACTIONS
 					</th>
@@ -72,6 +95,7 @@
 
 				@foreach (var items in Model)
 				{
+
 					<tr>
 						<td class="pr-no clickable" data-toggle="modal" data-target="#modal-@items.Id">@items.Prno</td>
 						<td>@items.PrnoDate.ToShortDateString()</td>
@@ -79,17 +103,240 @@
 						<td width="35%">@items.Purpose</td>
 						<td>@items.FundCharging</td>
 						<td>@items.RequestedBy</td>
-						<td><span class="label label-sm label-success">being processed</span></td>
 						<td>
 							<a class="btn btn-xs btn-primary" target="_blank" href="@Url.Action("PrintPr","Pr",new { id = @items.Id })" data-bs-toggle="print" title="Print Pr">
 								<i class="ace-icon fa fa-file-pdf-o"></i>
-							</a>
+							</a> | <a href="#" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#smallModal-@items.Id" data-id="@items.Id"><i class="ace-icon fa fa-list-ul"></i></a>
+							| <a class="btn btn-xs btn-primary " data-toggle="modal" data-target="#trackModal-@items.Id" data-id="@items.Id"><i class="ace-icon fa fa-search"></i></a>
 						</td>
 					</tr>
+
+					<div class="modal fade" id="smallModal-@items.Id" tabindex="-1" role="dialog" aria-labelledby="smallModal" aria-hidden="true">
+						<div class="modal-dialog modal-sm">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+									<h4 class="modal-title" id="myModalLabel">Pu Checklist</h4>
+								</div>
+								<div class="modal-body">
+									<ul>
+										@{
+											var puChecks = context.PuChecklist.Where(x => x.Prno == items.Id).FirstOrDefault();
+											if (puChecks != null)
+											{
+												var puCheck = context.PrChecklist.Where(x => x.PuChecklist.Id == puChecks.Id).ToList();
+
+												if (puCheck.Count > 0)
+												{
+													foreach (var prCheck in puCheck)
+													{
+														<li>@prCheck.Description</li>
+														if (prCheck.Others != null)
+														{
+															<p>- @prCheck.Others</p>
+														}
+													}
+												}
+												else
+												{
+													<li>No data</li>
+												}
+											}
+											else
+											{
+												<li>No data</li>
+											}
+										}
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					var rmop = context.RmopAta.FirstOrDefault(x => x.PrNoOne == items.Prno);
+					var canvass = context.Canvass.FirstOrDefault(x => x.PrNo == items.Prno);
+					var abstractNo = context.Abstract.FirstOrDefault(x => x.PrNo == items.Prno);
+					var po = context.Po.FirstOrDefault(x => x.PrNo == items.Prno);
+					var twg = context.Twg.FirstOrDefault(x => x.Prno == items.Prno);
+
+					<div class="modal fade" id="trackModal-@items.Id" tabindex="-1" role="dialog" aria-labelledby="trackModal" aria-hidden="true">
+						<div class="modal-dialog modal-lg">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+									<h4 class="modal-title" id="myModalLabel">PR Status for PR No. <b>@items.Prno</b></h4>
+								</div>
+								<div class="modal-body">
+									<div id="stepper1" class="bs-stepper linear">
+										<div class="bs-stepper-header" role="tablist">
+											<div class="step rmop-step @((rmop != null) ? "active" : "" )" data-prno="@items.Prno">
+												<button type="button" class="step-trigger" role="tab" aria-controls="test-l-1" aria-selected="false" disabled="disabled">
+													<span class="bs-stepper-circle">1</span>
+													<span class="bs-stepper-label">RMOP</span>
+												</button>
+											</div>
+											<div class="bs-stepper-line"></div>
+											<div class="step canvass-step @((canvass != null) ? "active" : "" )" data-prno="@items.Prno">
+												<button type="button" class="step-trigger" role="tab" aria-controls="test-l-2" aria-selected="false" disabled="disabled">
+													<span class="bs-stepper-circle">2</span>
+													<span class="bs-stepper-label">CANVASS</span>
+												</button>
+											</div>
+											<div class="bs-stepper-line"></div>
+											<div class="step twg-step @((twg != null) ? "active" : "" )" data-prno="@items.Prno">
+												<button type="button" class="step-trigger" role="tab" aria-controls="test-l-2" aria-selected="false" disabled="disabled">
+													<span class="bs-stepper-circle">3</span>
+													<span class="bs-stepper-label">TWG</span>
+												</button>
+											</div>
+											<div class="bs-stepper-line"></div>
+											<div class="step abstractNo-step @((abstractNo != null) ? "active" : "" )" data-prno="@items.Prno">
+												<button type="button" class="step-trigger stepper1trigger3" role="tab" aria-controls="test-l-3" aria-selected="false" disabled="disabled">
+													<span class="bs-stepper-circle">4</span>
+													<span class="bs-stepper-label">ABSTRACT</span>
+												</button>
+											</div>
+											<div class="bs-stepper-line"></div>
+											<div class="step po-step @((po != null) ? "active" : "" )" data-prno="@items.Prno">
+												<button type="button" class="step-trigger" role="tab" aria-controls="test-l-3" aria-selected="false" disabled="disabled">
+													<span class="bs-stepper-circle">5</span>
+													<span class="bs-stepper-label">PO</span>
+												</button>
+											</div>
+										</div>
+
+										<div class="bs-stepper-content custom-stepper-content">
+											@if (rmop != null)
+											{
+												<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block rmop-date" data-prno="@items.Prno">
+													<div class="form-group">
+														<label for="inputMailForm">@rmop?.PrTrackingDate.ToString("MMM d, yyyy")</label>
+														<br />
+														<br />
+														<b>Remarks</b>
+														<div class="invalid-feedback">Sample Remarks</div>
+													</div>
+												</div>
+											}
+											else
+											{
+												<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block rmop-date" data-prno="@items.Prno">
+													<div class="form-group">
+														<label for="inputMailForm"></label>
+														<br />
+														<br />
+														<b></b>
+														<div class="invalid-feedback"></div>
+													</div>
+												</div>
+											}
+											@if (canvass != null)
+											{
+												<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block canvass-date" data-prno="@items.Prno">
+													<div class="form-group">
+														<label for="inputMailForm">@canvass?.SubmissionDate.ToString("MMM d, yyyy")</label>
+														<br />
+														<br />
+														<b>Remarks</b>
+														<div class="invalid-feedback">@canvass?.Remarks</div>
+													</div>
+												</div>
+											}
+											else
+											{
+												<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block canvass-date" data-prno="@items.Prno">
+													<div class="form-group">
+														<label for="inputMailForm"></label>
+														<br />
+														<br />
+														<b></b>
+														<div class="invalid-feedback"></div>
+													</div>
+												</div>
+											}
+											@if (twg != null)
+											{
+												<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block twg-date" data-prno="@items.Prno">
+													<div class="form-group">
+														<label for="inputMailForm">@twg?.TwgDate.ToString("MMM d, yyyy")</label>
+														<br />
+														<br />
+														<b>Remarks</b>
+														<div class="invalid-feedback">@twg?.Remarks</div>
+													</div>
+												</div>
+											}
+											else
+											{
+												<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block twg-date" data-prno="@items.Prno">
+													<div class="form-group">
+														<label for="inputMailForm"></label>
+														<br />
+														<br />
+														<b></b>
+														<div class="invalid-feedback"></div>
+													</div>
+												</div>
+											}
+											@if (abstractNo != null)
+											{
+												<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block abstractNo-date" data-prno="@items.Prno">
+													<div class="form-group">
+														<label for="inputMailForm">@abstractNo?.AbstractDate.ToString("MMM d, yyyy")</label>
+														<br />
+														<br />
+														<b>Remarks</b>
+														<div class="invalid-feedback">@abstractNo?.Remarks</div>
+													</div>
+												</div>
+											}
+											else
+											{
+												<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block abstractNo-date" data-prno="@items.Prno">
+													<div class="form-group">
+														<label for="inputMailForm"></label>
+														<br />
+														<br />
+														<b></b>
+														<div class="invalid-feedback"></div>
+													</div>
+												</div>
+											}
+											@if (po != null)
+											{
+												<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block po-date" data-prno="@items.Prno">
+													<div class="form-group">
+														<label for="inputMailForm">@po?.PoDate.ToString("MMM d, yyyy")</label>
+														<br />
+														<br />
+														<b>Remarks</b>
+														<div class="invalid-feedback">@po?.Remarks</div>
+													</div>
+												</div>
+											}
+											else
+											{
+												<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block po-date" data-prno="@items.Prno">
+													<div class="form-group">
+														<label for="inputMailForm"></label>
+														<br />
+														<br />
+														<b></b>
+														<div class="invalid-feedback"></div>
+													</div>
+												</div>
+											}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 				}
 			</tbody>
 		</table>
 	</div>
+
 }
 else
 {
@@ -184,13 +431,13 @@ else
 												<td colspan="2"><b>Estimated Cost</b></td>
 											</tr>
 										</thead>
-										<tbody class="input_fields_wrap">
+										<tbody>
 											@if (items.PrItems != null)
 											{
 
 												@foreach (var prItems in items?.PrItems)
 												{
-													var Items = PpmpContext.item_daily.FirstOrDefault(x => x.Id == Convert.ToInt32(prItems.ItemDescription)).Description;
+													var Items = PpmpContext?.item?.FirstOrDefault(x => x.Id == Convert.ToInt32(prItems.PrId))?.Description;
 													<tr>
 														<td id="border-bottom">
 															<input type="hidden" id="expenses">1
@@ -381,7 +628,7 @@ else
 									<tbody class="input_fields_wrap">
 										<tr>
 											<td id="border-bottom">
-												<select id="expenses" asp-items="ViewBag.ExpenseId" style="width: 200px; height: 37px">
+												<select id="expenseSelect" asp-items="ViewBag.ExpenseId" style="width: 200px; height: 37px">
 													<option value="">Select Expense</option>
 												</select>
 											</td>
@@ -419,15 +666,14 @@ else
 											<td id="border-top"></td>
 											<td id="border-top"></td>
 											<td id="border-top" colspan="2"></td>
-											<td id="border-top"><button onclick="add();">Add new</button></td>
+											<td id="border-top"><button type="button" onclick="add();">Add new</button></td>
 										</tr>
 									</tbody>
 									<tfoot>
 										<tr>
 											<td colspan="6"><b style="float: right">GRAND TOTAL</b></td>
 											<td class="align-top">
-												<input type="hidden" name="amount" id="amount" autocomplete="off">
-												<strong style="color: red;"></strong><strong style="color:red" id="total"></strong>
+												<input type="text" name="amount" id="grandTotal" autocomplete="off">
 											</td>
 										</tr>
 										<tr>
@@ -497,22 +743,21 @@ else
 	</div>
 </div>
 
-
+<script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script>
+<script src="~/js/signalr/signalr.js"></script>
+<script src="~/js/prStatus.js"></script>
 
+<script>
 	$(document).ready(function () {
 		$('.select2basic').select2();
-	});
-
-	$(document).ready(function () {
 		$("#items").on("change", function () {
 			var selectedValue = $(this).val();
 
 			$.ajax({
 				type: "GET",
-				url: '@Url.Action("GetUnit","Pr")',
+				url: '@Url.Action("GetUnit", "Pr")',
 				data: { id: selectedValue },
 				success: function (response) {
 					$("#unit").val(response);
@@ -523,7 +768,7 @@ else
 
 			$.ajax({
 				type: "GET",
-				url: '@Url.Action("GetUnitCost","Pr")',
+				url: '@Url.Action("GetUnitCost", "Pr")',
 				data: { id: selectedValue },
 				success: function (response) {
 					$("#unitCost").val(response);
@@ -557,12 +802,12 @@ else
 
 	//items
 	$(document).ready(function () {
-		$("#expenses").change(function () {
+		$("#expenseSelect").change(function () {
 			var selectedExpenseId = $(this).val();
 			if (selectedExpenseId !== "") {
 				$.ajax({
 					type: "GET",
-					url: '@Url.Action("GetItemsId","Pr")',
+					url: '@Url.Action("GetItemsId", "Pr")',
 					data: { expenseId: selectedExpenseId },
 					success: function (data) {
 						$("#items").empty();
@@ -585,7 +830,8 @@ else
 	function add() {
 		rowIndex++; // Increment the index
 
-		const newRow = document.querySelector('.input_fields_wrap tr:first-child').cloneNode(true);
+		const originalRow = document.querySelector('.input_fields_wrap tr:first-child');
+		const newRow = originalRow.cloneNode(true);
 
 		const inputs = newRow.querySelectorAll('input, select');
 		inputs.forEach(input => {
@@ -594,15 +840,50 @@ else
 			// Update IDs and names of inputs to include the new index
 			const id = input.getAttribute('id');
 			const name = input.getAttribute('name');
-			if (id) input.setAttribute('id', id.replace('[0]', `[${rowIndex}]`));
-			if (name) input.setAttribute('name', name.replace('[0]', `[${rowIndex}]`));
+			if (id) input.setAttribute('id', id.replace(/\[0\]/g, `[${rowIndex}]`));
+			if (name) input.setAttribute('name', name.replace(/\[0\]/g, `[${rowIndex}]`));
 		});
 
-		const selectedExpenseId = newRow.querySelector('#expenses').value;
-		if (selectedExpenseId !== "") {
+		const qtyInput = newRow.querySelector('#qty');
+		const unitInput = newRow.querySelector('#unit');
+		const estimatedCostInput = newRow.querySelector('#estimated_cost');
+		const unitCostInput = newRow.querySelector('#unitCost');
+		if (qtyInput && unitInput && estimatedCostInput && unitCostInput) {
+			qtyInput.setAttribute('id', `qty_${rowIndex}`);
+			qtyInput.setAttribute('name', `PrItems[${rowIndex}].Qty`);
+
+			unitInput.addEventListener('input', updateEstimatedCost);
+			qtyInput.addEventListener('input', updateEstimatedCost);
+
+			unitCostInput.setAttribute('id', `unitCost_${rowIndex}`);
+			unitCostInput.setAttribute('name', `PrItems[${rowIndex}].UnitCost`);
+
+			unitCostInput.addEventListener('input', updateEstimatedCost);
+
+			function updateEstimatedCost() {
+				const qty = parseFloat(qtyInput.value) || 0;
+				const unitCost = parseFloat(unitCostInput.value) || 0;
+				const estimatedCost = qty * unitCost;
+
+				estimatedCostInput.value = estimatedCost.toFixed(2);
+			}
+
+			estimatedCostInput.setAttribute('id', `estimated_cost_${rowIndex}`);
+			estimatedCostInput.setAttribute('name', `PrItems[${rowIndex}].EstCost`);
+			estimatedCostInput.addEventListener('input', function () {
+				// Your logic when the estimated_cost input changes
+				console.log('Estimated Cost input changed:', this.value);
+				// Add more logic as needed
+			});
+		}
+
+		const selectedExpenseSelect = newRow.querySelector('#expenseSelect');
+
+		if (selectedExpenseSelect) {
+			const selectedExpenseId = selectedExpenseSelect.value;
 			$.ajax({
 				type: "GET",
-				url: '@Url.Action("GetItemsId","Pr")',
+				url: '@Url.Action("GetItemsId", "Pr")',
 				data: { expenseId: selectedExpenseId },
 				success: function (data) {
 					const newSelect = newRow.querySelector('#items');
@@ -610,7 +891,6 @@ else
 					data.forEach(item => {
 						newSelect.innerHTML += `<option value="${item.id}">${item.description}</option>`;
 					});
-
 					const tableBody = document.querySelector('.input_fields_wrap');
 					tableBody.appendChild(newRow);
 				},
@@ -622,12 +902,12 @@ else
 			tableBody.appendChild(newRow);
 		}
 
-		newRow.querySelector('#expenses').addEventListener('change', function () {
+		newRow.querySelector('#expenseSelect').addEventListener('change', function () {
 			const selectedExpenseId = this.value;
 			if (selectedExpenseId !== "") {
 				$.ajax({
 					type: "GET",
-					url: '@Url.Action("GetItemsId","Pr")',
+					url: '@Url.Action("GetItemsId", "Pr")',
 					data: { expenseId: selectedExpenseId },
 					success: function (data) {
 						const newSelect = newRow.querySelector('#items');
@@ -644,6 +924,34 @@ else
 				newSelect.innerHTML = '<option value="">Select Item</option>';
 			}
 		});
+
+
+		if (unitInput) {
+			newRow.querySelector('#items').addEventListener('change', function () {
+				const selectedValue = this.value;
+				$.ajax({
+					type: "GET",
+					url: '@Url.Action("GetUnit", "Pr")',
+					data: { id: selectedValue },
+					success: function (response) {
+						// Update the value of #unit in the new row
+						unitInput.value = response;
+					},
+					error: function (xhr, status, error) {
+					}
+				});
+
+				$.ajax({
+					type: "GET",
+					url: '@Url.Action("GetUnitCost", "Pr")',
+					data: { id: selectedValue },
+					success: function (response) {
+						unitCostInput.value = response;
+					},
+					error: function (xhr, status, error) {
+					}
+				});
+			});
+		}
 	}
-	//
 </script>

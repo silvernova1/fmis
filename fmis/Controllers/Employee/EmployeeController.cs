@@ -14,9 +14,11 @@ using System.Collections.Generic;
 using fmis.Models.ppmp;
 using Microsoft.EntityFrameworkCore;
 using fmis.Models.pr;
+using Microsoft.AspNetCore.Authorization;
 
 namespace fmis.Controllers.Employee
 {
+    //[Authorize(AuthenticationSchemes = "Scheme2")]
     public class EmployeeController : Controller
     {
         private readonly PpmpContext _ppmpContext;
@@ -81,7 +83,7 @@ namespace fmis.Controllers.Employee
                     table.AddCell(headerCell);
                 }
 
-                var items = _ppmpContext.item_daily.Where(x=>x.Expense_id == 52).ToList();
+                var items = _ppmpContext.item.ToList();
 
                 for (int row = 0; row < items.Count; row++)
                 {
@@ -129,8 +131,7 @@ namespace fmis.Controllers.Employee
         {
             ViewBag.filter = new FilterSidebar("end_user", "DV", "");
 
-            var item = from x in _ppmpContext.item_daily
-                       orderby x.Id
+            var item = from x in _ppmpContext.item
                        select x;
             ViewBag.Item = new SelectList(item, "Id", "Description");
 
@@ -184,14 +185,14 @@ namespace fmis.Controllers.Employee
 
         public List<Item> GetItemsId(int expenseId)
         {
-            return _ppmpContext.item_daily.Where(c => c.Expense_id == expenseId).ToList();
+            return _ppmpContext.item.Where(c => c.Expense_id == expenseId).ToList();
         }
 
         [HttpGet]
         public IActionResult GetUnit(int id)
         {
 
-            var item = _ppmpContext.item_daily.FirstOrDefault(i => i.Id == id);
+            var item = _ppmpContext.item.FirstOrDefault(i => i.Id == id);
             if (item != null)
             {
                 return Ok(item.Unit_measurement);
@@ -202,7 +203,7 @@ namespace fmis.Controllers.Employee
         public IActionResult GetUnitCost(int id)
         {
 
-            var item = _ppmpContext.item_daily.FirstOrDefault(i => i.Id == id);
+            var item = _ppmpContext.item.FirstOrDefault(i => i.Id == id);
             if (item != null)
             {
                 return Ok(item.Unit_cost);
@@ -233,7 +234,7 @@ namespace fmis.Controllers.Employee
         }
         public void ItemsDropDownList(object selected = null)
         {
-            var Query = from i in _ppmpContext.item_daily
+            var Query = from i in _ppmpContext.item
                         orderby i.Id
                         select i;
             ViewBag.ItemId = new SelectList(Query, "Id", "Description", selected);

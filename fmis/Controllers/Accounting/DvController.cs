@@ -64,7 +64,7 @@ namespace fmis.Controllers.Accounting
 
         public IActionResult GetPrograms()
         {
-            var programs = _ppmpContext.item_daily.ToList();
+            var programs = _ppmpContext.item.ToList();
 
             return Json(programs);
         }
@@ -73,7 +73,7 @@ namespace fmis.Controllers.Accounting
         {
             ViewBag.filter = new FilterSidebar("end_user", "DV", "");
 
-            var item = from e in _ppmpContext.item_daily
+            var item = from e in _ppmpContext.item
                        orderby e.Id
                           select e;
             ViewBag.Item = new SelectList(item, "Id", "Description");
@@ -168,7 +168,7 @@ namespace fmis.Controllers.Accounting
             .OrderByDescending(e => e.DvId)
             .FirstOrDefault();
 
-            if (lastRecord != null)
+            /*if (lastRecord != null)
             {
                 int lastDvNo = int.Parse(lastRecord.DvNo.Split('-')[1]);
                 lastDvNo++;
@@ -179,7 +179,7 @@ namespace fmis.Controllers.Accounting
             else
             {
                 ViewData["DvNo"] = "S09-2872";
-            }
+            }*/
 
             return PartialView("_CreatePartial");
         }
@@ -264,7 +264,7 @@ namespace fmis.Controllers.Accounting
             .OrderByDescending(e => e.DvId)
             .FirstOrDefault();
 
-            if (lastRecord != null)
+            /*if (lastRecord != null)
             {
                 int lastDvNo = int.Parse(lastRecord.DvNo.Split('-')[1]);
                 lastDvNo++;
@@ -275,7 +275,7 @@ namespace fmis.Controllers.Accounting
             else
             {
                 ViewData["DvNo"] = "T09-4274";
-            }
+            }*/
 
             return View(newDv);
         }
@@ -860,26 +860,26 @@ namespace fmis.Controllers.Accounting
                             string netDeduct = deduct?.ToString("##,#00.00").PadRight(12);
                             string amount = deductions?.Amount?.ToString("##,#00.00").PadLeft(15);
 
-                            deductionsList.Add(description + " { " + netDeduct + " } " + amount);
-                            //Console.WriteLine(string.Join("\n", deductionsList));
+                            deductionsList.Add(description + "      " + amount);
                         }
                     }
 
                     doc.Add(table_row_5);
+
                     var table_row_6 = new PdfPTable(4);
                     float[] tbt_ro6_width = { 20, 5, 5, 5 };
                     table_row_6.WidthPercentage = 100f;
                     table_row_6.SetWidths(tbt_ro6_width);
-                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundCluster?.FirstOrDefault()?.dvParticulars.ToString() + "\n\n\n\n" +  string.Join("\n", deductionsList) + "\n\n\n\n\n\n\n\n\n\n                                                                                                        Amount Due:", arial_font_deductions)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_TOP, PaddingLeft = 10 });
-                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
-                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = 13, FixedHeight = 110f, HorizontalAlignment = Element.ALIGN_CENTER });
+                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + fundCluster?.FirstOrDefault()?.dvParticulars.ToString() + "\n\n\n\n" +  string.Join("\n", deductionsList) + "\n\n\n\n\n\n\n\n\n                                                                                                       ", arial_font_deductions)) { Border = PdfPCell.LEFT_BORDER | PdfPCell.TOP_BORDER, FixedHeight = 83f, HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_TOP, PaddingLeft = 10 });
+                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = PdfPCell.LEFT_BORDER | PdfPCell.TOP_BORDER, FixedHeight = 83f, HorizontalAlignment = Element.ALIGN_CENTER });
+                    table_row_6.AddCell(new PdfPCell(new Paragraph("\n" + "", arial_font_9)) { Border = PdfPCell.LEFT_BORDER | PdfPCell.TOP_BORDER, FixedHeight = 83f, HorizontalAlignment = Element.ALIGN_CENTER });
                     table_row_6.AddCell(new PdfPCell(new Paragraph("" +
-                        "" + "\n" + "PHP " + fundCluster?.FirstOrDefault()?.dvGrossAmount?.ToString("##,#00.00") + "\n\n\n\n\n\n" +
-                        "PHP " + fundCluster?.FirstOrDefault()?.dvTotalDeductions?.ToString("##,#00.00") + "\n\n\n\n\n\n" +
-                        "PHP " + fundCluster?.FirstOrDefault()?.dvNetAmount?.ToString("##,#00.00"), arial_font_9))
+                        "" + "\n" + "PHP " + fundCluster?.FirstOrDefault()?.dvGrossAmount?.ToString("##,#00.00") + "\n\n\n" +
+                        "PHP " + fundCluster?.FirstOrDefault()?.dvTotalDeductions?.ToString("##,#00.00") + "\n\n\n\n"
+                        , arial_font_9))
                     {
                         Border = 13,
-                        FixedHeight = 140f,
+                        FixedHeight = 83f,
                         HorizontalAlignment = Element.ALIGN_CENTER,
                         VerticalAlignment = Element.ALIGN_TOP,
                         PaddingBottom = 7,
@@ -887,7 +887,43 @@ namespace fmis.Controllers.Accounting
                     });
                     doc.Add(table_row_6);
 
-                    var table_row_7 = new PdfPTable(4);
+                var table_row_netAmount = new PdfPTable(4);
+                float[] tbt_rownetAmount_width = { 20, 5, 5, 5 };
+                table_row_netAmount.WidthPercentage = 100f;
+                table_row_netAmount.SetWidths(tbt_rownetAmount_width);
+
+                table_row_netAmount.AddCell(new PdfPCell(new Paragraph("                                                                                            Amount Due:", arial_font_9))
+                {
+                    Border = PdfPCell.LEFT_BORDER,
+                    HorizontalAlignment = Element.ALIGN_CENTER,
+                    VerticalAlignment = Element.ALIGN_MIDDLE,
+                    FixedHeight = 25
+                });
+                table_row_netAmount.AddCell(new PdfPCell(new Paragraph("", arial_font_9))
+                {
+                    Border = PdfPCell.LEFT_BORDER,
+                    HorizontalAlignment = Element.ALIGN_CENTER,
+                    VerticalAlignment = Element.ALIGN_MIDDLE,
+                    FixedHeight = 25
+                });
+                table_row_netAmount.AddCell(new PdfPCell(new Paragraph("", arial_font_9))
+                {
+                    Border = PdfPCell.LEFT_BORDER,
+                    HorizontalAlignment = Element.ALIGN_CENTER,
+                    VerticalAlignment = Element.ALIGN_MIDDLE,
+                    FixedHeight = 25
+                });
+                table_row_netAmount.AddCell(new PdfPCell(new Paragraph("PHP " + fundCluster?.FirstOrDefault()?.dvNetAmount?.ToString("##,#00.00"), arial_font_9))
+                {
+                    Border = PdfPCell.LEFT_BORDER | PdfPCell.RIGHT_BORDER,
+                    HorizontalAlignment = Element.ALIGN_CENTER,
+                    VerticalAlignment = Element.ALIGN_MIDDLE,
+                    FixedHeight = 25
+                });
+
+                doc.Add(table_row_netAmount);
+
+                var table_row_7 = new PdfPTable(4);
                     float[] tbt_row7_width = { 10, 5, 5, 5 };
                     table_row_7.WidthPercentage = 100f;
                     table_row_7.SetWidths(tbt_row7_width);

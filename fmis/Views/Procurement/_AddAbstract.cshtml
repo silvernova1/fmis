@@ -1,0 +1,127 @@
+﻿@model List<fmis.Models.Procurement.Abstract>
+
+
+<style>
+    .ui-datepicker {
+        width: 250px !important;
+    }
+</style>
+
+<div class="col-xs-12">
+    <div id="my-modal" class="modal fade" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 class="smaller lighter blue no-margin">Create Abstract</h3>
+                </div>
+                <form>
+                    <div class="modal-body">
+                        <div>
+                            <h4 class="grey lighter smaller">
+                                Please complete the form.
+                            </h4>
+                            <br />
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold"> ABSTRACT NO. </label>
+                                        <input type="text" class="form-control" name="AbstractNo" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">ABSTRACT DATE </label>
+                                        <input type="text" class="form-control" id="abstractdate" name="AbstractDate" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">  PR NO./ DATE </label>
+                                        <select class="form-control" name="PrNoWithDate" asp-items="ViewBag.PrWithDate">
+                                            <option>Select Pr</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold"> REMARKS </label>
+                                        <textarea class="form-control" name="Remarks"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">  CANVASS NO./DATE  </label>
+                                        <select class="form-control" name="CanvassNoWithDate" asp-items="ViewBag.CanvassWithDate">
+                                            <option>Select Canvass</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Date" style="font-weight:bold"> RECOMMENDED AWARD</label>
+                                        <input type="text" class="form-control" name="RecommendedAward">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">RMOP</label>
+                                        <select class="form-control" name="Rmop">
+                                            <option value="AGENCY TO AGENCY">AGENCY TO AGENCY</option>
+                                            <option value="DIRECT CONTRACTING (DRUGS AND MEDS)">DIRECT CONTRACTING (DRUGS AND MEDS)</option>
+                                            <option value="EMERGENCY CASES (DRUGS AND MEDS)">EMERGENCY CASES (DRUGS AND MEDS)</option>
+                                            <option value="LEASE OF VENUE (GOODS)">LEASE OF VENUE (GOODS)</option>
+                                            <option value="PUBLIC BIDDING (GOODS AND EQUIPMENT)">PUBLIC BIDDING (GOODS AND EQUIPMENT)</option>
+                                            <option value="PS-DBM">PS-DBM</option>
+                                            <option value="SCIENTIFIC SCHOLARLY">SCIENTIFIC SCHOLARLY</option>
+                                            <option value="SMALL VALUE PROCUREMENT (GOODS AND EQUIPMENT)">SMALL VALUE PROCUREMENT (GOODS AND EQUIPMENT)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" onclick="showNotification()" class="btn btn-xs btn-primary">Submit <span class="fa fa-check-square-o"></span> </button>
+                        <a data-dismiss="modal" class="btn btn-xs btn-danger">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#abstractdate").datepicker({
+            dateFormat: "MM d, yy"
+        });
+
+        $('form').submit(function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: '@Url.Action("SaveAbstract", "Procurement")',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function (result) {
+                    if (result.success) {
+                        Lobibox.notify('success', {
+                            title: 'Success',
+                            msg: 'Data saved successfully..',
+                            sound: false
+                        });
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1500);
+                    } else {
+                        Lobibox.notify('error', {
+                            title: 'Error',
+                            msg: 'Error submitting the form..',
+                            sound: false
+                        });
+                        setTimeout(function () {
+                            $("#my-modal").modal("hide");
+                            location.reload();
+                        }, 1000);
+                    }
+                    $('form')[0].reset();
+
+                },
+                error: function () {
+                }
+            });
+        });
+
+    });
+</script>

@@ -16,7 +16,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace fmis.Controllers.Accounting
 {
-    [Authorize(AuthenticationSchemes = "Scheme2", Roles = "accounting_admin")]
+    //[Authorize(AuthenticationSchemes = "Scheme2", Roles = "accounting_admin")]
     public class UsersController : Controller
     {
         
@@ -30,10 +30,10 @@ namespace fmis.Controllers.Accounting
         }
 
         
-        [Route("Accounting/Users")]
+        //[Route("Accounting/Users")]
         public async Task<IActionResult> Index(string selectedEmployee)
         {
-            ViewBag.filter = new FilterSidebar("Accounting", "index_of_payment", "index");
+            ViewBag.filter = new FilterSidebar("end_user", "DV", "");
 
             var users = _fmisContext.users
                 .Where(u => string.IsNullOrEmpty(selectedEmployee) || u.Username.Contains(selectedEmployee) || u.Email.Contains(selectedEmployee))
@@ -78,7 +78,10 @@ namespace fmis.Controllers.Accounting
                     Username = userToSave.Username,
                     Password = userToSave.Password,
                     Email = userToSave.Email,
-                };
+                    Fname = userToSave.Fname,
+                    Lname = userToSave.Lname,
+                    UserId = userToSave.Id.ToString()
+              };
 
                 await _myDbContext.IndexUser.AddAsync(indexUser);
                 await _myDbContext.SaveChangesAsync();

@@ -23,7 +23,9 @@ namespace fmis.Models
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                   //webBuilder.UseUrls("http://192.168.110.98:5000");
                    webBuilder.UseStartup<Startup>();
+                    
                 });
     }
 }

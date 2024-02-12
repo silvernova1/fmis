@@ -39,6 +39,12 @@ using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using fmis.ViewModel;
 using Microsoft.AspNetCore.Authentication;
+using System.Net.Mail;
+using System.Net;
+using fmis.Services;
+using fmis.Data.MySql;
+using fmis.Models.UserModels;
+using iText.Commons.Actions.Contexts;
 
 namespace fmis.Controllers.Accounting
 {
@@ -50,15 +56,19 @@ namespace fmis.Controllers.Accounting
         private readonly DeductionContext _DeductionContext;
         private readonly DvContext _DvContext;
         private readonly IndexofpaymentContext _IndexofpaymentContext;
+        private readonly EmailService _emailService;
+        private readonly fmisContext _dtsContext;
 
 
-        public IndexOfPaymentController(MyDbContext MyDbContext, CategoryContext categoryContext, DeductionContext deductionContext, DvContext dvContext, IndexofpaymentContext indexofpaymentContext)
+        public IndexOfPaymentController(MyDbContext MyDbContext, CategoryContext categoryContext, DeductionContext deductionContext, DvContext dvContext, IndexofpaymentContext indexofpaymentContext, EmailService emailService, fmisContext dtsContext)
         {
             _MyDbContext = MyDbContext;
             _CategoryContext = categoryContext;
             _DeductionContext = deductionContext;
             _DvContext = dvContext;
             _IndexofpaymentContext = indexofpaymentContext;
+            _emailService = emailService;
+            _dtsContext = dtsContext;
         }
 
         [Route("Accounting/IndexOfPayment")]
@@ -77,6 +87,8 @@ namespace fmis.Controllers.Accounting
                             .Include(x => x.indexDeductions)
                                 .ThenInclude(x => x.Deduction)
                             .Include(x => x.BillNumbers)
+                            .Include(x=>x.PoNumbers)
+                            .Include(x=>x.Invoices)
                             select c;
 
             ViewBag.UserId = UserId;
@@ -113,6 +125,98 @@ namespace fmis.Controllers.Accounting
 
         }
 
+        #region IndexUser
+        [Route("Accounting/Users")]
+        public async Task<IActionResult> IndexUser(string selectedEmployee)
+        {
+            ViewBag.filter = new FilterSidebar("end_user", "DV", "");
+
+            var user = UserRole;
+
+            var users = _dtsContext.users
+                .Where(u => string.IsNullOrEmpty(selectedEmployee) || u.Username.Contains(selectedEmployee) || u.Email.Contains(selectedEmployee))
+            .OrderBy(x => x.Fname)
+                .ToList();
+
+            var list_user = await _MyDbContext.IndexUser.ToListAsync();
+
+            var viewModel = new CombineIndexFmisUser
+            {
+                Users = users,
+                ListUser = list_user
+            };
+
+            ViewBag.userId = _MyDbContext.IndexUser.Select(x=>x.UserId).ToList();
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveUsers(int selectedEmployee)
+        {
+
+            var userToSave = _dtsContext.users.FirstOrDefault(x => x.Id == selectedEmployee);
+
+            if (userToSave != null)
+            {
+
+                var uniqueEmail = await _MyDbContext.IndexUser.FirstOrDefaultAsync(x => x.Username == userToSave.Username);
+
+                if (uniqueEmail == null)
+                {
+                    var indexUser = new IndexUser
+                    {
+                        Username = userToSave.Username,
+                        Password = userToSave.Password,
+                        Email = userToSave.Email,
+                        Fname = userToSave.Fname,
+                        Lname = userToSave.Lname,
+                        UserId = userToSave.Id.ToString()
+                    };
+
+                    await _MyDbContext.IndexUser.AddAsync(indexUser);
+                    await _MyDbContext.SaveChangesAsync();
+                }
+            }
+            return RedirectToAction("IndexUser");
+        }
+
+
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            var deleteUser = await _MyDbContext.IndexUser.FindAsync(id);
+            if (deleteUser != null)
+            {
+                _MyDbContext.IndexUser.Remove(deleteUser);
+                await _MyDbContext.SaveChangesAsync();
+            }
+
+            return RedirectToAction("IndexUser");
+
+        }
+        #endregion
+
+        public IActionResult Email()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Send(string recipient, string subject, string message)
+        {
+            try
+            {
+                _emailService.SendEmail(recipient, subject, message);
+                ViewBag.Message = "Email sent successfully!";
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = "An error occurred while sending the email: " + ex.Message;
+            }
+
+            return View("Email");
+        }
+
         public IActionResult selectAT(int id)
         {
             var branches = _MyDbContext.Dv.Include(x => x.Payee).ToList();
@@ -145,7 +249,7 @@ namespace fmis.Controllers.Accounting
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(IndexOfPayment indexOfPayment, string daterange)
+        public async Task<IActionResult> Create(IndexOfPayment indexOfPayment, string daterange, List<Invoice> invoice)
         {
             indexOfPayment.CreatedAt = DateTime.Now;
             indexOfPayment.UpdatedAt = DateTime.Now;
@@ -582,7 +686,6 @@ namespace fmis.Controllers.Accounting
                     var existingPayee = await _MyDbContext.Payee.FirstOrDefaultAsync(p => p.PayeeDescription == concatenatedPayee);
                     if (existingPayee == null)
                     {
-                        // Data already exists, add it to the existingData list
                         data.Add(concatenatedPayee);
                     }
                     else

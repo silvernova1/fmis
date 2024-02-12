@@ -46,7 +46,8 @@ using OfficeOpenXml.FormulaParsing.Excel.Functions.Database;
 
 namespace fmis.Controllers.Employee
 {
-    public class PrController : Controller
+	[Authorize(AuthenticationSchemes = "Scheme2", Roles = "accounting_user")]
+	public class PrController : Controller
     {
         private readonly PpmpContext _ppmpContext;
         private readonly DtsContext _dts;
@@ -63,11 +64,24 @@ namespace fmis.Controllers.Employee
         {
             ViewBag.filter = new FilterSidebar("end_user", "DV", "");
             ExpenseDropDownList();
-            ItemsDropDownList();
+            //ItemsDropDownList();
             UsersDropDownList();
 
-            var pr = await _context.Pr.Include(x => x.PrItems).ToListAsync();
-            ViewBag.ItemDesc = _ppmpContext.item_daily.FirstOrDefault();
+            var pr = await _context.Pr.Where(x=>x.UserId == UserId).Include(x => x.PrItems).ToListAsync();
+
+			var puCheck = await _context.PuChecklist.Include(x => x.PrChecklist).ToListAsync();
+
+            var Query = from i in _ppmpContext.item
+                        orderby i.Id
+                        select new SelectListItem
+                        {
+                            Value = i.Id.ToString(),
+                            Text = i.Description
+                        };
+
+            IEnumerable<SelectListItem> itemList = Query.ToList();
+
+            ViewBag.ItemId = itemList;
 
 
             return View(pr);
@@ -76,19 +90,27 @@ namespace fmis.Controllers.Employee
         [HttpPost]
         public async Task<IActionResult> Create(Pr pr)
         {
+			pr.UserId = UserId;
             _context.Add(pr);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
+        }
+
+		public List<Item> GetItemsId(int expenseId)
+        {
+			return _ppmpContext.item.Where(x => x.Expense_id == expenseId).Select(x => new Item { Id = x.Id, Description = x.Description }).ToList();
         }
 
         [HttpGet]
         public IActionResult GetUnit(int id)
         {
 
-            var item = _ppmpContext.item_daily.FirstOrDefault(i => i.Id == id);
+            var item = _ppmpContext.item.Select(x=> new Item { Id = x.Id, Unit_measurement = x.Unit_measurement }).FirstOrDefault(i => i.Id == id).Unit_measurement;
             if (item != null)
             {
-                return Ok(item.Unit_measurement);
+				var unitM = item;
+
+				return Ok(item);
             }
             return NotFound();
         }
@@ -96,10 +118,10 @@ namespace fmis.Controllers.Employee
         public IActionResult GetUnitCost(int id)
         {
 
-            var item = _ppmpContext.item_daily.FirstOrDefault(i => i.Id == id);
+            var item = _ppmpContext.item.Select(x => new Item { Id = x.Id, Unit_cost = x.Unit_cost }).FirstOrDefault(i => i.Id == id).Unit_cost;
             if (item != null)
             {
-                return Ok(item.Unit_cost);
+                return Ok(item);
             }
             return NotFound();
         }
@@ -112,7 +134,7 @@ namespace fmis.Controllers.Employee
         }
         public void ItemsDropDownList(object selected = null)
         {
-            var Query = from i in _ppmpContext.item_daily
+            var Query = from i in _ppmpContext.item
                         orderby i.Id
                         select i;
             ViewBag.ItemId = new SelectList(Query, "Id", "Description", selected);
@@ -127,10 +149,6 @@ namespace fmis.Controllers.Employee
                             Fullname = x.Fname + " " + x.Lname + " " + x.Lname
                         };
             ViewBag.Approval = new SelectList(employee, "Id", "Fullname");
-        }
-        public List<Item> GetItemsId(int expenseId)
-        {
-            return _ppmpContext.item_daily.Where(c => c.Expense_id == expenseId).ToList();
         }
 
 
@@ -221,6 +239,8 @@ namespace fmis.Controllers.Employee
 				doc.Add(table);
 
 
+				var pr = _context.Pr.Include(x => x.PrItems).FirstOrDefault(x=>x.Id == id);
+
 				iTextSharp.text.Image myImage = iTextSharp.text.Image.GetInstance("wwwroot/assets/images/final_textbox_f.png");
 				PdfPCell cell = new PdfPCell(myImage);
 
@@ -248,7 +268,7 @@ namespace fmis.Controllers.Employee
 					FixedHeight = 15,
 					VerticalAlignment = Element.ALIGN_MIDDLE
 				});
-				table_row_3.AddCell(new PdfPCell(new Paragraph("69/69/2069", arial_font_8))
+				table_row_3.AddCell(new PdfPCell(new Paragraph(pr.PrnoDate.ToShortDateString(), arial_font_8))
 				{
 					HorizontalAlignment = Element.ALIGN_LEFT,
 					FixedHeight = 15,
@@ -602,5 +622,9 @@ namespace fmis.Controllers.Employee
 			}
 
 		}
-	}
+
+        #region COOKIES
+        public string UserId { get { return User.FindFirstValue(ClaimTypes.Name); } }
+        #endregion
+    }
 }

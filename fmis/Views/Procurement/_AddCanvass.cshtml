@@ -1,0 +1,155 @@
+﻿@model List<fmis.Models.Procurement.Canvass>
+
+<style>
+    .ui-datepicker {
+        width: 250px !important;
+    }
+</style>
+<div class="col-xs-12">
+    <div id="my-modal" class="modal fade" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 class="smaller lighter blue no-margin">Create Canvass</h3>
+                </div>
+                <form asp-action="SaveCanvass" method="post">
+                    <div class="modal-body">
+                        <div>
+                            <h4 class="grey lighter smaller">
+                                Please complete the form.
+                            </h4>
+                            <br />
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">RPQ NO. </label>
+                                        <input type="text" class="form-control" name="RpqNo" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">RPQ DATE </label>
+                                        <input type="text" class="form-control" id="rpqdate" name="rpqdate">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">SUBMISSION DATE </label>
+                                        <input type="text" class="form-control" id="subdate" name="SubmissionDate">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">RMOP</label>
+                                        <select class="form-control" name="Rmop">
+                                            <option value="AGENCY TO AGENCY">AGENCY TO AGENCY</option>
+                                            <option value="DIRECT CONTRACTING (DRUGS AND MEDS)">DIRECT CONTRACTING (DRUGS AND MEDS)</option>
+                                            <option value="EMERGENCY CASES (DRUGS AND MEDS)">EMERGENCY CASES (DRUGS AND MEDS)</option>
+                                            <option value="LEASE OF VENUE (GOODS)">LEASE OF VENUE (GOODS)</option>
+                                            <option value="PUBLIC BIDDING (GOODS AND EQUIPMENT)">PUBLIC BIDDING (GOODS AND EQUIPMENT)</option>
+                                            <option value="PS-DBM">PS-DBM</option>
+                                            <option value="SCIENTIFIC SCHOLARLY">SCIENTIFIC SCHOLARLY</option>
+                                            <option value="SMALL VALUE PROCUREMENT (GOODS AND EQUIPMENT)">SMALL VALUE PROCUREMENT (GOODS AND EQUIPMENT)</option>
+                                        </select>
+                                    </div>
+                                    
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold"> PR NO  </label>
+                                        <select class="form-control" name="PrNo" id="PrNo" asp-items="ViewBag.Pr">
+                                            <option value="">Select Pr No.</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold"> PR DATE </label>
+                                        <input type="text" class="form-control" id="Date" name="PrDate" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold"> ITEM/DESCRIPTION: </label>
+                                        <textarea class="form-control" name="ItemDesc"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold"> REMARKS </label>
+                                        <textarea class="form-control" name="Remarks"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-xs btn-primary">Submit <span class="fa fa-check-square-o"></span> </button>
+                        <a data-dismiss="modal" class="btn btn-xs btn-danger">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#rpqdate").datepicker({
+            dateFormat: "MM d, yy"
+        
+        });
+
+        $("#prdate").datepicker({
+            dateFormat: "MM d, yy"
+
+        });
+        $("#subdate").datepicker({
+            dateFormat: "MM d, yy"
+
+        });
+
+        $("#PrNo").change(function () {
+            var selectedPrNo = $(this).val();
+            $.ajax({
+                url: '@Url.Action("GetDate", "Procurement")',
+                type: 'GET',
+                data: { prNo: selectedPrNo },
+                success: function (result) {
+                    $("#Date").val(result);
+                },
+                error: function () {
+                    console.log('Error fetching date');
+                }
+            });
+        });
+
+        $('form').submit(function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: '@Url.Action("SaveCanvass", "Procurement")',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function (result) {
+                    if (result.success) {
+                        Lobibox.notify('success', {
+                            title: 'Success',
+                            msg: 'Data saved successfully..',
+                            sound: false
+                        });
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1500);
+                    } else {
+                        Lobibox.notify('error', {
+                            title: 'Error',
+                            msg: 'Error submitting the form..',
+                            sound: false
+                        });
+                        setTimeout(function () {
+                            $("#my-modal").modal("hide");
+                            location.reload();
+                        }, 1000);
+                    }
+                    $('form')[0].reset();
+
+                },
+                error: function () {
+                }
+            });
+        });
+
+    });
+</script>

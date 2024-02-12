@@ -87,6 +87,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Folder Include="PdfFiles\" />
+		<Folder Include="Repositories\" />
 		<Folder Include="ViewBag\" />
 		<Folder Include="wwwroot\assets\plugin\lobibox\dist\js\" />
 		<Folder Include="wwwroot\Rotativa\" />

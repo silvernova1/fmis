@@ -1,0 +1,254 @@
+﻿@model fmis.Models.Procurement.PuChecklist
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Procurement" + " " + "(Checklist3)";
+}
+
+
+<h3 class="grey lighter smaller">
+    P.U Checklist #3
+</h3>
+<hr>
+<div class="background-wrapper">
+    <div class="card-container">
+        <div class="row">
+            <form asp-controller="Procurement" asp-action="SaveChecklist">
+                <input type="hidden" asp-for="ChecklistNo" value="3" />
+                <div class="col-md-12">
+                    <center>
+                        <div class="rectangle">
+                            <h2>P.U CHECKLIST #3</h2>
+                        </div>
+                        <h5 style="font-weight:bold">
+                            PURCHASE REQUEST (PR) FOR <br />
+                            <u>
+                                JOB ORDER FOR PROVISION<br />
+                                OF IEC COLLATERALS
+                            </u>
+                        </h5>
+                        <p style="font-weight:bold;">
+                            (Shirt, Cap Vest, Training Kit, Tarpaulin<br />
+                            Bags, Jacket, Pants, Mug, Umbrella, etc.)
+                        </p>
+                        <h6>
+                            PR NO. :
+                            <select asp-for="Prno" asp-items="ViewBag.PrId" class="form-control pr" style="width: 200px;">
+                                <option value="">Select Pr</option>
+                            </select>
+                        </h6>
+                        <h6>
+                            DATE : <input type="date" asp-for="PuChecklistDate" class="text-input-container" style="width: 200px;" />
+                        </h6>
+                        <div class="rectangle">
+                            <h6 style="font-weight:bold">
+                                SUPPORTING DOCUMENTS/DETAILS
+                            </h6>
+                        </div>
+                    </center>
+
+                    <div class="form-group">
+                        <p>
+                            <input type="checkbox" asp-for="PrChecklist[0].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[0].Description" value="Complete signatures incl. approval" />
+                            Complete signatures incl. approval
+                        </p>
+                        <p>
+                            <input type="checkbox" asp-for="PrChecklist[1].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[1].Description" value="Complete with PR # and date" />
+                            Complete with PR # and date
+                        </p>
+                        <p>
+                            <input type="checkbox" asp-for="PrChecklist[2].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[2].Description" value="Estimated unit cost & correct total cost" />
+                            Estimated unit cost & correct total cost
+                        </p>
+                        <p>
+                            <input type="checkbox" asp-for="PrChecklist[3].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[3].Description" value="Purpose of request" />
+                            Purpose of request
+                        </p>
+                        <p>
+                            <input type="checkbox" asp-for="PrChecklist[4].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[4].Description" value="Funding Source" />
+                            Funding Source
+                        </p>
+                        <p>
+                            <input type="checkbox" asp-for="PrChecklist[5].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[5].Description" value="Quantity" />
+                            Quantity
+                        </p>
+                        <p>
+                            <input type="checkbox" asp-for="PrChecklist[6].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[6].Description" value="Color" />
+                            Color
+                        </p>
+                        <p>
+                            <input type="checkbox" asp-for="PrChecklist[7].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[7].Description" value="Size(s)" />
+                            Size(s)
+                        </p>
+                        <p>
+                            <input type="checkbox" asp-for="PrChecklist[8].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[8].Description" value="Text/Design" />
+                            Text/Design
+                        </p>
+                        <p>
+                            <input type="checkbox" asp-for="PrChecklist[9].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[9].Description" value="Printed Sample Design" />
+                            Printed Sample Design
+                        </p>
+                        <p>
+                            <input type="checkbox" asp-for="PrChecklist[10].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[10].Description" value="With or without print/embroidery" />
+                            With or without print/embroidery
+                        </p>
+                        <p style="font-weight:bold">
+                            <u>
+                                With Complete description:
+                            </u>
+                        </p>
+                        <p style="margin-left:10px">
+                            <input type="checkbox" asp-for="PrChecklist[11].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[11].Description" value="Polo shirt or T-shirt (for shirt only)" />
+                            Polo shirt or T-shirt (for shirt only)
+                        </p>
+                        <p style="margin-left:10px">
+                            <input type="checkbox" asp-for="PrChecklist[12].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[12].Description" value="Type of cloth/material" />
+                            Type of cloth/material
+                        </p>
+                        <p style="margin-left:10px">
+                            <input type="checkbox" asp-for="PrChecklist[13].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[13].Description" value="Number of folds (umbrella only)" />
+                            Number of folds (umbrella only)
+                        </p>
+                        <p style="margin-left:10px">
+                            <input type="checkbox" asp-for="PrChecklist[14].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[14].Description" value="With eyelet or none (for tarpaulin only)" />
+                            With eyelet or none (for tarpaulin only)
+                        </p>
+                        <p style="margin-left:10px">
+                            <input type="checkbox" asp-for="PrChecklist[15].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[15].Description" value="Ceramic or glass (for mug only)" />
+                            Ceramic or glass (for mug only)
+                        </p>
+
+                        <p>
+                            <input type="checkbox" asp-for="PrChecklist[16].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[16].Description" value="Approved Allocation List or List of Recipients" />
+                            Approved Allocation List or List of Recipients
+                        </p>
+                        <p>
+                            <input type="checkbox" asp-for="PrChecklist[17].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[17].Description" value="Date Needed, if applicable" />
+                            Date Needed, if applicable
+                        </p>
+                        <p>
+                            <input type="checkbox" asp-for="PrChecklist[18].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[18].Description" value="PR description match printed design" />
+                            PR description match printed design
+                        </p>
+                        <p>
+                            <input type="checkbox" asp-for="PrChecklist[19].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[19].Description" value="Approved Realignment, If applicable" />
+                            Approved Realignment, If applicable
+                        </p>
+                        <p>
+                            <input type="checkbox" asp-for="PrChecklist[20].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[20].Description" value="Approved WFP/Supplemental WFP" />
+                            Approved WFP/Supplemental WFP
+                        </p>
+                        <p>
+                            <input type="checkbox" asp-for="PrChecklist[21].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[21].Description" value="Approved PPMP/Supplemental PPMP" />
+                            Approved PPMP/Supplemental PPMP
+                        </p>
+                        <p>
+                            <input type="checkbox" asp-for="PrChecklist[22].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[22].Description" value="Others" />
+                            Others <br />
+                            &nbsp; &nbsp; &nbsp; &nbsp;  <input type="text" asp-for="PrChecklist[22].Others" style="border: none; border-bottom: 1px solid black;" />
+                        </p>
+
+                        <br />
+                        <p style="font-weight:bold">
+                            REMARKS:
+                        </p>
+                        <p style="font-weight:bold">
+                            <input type="checkbox" asp-for="PrChecklist[23].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[23].Description" value="COMPLETE" />
+                            COMPLETE
+                        </p>
+                        <p style="font-weight:bold">
+                            <input type="checkbox" asp-for="PrChecklist[24].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[24].Description" value="Please comply with item(s) marked X on or before" />
+                            Please comply with item(s) marked <br />
+                            &nbsp; &nbsp; &nbsp; &nbsp; X on or before <input type="text" asp-for="PrChecklist[24].Others" style="border: none; border-bottom: 1px solid black;" />
+                        </p>
+                        <br />
+                        <br />
+                        <p style="font-family:'Times New Roman'; font-style:italic; font-size: 10pt">
+                            CHECKED/REVIEWED BY:
+                        </p>
+                        <br />
+                        <center>
+                            <p class="underline">
+                                STEFANIE LORRAINE D. TRINIDAD
+                            </p>
+                            <p style="font-size:8pt; font-style:italic">
+                                Printed name, Signature and Date
+                            </p>
+                            <button type="submit" class="bnt btn-primary" style="float: right;">Submit</button>
+                        </center>
+
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<br />
+<div class="alert" style="width: 550px; display: none;">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <span id="alert-message"></span>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('.pr').select2();
+
+        $('form').submit(function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: '@Url.Action("SaveChecklist", "Procurement")',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function (result) {
+                    if (result.success) {
+                        Lobibox.notify('success', {
+                            title: 'Success',
+                            msg: 'Submitted to End User..',
+                            sound: false
+                        });
+                    } else {
+                        Lobibox.notify('error', {
+                            title: 'Error',
+                            msg: 'Error submitting the form..',
+                            sound: false
+                        });
+                    }
+                    $('form')[0].reset();
+                    $('.pr').val('').trigger('change');
+                },
+                error: function () {
+                }
+            });
+        });
+    });
+</script>
+
+
+

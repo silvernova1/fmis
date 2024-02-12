@@ -63,7 +63,7 @@
             </div>*@
             <div class="1stcol col-md-2" style="width: 130px;">
                 <h5>Dv #: </h5>
-                <input asp-for="DvNo" type="text" class="form-control" id="dv_no" readonly />
+                <input asp-for="DvNo" id="exemptedInput" type="text" class="form-control" />
                 <span asp-validation-for="DvNo" class="text-danger"></span>
             </div>
         </div>
@@ -283,13 +283,13 @@
         .build();
 
     connection.start().then(function () {
-        console.log("SignalR connection established.");
+        //console.log("SignalR connection established.");
     }).catch(function (err) {
-        console.error(err.toString());
+        //console.error(err.toString());
     });
 
     connection.on("DvNoExists", function (dvNo) {
-        console.log("DvNo exists: " + dvNo);
+        //console.log("DvNo exists: " + dvNo);
         document.getElementById("dvNoExistsSpan").style.display = "inline"; // Show the span
     });
 
@@ -298,7 +298,7 @@
     $(function (){
         $("select#stype").change(function () {
         var stypeId = $(this).val();
-            console.log(stypeId);
+            //console.log(stypeId);
             if(stypeId == 1){
                 //$("#hidden-advance").show();
             }
@@ -313,7 +313,7 @@
     $(function () {
         $("select#dv_type").change(function () {
             var cid = $(this).val();
-            console.log(cid);
+            //console.log(cid);
             if (cid == 'S') {
                 //$("#advance-gross").show();
                 //$("#advance-deduction1").show();
@@ -368,11 +368,13 @@
 
     //adding comma after 3 digits
     function updateTextView(_obj) {
-        var num = +_obj.val();
-        if (num == '') {
-            _obj.val('0');
-        } else {
-            _obj.val(num.toLocaleString(undefined, { minimumFractionDigits: 2 }));
+        if (_obj.attr('id') !== 'exemptedInput') {
+            var num = +_obj.val();
+            if (num == '') {
+                _obj.val('0');
+            } else {
+                _obj.val(num.toLocaleString(undefined, { minimumFractionDigits: 2 }));
+            }
         }
     }
     function getNumber(_str) {
@@ -451,7 +453,7 @@
         let dvDeduction = $(parentDiv).find('select');
         let dvDedectionAmt = $(parentDiv).find('input');
         if (dvDeduction.val() && dvDedectionAmt.val()) {
-            console.log(dvDeduction.val(), dvDedectionAmt.val());
+            //console.log(dvDeduction.val(), dvDedectionAmt.val());
         }
         computeNetAmount();
     }

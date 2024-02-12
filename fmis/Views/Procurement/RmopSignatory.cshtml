@@ -1,0 +1,179 @@
+﻿@model List<fmis.Models.Procurement.Rmop>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Procurement" + " " + "(RmopSignatory)";
+}
+
+
+
+
+
+<h3 class="grey lighter smaller">
+    RMOP's SIGNATORY
+</h3>
+<hr>
+
+<div class="modal fade" id="CreateModalCanvass" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div id="modalContent"></div>
+        </div>
+    </div>
+</div>
+
+<div class="col-xs-12">
+    <div id="editModal" class="modal fade" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 class="smaller lighter blue no-margin">RMOP Signatory</h3>
+                </div>
+                <form id="editForm">
+                    <div class="modal-body">
+                        <div>
+                            <br />
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="fullName" style="font-weight:bold">FULL NAME </label>
+                                        <input type="text" class="form-control" id="fullName" name="fullName" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="description" style="font-weight:bold">DESCRIPTION. </label>
+                                        <input type="text" class="form-control" id="description" name="fullName" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-xs btn-primary" id="saveChanges">Update <span class="fa fa-check-square-o"></span> </button>
+                        <a data-dismiss="modal" class="btn btn-xs btn-danger">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p>
+    <a class="btn btn-success btn-sm" href="#my-modal" role="button" data-toggle="modal">
+        <i class="ace-icon fa fa-plus "></i>Create New
+    </a>
+</p>
+<br />
+<table class="table table-hover" style="width: 900px">
+    <thead>
+        <tr>
+            <th>
+                FULL NAME
+            </th>
+            <th>
+                DESCRIPTION
+            </th>
+
+            <th>
+                ACTIONS
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if(Model.Count > 0)
+        {
+            foreach(var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item.FullName
+                    </td>
+                    <td>
+                        @item.Description
+                    </td>
+                    <td>
+                        <a class="btn btn-xs btn-primary btn-edit" data-id="@item.Id">
+                            <i class="ace-icon fa fa-edit"></i>Edit
+                        </a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="3">
+                    <div class="alert alert-danger">
+                        No data found.
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Html.PartialAsync("_AddRmop")
+
+
+
+
+<script>
+    var itemId;
+
+    $(document).ready(function () {
+        $(".btn-edit").click(function () {
+            itemId = $(this).data("id");
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetRmop", "Procurement")',
+                data: { id: itemId },
+                success: function (data) {
+                    $("#fullName").val(data.fullName);
+                    $("#description").val(data.description);
+                    $("#editModal").modal("show");
+                }
+            });
+        });
+
+        $("#saveChanges").click(function () {
+            var newData = {
+                Id: itemId,
+                FullName: $("#fullName").val(),
+                Description: $("#description").val()
+            };
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("UpdateRmop", "Procurement")',
+                data: JSON.stringify(newData),
+                contentType: "application/json; charset=utf-8",
+                success: function (result) {
+                    if (result.success) {
+                        Lobibox.notify('success', {
+                            title: 'Success',
+                            msg: 'Data saved successfully..',
+                            sound: false
+                        });
+                        setTimeout(function () {
+                            location.reload();
+                        }, 2000);
+                    } else {
+                        Lobibox.notify('error', {
+                            title: 'Error',
+                            msg: 'Error submitting the form..',
+                            sound: false
+                        });
+                        setTimeout(function () {
+                            $("#editModal").modal("hide");
+                            location.reload();
+                        }, 1000);
+                    }
+                }
+            });
+        });
+    });
+</script>
+
+
+

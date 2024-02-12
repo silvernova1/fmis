@@ -12,7 +12,7 @@ namespace fmis.Data.MySql
         }
 
         public DbSet<FmisUser> users { get; set; }
-        public DbSet<section> section { get; set; }
+        public DbSet<Section> section { get; set; }
 
     }
 }

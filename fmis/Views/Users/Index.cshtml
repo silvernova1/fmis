@@ -39,15 +39,12 @@
 <div class="modal fade" id="exampleModal" role="dialog" aria-labelledby="exampleModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Select Accounting Users</h5>
-
-            </div>
             <form method="post" asp-action="SaveUsers" id="employeeSearchForm">
                 <div class="modal-body">
                     <div class="input-group">
-                        @*<label for="#">Select Employee:</label>*@
-                        <select class="select2" id="employeeDropdown" name="selectedEmployee" style="width: 530px">
+                        <label for="#">Add New User</label>
+                        <select class="form-control" id="employeeDropdown" name="selectedEmployee">
+
                             @foreach (var user in Model.Users)
                             {
                                 <option value="@user.Id">@user.Fname, @user.Lname</option>
@@ -74,7 +71,7 @@
 </script>
 
 <h3 class="grey lighter smaller">
-    Accounting Users
+    Index of Payment Users
 </h3>
 <hr>
 
@@ -97,7 +94,7 @@
                 Username
             </th>
             <th>
-                Email
+                Name
             </th>
             <th>
                 Action
@@ -111,13 +108,13 @@
             <tr>
                 <td>@item.Username</td>
                 <td>
-                    @if (item.Email is null)
+                    @if (item.Fname is null && item.Lname is null)
                     {
                         @("-");
                     }
                     else
                     {
-                        @item.Email
+                        @(@item.Fname + " " + @item.Lname)
                     }
                 </td>
                 <td>
