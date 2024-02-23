@@ -17,7 +17,7 @@
 
 <div class="col-xs-12">
     <div id="editPo" class="modal fade" style="display: none;">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -30,8 +30,62 @@
                                 Please complete the form.
                             </h4>
                             <br />
-
-                            <div class="row">
+                            <div class="row" id="original-form-update">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold"> ABSTRACT NO. </label>
+                                        <select class="form-control" id="abstractNo" name="AbstractNo" asp-items="ViewBag.Abstract">
+                                            <option>Select Abstract</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold"> PO NO. </label>
+                                        <input type="text" class="form-control" id="poNo" name="PoNo">
+                                    </div>
+                                    <div class="form-group" id="description-section-update">
+                                        <label for="" style="font-weight:bold"> DESCRIPTION </label>
+                                        <textarea class="form-control" id="description" name="Description"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold"> PR NO  </label>
+                                        <select class="form-control" id="prNo" name="PrNo" asp-items="ViewBag.Pr">
+                                            <option>Select Pr No</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">  PO DATE </label>
+                                        <input type="text" class="form-control" id="poDate" name="PoDate">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold"> PR DATE </label>
+                                        <input type="text" class="form-control" id="prDate" name="prDate" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">SUPPLIER </label>
+                                        <input type="text" class="form-control" id="supplier" name="Supplier">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">REMARKS</label>
+                                        <input type="text" class="form-control" id="remarks" name="Remarks">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" style="font-weight:bold">AMOUNT</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="amount" name="Amount">
+                                            <span class="input-group-btn" style="padding-left:6px;">
+                                                <button type="button" class="btn btn-success btn-xs" onclick="updateDynamicForm()"> <span class="fa fa-plus"></span> </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @* <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="" style="font-weight:bold"> ABSTRACT NO. </label>
@@ -90,12 +144,12 @@
                                         <input type="text" class="form-control" id="remarks" name="Remarks">
                                     </div>
                                 </div>
-                            </div>
+                            </div> *@
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-xs btn-primary" id="saveChanges">Update <span class="fa fa-check-square-o"></span> </button>
-                        <a data-dismiss="modal" class="btn btn-xs btn-danger">Cancel</a>
+                        <a data-dismiss="modal" class="btn btn-xs btn-danger" onclick="updaterefreshPage()">Cancel</a>
                     </div>
                 </form>
             </div>
@@ -110,7 +164,7 @@
 </p>
 <h1 style="margin-left : 200px; font-weight:bold;">2023 PURCHASE ORDER LOGBOOK</h1>
 <br />
-<table class="table table-hover" style="width: 900px">
+<table class="table table-hover" style="width: 1400px">
     <thead>
         <tr>
             <th>
@@ -186,7 +240,7 @@
                     </td>
                     <td>
                         <a class="btn btn-xs btn-primary btn-edit" data-id="@item.Id">
-                            <i class="ace-icon fa fa-edit"></i>Edit
+                            <i class="ace-icon fa fa-edit"></i> Update
                         </a>
                     </td>
                 </tr>
@@ -209,6 +263,86 @@
 
 
 <script>
+
+
+    function updaterefreshPage() {
+        // Reload the current page
+        location.reload();
+    }
+
+
+    var descriptionAdded = false;
+
+    function updateDynamicForm() {
+        // Create a new div element
+        var dynamicFormDiv = document.createElement("div");
+        dynamicFormDiv.classList.add("dynamic-form");
+
+
+        var descriptionSection = document.getElementById('description-section-update');
+        descriptionSection.classList.add('hidden');
+
+        // Add the HTML content to the newly created div
+        dynamicFormDiv.innerHTML = `
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="" style="font-weight:bold">PO NO.</label>
+                            <input type="text" class="form-control" name="PoNo" readonly value="@ViewBag.FormattedPoNo">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="" style="font-weight:bold">PO DATE</label>
+                            <input type="text" class="form-control" id="rpqdate" name="PoDate">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="" style="font-weight:bold">SUPPLIER</label>
+                            <input type="text" class="form-control" name="Supplier" required>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="" style="font-weight:bold">AMOUNT</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="Amount" required>
+                                <span class="input-group-btn" style="padding-left:6px;">
+                                    <button type="button" class="btn btn-xs btn-danger close-btn"><span class="fa fa-trash"></span></button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+
+        // Add DESCRIPTION section only if it hasn't been added before
+        if (!descriptionAdded) {
+            dynamicFormDiv.innerHTML += `
+                    <div class="row" id="description-section">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label style="font-weight:bold"> DESCRIPTION: </label>
+                                <textarea type="text" class="form-control"> </textarea>
+                            </div>
+                        </div>
+                    </div>`;
+            descriptionAdded = true; // Set the flag to true after adding DESCRIPTION section
+        }
+
+        // Get the original form and append the dynamicFormDiv below it
+        var originalForm = document.getElementById("original-form-update");
+        originalForm.parentNode.insertBefore(dynamicFormDiv, originalForm.nextSibling);
+
+        // Attach event listener to close button
+        var closeBtn = dynamicFormDiv.querySelector('.close-btn');
+        closeBtn.addEventListener('click', function () {
+            dynamicFormDiv.remove(); // Remove the dynamic form when close button is clicked
+        });
+    }
+
+
+
 
     var itemId;
     $(document).ready(function () {
