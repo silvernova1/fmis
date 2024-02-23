@@ -53,6 +53,7 @@ namespace fmis.Controllers.Procurement
 		private readonly fmisContext _dtsContext;
         private readonly IHubContext<PrStatus> _hubContext;
 
+
 		public ProcurementController(MyDbContext context, IUserService userService, PpmpContext ppmpContext, DtsContext dts, IHttpContextAccessor httpContextAccessor, fmisContext dtsContext, IHubContext<PrStatus> hubContext)
         {
             _context = context;
@@ -64,6 +65,16 @@ namespace fmis.Controllers.Procurement
             _hubContext = hubContext;
 
 		}
+
+        #region PR TRACKING
+        [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
+        public IActionResult PurchaseRequest()
+        {
+            ViewBag.filter = new FilterSidebar("Procurement", "PurchaseRequest", "");
+            return View();
+        }
+
+        #endregion
 
         #region PR STATUS
         public IActionResult PrStatus(int id)
@@ -3451,64 +3462,125 @@ namespace fmis.Controllers.Procurement
             using (MemoryStream stream = new System.IO.MemoryStream())
             {
                 Document doc = new iTextSharp.text.Document(PageSize.A4);
-                doc.SetMargins(10f, 10f, 10f, 10f);
+                doc.SetMargins(30f, 30f, 30f, 30f);
                 PdfWriter writer = PdfWriter.GetInstance(doc, stream);
                 doc.Open();
 
 
-                void CheckboxParagraph(string text, bool isChecked = false)
+                void CParagraph(string text, bool isBold = false, bool isUnderlined = false, float fontSize = 10f)
                 {
-                    // Create a PdfPCell with a checkbox
-                    PdfPCell cell = new PdfPCell();
-                    cell.AddElement(new Chunk("\u2610", FontFactory.GetFont(FontFactory.ZAPFDINGBATS, 10f)));
-                    cell.AddElement(new Phrase(text, FontFactory.GetFont(FontFactory.HELVETICA, 10f, Font.NORMAL)));
-
-                    // Set the checkbox as checked if needed
-                    if (isChecked)
+                    Font font = isBold ? FontFactory.GetFont(FontFactory.HELVETICA_BOLD, fontSize) : new Font(Font.FontFamily.HELVETICA, fontSize, Font.NORMAL);
+                    if (isUnderlined)
                     {
-                        cell = new PdfPCell();
-                        cell.AddElement(new Chunk("\u2611", FontFactory.GetFont(FontFactory.ZAPFDINGBATS, 10f)));
-                        cell.AddElement(new Phrase(text, FontFactory.GetFont(FontFactory.HELVETICA, 10f, Font.NORMAL)));
+                        font.SetStyle(Font.UNDERLINE);
                     }
-
-                    // Add the PdfPCell to the document
-                    doc.Add(cell);
-                }
-
-
-                void CParagraph(string text, bool isBold = false)
-                {
-                    Font font = isBold ? FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10f) : new Font(Font.FontFamily.HELVETICA, 10f, Font.NORMAL);
-                    Paragraph centeredParagraph = new Paragraph(text, font);
+                    Paragraph centeredParagraph = new Paragraph(new Chunk(text, font));
                     centeredParagraph.Alignment = Element.ALIGN_CENTER;
                     doc.Add(centeredParagraph);
                 }
 
-
-                // Method to add justified paragraph with bold text
-                void JParagraph(string text, bool isBold = false, bool centerAligned = false)
+                void JParagraph(string text, bool isBold = false, bool centerAligned = false, bool isItalic = false)
                 {
-                    Font font = isBold ? FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10f) : new Font(Font.FontFamily.HELVETICA, 10f, Font.NORMAL);
-                    Paragraph justifiedParagraph = new Paragraph(text, font);
+                    Font font;
+                    if (isBold)
+                    {
+                        font = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10f);
+                    }
+                    else if (isItalic)
+                    {
+                        font = FontFactory.GetFont(FontFactory.TIMES_ITALIC, 10f);
+                    }
+                    else
+                    {
+                        font = new Font(Font.FontFamily.HELVETICA, 10f, Font.NORMAL);
+                    }
+
+                    Paragraph justifiedParagraph = new Paragraph();
+
+                    PdfContentByte checkbox = writer.DirectContent;
+                    for (int i = 0; i < 33; i++)
+                    {
+                        if (i == 19 || i == 22  || i == 30 || i == 29) continue; // Exclude certain values
+                        checkbox.SetLineWidth(1f);
+                        checkbox.Rectangle(doc.Left - -112f, doc.Top - 173f - (i * 16f), 10f, 10f);
+                        checkbox.Stroke();
+
+                        // Draw an X mark inside the rectangle
+                        checkbox.MoveTo(doc.Left - -112f + 1f, doc.Top - 173f - (i * 16f) + 1f); // Move to the starting point of the X mark inside the rectangle
+                        checkbox.LineTo(doc.Left - -112f + 9f, doc.Top - 173f - (i * 16f) + 9f); // Draw a line to create one part of the X
+                        checkbox.MoveTo(doc.Left - -112f + 1f, doc.Top - 173f - (i * 16f) + 9f); // Move to another starting point of the X mark inside the rectangle
+                        checkbox.LineTo(doc.Left - -112f + 9f, doc.Top - 173f - (i * 16f) + 1f); // Draw another line to create the other part of the X
+                        checkbox.Stroke(); // Stroke the lines to make them visible
+                    }
+
+                    // Add the text next to the checkbox
+                    justifiedParagraph.Add(new Chunk(" " + text, font));
 
                     // Set alignment based on centerAligned parameter
                     justifiedParagraph.Alignment = centerAligned ? Element.ALIGN_CENTER : Element.ALIGN_JUSTIFIED;
-
                     doc.Add(justifiedParagraph);
                 }
 
 
-                CParagraph("P.U CHECKLIST #1", isBold: true);
-                CParagraph("PURCHASE REQUEST (PR) FOR", isBold: true);
-                CParagraph("JOB ORDER FOR VENUE,", isBold: true);
-                CParagraph("MEALS, AND ACCOMMODATION", isBold: true);
-                CParagraph("PR NO. :    42424", isBold: true);
-                CParagraph("DATE : 42424242", isBold: true);
-                CParagraph("SUPPORTING DOCUMENTS/DETAILS", isBold: true);
+
+
+                void DrawRectangle(float width, float height)
+                {
+                    PdfContentByte contentByte = writer.DirectContent;
+                    contentByte.SetLineWidth(1f);
+
+                    // Calculate the left position to center the rectangle
+                    float leftPosition = (PageSize.A4.Width - width) / 2;
+
+                    // Draw the rectangle using the calculated left position
+                    contentByte.Rectangle(leftPosition, doc.Top - height, width, height);
+                    contentByte.Stroke();
+                    
+                }
+
+                // Calculate the width of the text "P.U CHECKLIST #1"
+                var textWidth = new Chunk("P.U CHECKLIST #1", FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 20f)).GetWidthPoint();
+                float boxWidth = textWidth + 200; // Add some padding
+                float boxHeight = 40f; // Adjust the height as needed
+                DrawRectangle(boxWidth, boxHeight);
+
+                void DrawRectangleAtPosition(float width, float height, float leftPosition, float topPosition)
+                {
+                    PdfContentByte contentByte = writer.DirectContent;
+                    contentByte.SetLineWidth(1f);
+
+                    // Draw the rectangle at the specified position
+                    contentByte.Rectangle(leftPosition, topPosition - height, width, height);
+                    contentByte.Stroke();
+                }
+
+                // Calculate the width of the text "SUPPORTING DOCUMENTS/DETAILS"
+                var supportingDocsTextWidth = new Chunk("SUPPORTING DOCUMENTS/DETAILS", FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 11f)).GetWidthPoint();
+                float supportingDocsBoxWidth = supportingDocsTextWidth + 180; // Add some padding
+                float supportingDocsBoxHeight = 15f; // Adjust the height as needed
+
+                // Calculate the left position to center the rectangle
+                float supportingDocsLeftPosition = (PageSize.A4.Width - supportingDocsBoxWidth) / 2;
+
+                // Determine the top position for the rectangle based on the previous paragraph's position
+                float supportingDocsTopPosition = doc.Top - 129; // Adjust this value as needed
+
+                // Draw the rectangle for "SUPPORTING DOCUMENTS/DETAILS"
+                DrawRectangleAtPosition(supportingDocsBoxWidth, supportingDocsBoxHeight, supportingDocsLeftPosition, supportingDocsTopPosition);
+
+                CParagraph("P.U CHECKLIST #1", isBold: true, fontSize: 20f);
                 CParagraph("\n");
+                CParagraph("PURCHASE REQUEST (PR) FOR", isBold: true, fontSize: 11f); ;
+                CParagraph("JOB ORDER FOR VENUE,", isBold: true, isUnderlined: true, fontSize: 11f);
+                CParagraph("MEALS, AND ACCOMMODATION", isBold: true, isUnderlined: true, fontSize: 11f);
 
+                CParagraph("PR NO. :    42424", isBold: false);
+                CParagraph("DATE : 42424242", isBold: false);
 
-                CheckboxParagraph("                                             Complete signatures incl. approval");
+                CParagraph("SUPPORTING DOCUMENTS/DETAILS", isBold: true, fontSize:11f);
+
+                CParagraph("\n");
+                JParagraph("                                             Complete signatures incl. approval");
                 JParagraph("                                             Complete with PR #, date, unit cost and correct total cost");
                 JParagraph("                                             Title of Activity");
                 JParagraph("                                             Meals and meal type");
@@ -3528,12 +3600,10 @@ namespace fmis.Controllers.Procurement
                 JParagraph("                                             Function room preference");
                 JParagraph("                                             Funding source");
                 JParagraph("\n");
-
                 JParagraph("                                             Specify others amenities, if applicable");
                 JParagraph("                                             Others");
                 JParagraph("\n");
-
-                JParagraph("                                             CONCEPT NOTE (CN)");
+             
                 JParagraph("                                             Complete signatures incl. approval");
                 JParagraph("                                             Specs/details in CN match specs in PR");
                 JParagraph("                                             Approved Realignment, If applicable");
@@ -3541,15 +3611,1140 @@ namespace fmis.Controllers.Procurement
                 JParagraph("                                             Approved PPMP/Supplemental PPMP");
                 JParagraph("                                             Others");
                 JParagraph("\n");
+                JParagraph("                                       REMARKS: ");
+                JParagraph("                                             COMPLETE", isBold:true);
+                JParagraph("                                             Please comply with item(s) marked X on or before", isBold: true);
+                JParagraph("\n");
 
 
-                CParagraph("REMARKS:");
-                CParagraph("COMPLETE");
-                CParagraph("Please comply with item(s) marked X on or before");
+                JParagraph("                                             CHECKED/REVIEWED BY:", isItalic:true);
+                CParagraph("\n");
+                JParagraph("                                                                        STEFANIE LORRAINE D. TRINIDAD");
+                JParagraph("                                                                                              Printed name and Signature", isItalic:true);
                 CParagraph("\n");
 
-                CParagraph("CHECKED/REVIEWED BY:");
-                CParagraph("STEFANIE LORRAINE D. TRINIDAD");
+                doc.Close();
+                return File(stream.ToArray(), "application/pdf");
+            }
+        }
+        #endregion
+
+        #region PRINT CHECKLIST 2
+        public IActionResult PrintChecklist2()
+        {
+            using (MemoryStream stream = new System.IO.MemoryStream())
+            {
+                Document doc = new iTextSharp.text.Document(PageSize.A4);
+                doc.SetMargins(30f, 30f, 30f, 30f);
+                PdfWriter writer = PdfWriter.GetInstance(doc, stream);
+                doc.Open();
+
+
+                void CParagraph(string text, bool isBold = false, bool isUnderlined = false, float fontSize = 10f)
+                {
+                    Font font = isBold ? FontFactory.GetFont(FontFactory.HELVETICA_BOLD, fontSize) : new Font(Font.FontFamily.HELVETICA, fontSize, Font.NORMAL);
+                    if (isUnderlined)
+                    {
+                        font.SetStyle(Font.UNDERLINE);
+                    }
+                    Paragraph centeredParagraph = new Paragraph(new Chunk(text, font));
+                    centeredParagraph.Alignment = Element.ALIGN_CENTER;
+                    doc.Add(centeredParagraph);
+                }
+
+                void JParagraph(string text, bool isBold = false, bool centerAligned = false, bool isItalic = false)
+                {
+                    Font font;
+                    if (isBold)
+                    {
+                        font = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10f);
+                    }
+                    else if (isItalic)
+                    {
+                        font = FontFactory.GetFont(FontFactory.TIMES_ITALIC, 10f);
+                    }
+                    else
+                    {
+                        font = new Font(Font.FontFamily.HELVETICA, 10f, Font.NORMAL);
+                    }
+
+                    Paragraph justifiedParagraph = new Paragraph();
+
+                    PdfContentByte checkbox = writer.DirectContent;
+                    for (int i = 0; i < 24; i++)
+                    {
+                        if (i == 5 || i == 13 || i == 20 || i == 21 ) continue; // Exclude certain values
+                        checkbox.SetLineWidth(1f);
+                        checkbox.Rectangle(doc.Left - -112f, doc.Top - 280f - (i * 16f), 10f, 10f);
+                        checkbox.Stroke();
+
+                        // Draw an X mark inside the rectangle
+                        checkbox.MoveTo(doc.Left - -112f + 1f, doc.Top - 280f - (i * 16f) + 1f); // Move to the starting point of the X mark inside the rectangle
+                        checkbox.LineTo(doc.Left - -112f + 9f, doc.Top - 280f - (i * 16f) + 9f); // Draw a line to create one part of the X
+                        checkbox.MoveTo(doc.Left - -112f + 1f, doc.Top - 280f - (i * 16f) + 9f); // Move to another starting point of the X mark inside the rectangle
+                        checkbox.LineTo(doc.Left - -112f + 9f, doc.Top - 280f - (i * 16f) + 1f); // Draw another line to create the other part of the X
+                        checkbox.Stroke(); // Stroke the lines to make them visible
+                    }
+
+                    // Add the text next to the checkbox
+                    justifiedParagraph.Add(new Chunk(" " + text, font));
+
+                    // Set alignment based on centerAligned parameter
+                    justifiedParagraph.Alignment = centerAligned ? Element.ALIGN_CENTER : Element.ALIGN_JUSTIFIED;
+                    doc.Add(justifiedParagraph);
+                }
+
+
+
+
+                void DrawRectangle(float width, float height)
+                {
+                    PdfContentByte contentByte = writer.DirectContent;
+                    contentByte.SetLineWidth(1f);
+
+                    // Calculate the left position to center the rectangle
+                    float leftPosition = (PageSize.A4.Width - width) / 2;
+
+                    // Draw the rectangle using the calculated left position
+                    contentByte.Rectangle(leftPosition, doc.Top - height, width, height);
+                    contentByte.Stroke();
+
+                }
+
+                // Calculate the width of the text "P.U CHECKLIST #1"
+                var textWidth = new Chunk("P.U CHECKLIST #2", FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 20f)).GetWidthPoint();
+                float boxWidth = textWidth + 200; // Add some padding
+                float boxHeight = 40f; // Adjust the height as needed
+                DrawRectangle(boxWidth, boxHeight);
+
+                void DrawRectangleAtPosition(float width, float height, float leftPosition, float topPosition)
+                {
+                    PdfContentByte contentByte = writer.DirectContent;
+                    contentByte.SetLineWidth(1f);
+
+                    // Draw the rectangle at the specified position
+                    contentByte.Rectangle(leftPosition, topPosition - height, width, height);
+                    contentByte.Stroke();
+                }
+
+                // Calculate the width of the text "SUPPORTING DOCUMENTS/DETAILS"
+                var supportingDocsTextWidth = new Chunk("SUPPORTING DOCUMENTS/DETAILS", FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 11f)).GetWidthPoint();
+                float supportingDocsBoxWidth = supportingDocsTextWidth + 180; // Add some padding
+                float supportingDocsBoxHeight = 15f; // Adjust the height as needed
+
+                // Calculate the left position to center the rectangle
+                float supportingDocsLeftPosition = (PageSize.A4.Width - supportingDocsBoxWidth) / 2;
+
+                // Determine the top position for the rectangle based on the previous paragraph's position
+                float supportingDocsTopPosition = doc.Top - 236; // Adjust this value as needed
+
+                // Draw the rectangle for "SUPPORTING DOCUMENTS/DETAILS"
+                DrawRectangleAtPosition(supportingDocsBoxWidth, supportingDocsBoxHeight, supportingDocsLeftPosition, supportingDocsTopPosition);
+
+                CParagraph("P.U CHECKLIST #2", isBold: true, fontSize: 20f);
+                CParagraph("\n");
+                CParagraph("PURCHASE REQUEST (PR) FOR", isBold: true, fontSize: 11f); ;
+                CParagraph("JOB ORDER FOR REPRODUCTION OF,", isBold: true, isUnderlined: true, fontSize: 11f);
+                CParagraph("IEC/ TRAINING MATERIALS, REPORTING", isBold: true, isUnderlined: true, fontSize: 11f);
+                CParagraph("AND OTHER PRINTED FORMS", isBold: true, isUnderlined: true, fontSize: 11f);
+                CParagraph("\n");
+                CParagraph("(such as Flyer, Brochure, Forms, Poster, ", isBold: true);
+                CParagraph("Tarpaulin, Streamer, Sticker, Leaflet,", isBold: true);
+                CParagraph("Flipchart, Manual, Newsletter, etc)", isBold: true);
+                CParagraph("\n");
+                CParagraph("PR NO. :    42424", isBold: false);
+                CParagraph("DATE : 42424242", isBold: false);
+                CParagraph("\n");
+                CParagraph("SUPPORTING DOCUMENTS/DETAILS", isBold: true, fontSize: 11f);
+                CParagraph("\n");
+                JParagraph("                                             Complete signatures incl. approval");
+                JParagraph("                                             Complete with PR # and date");
+                JParagraph("                                             Estimated unit cost & correct total cost");
+                JParagraph("                                             Purpose of request");
+                JParagraph("                                             Funding source");
+                JParagraph("                                       With Complete description", isBold:true);
+                JParagraph("                                               Paper Size");
+                JParagraph("                                               Type of paper");
+                JParagraph("                                               Number of pages");
+                JParagraph("                                               Printing type (back-to-back or one-side)");
+                JParagraph("                                               Type of binding");
+                JParagraph("                                               Colored or black & white printing");
+                JParagraph("                                               Others");
+                JParagraph("                                              ");
+                JParagraph("                                             Approved Allocation List or List of Recipients");
+                JParagraph("                                             Date Needed, if applicable");
+                JParagraph("                                             Approved Realignment, if applicable");
+                JParagraph("                                             Approved WFP/Supplemental WFP");
+                JParagraph("                                             Approved PPMP/Supplemental PPMP");
+                JParagraph("                                             Others");
+                JParagraph("\n");
+                JParagraph("                                       REMARKS: ");
+                JParagraph("                                             COMPLETE", isBold: true);
+                JParagraph("                                             Please comply with item(s) marked X on or before", isBold: true);
+                JParagraph("\n");
+                JParagraph("\n");
+                JParagraph("                                             CHECKED/REVIEWED BY:", isItalic: true);
+                CParagraph("\n");
+                JParagraph("                                                                        STEFANIE LORRAINE D. TRINIDAD");
+                JParagraph("                                                                                              Printed name and Signature", isItalic: true);
+                CParagraph("\n");
+
+                doc.Close();
+                return File(stream.ToArray(), "application/pdf");
+            }
+        }
+        #endregion
+
+        #region PRINT CHECKLIST 3
+        public IActionResult PrintChecklist3()
+        {
+            using (MemoryStream stream = new System.IO.MemoryStream())
+            {
+                Document doc = new iTextSharp.text.Document(PageSize.A4);
+                doc.SetMargins(30f, 30f, 30f, 30f);
+                PdfWriter writer = PdfWriter.GetInstance(doc, stream);
+                doc.Open();
+
+
+                void CParagraph(string text, bool isBold = false, bool isUnderlined = false, float fontSize = 10f)
+                {
+                    Font font = isBold ? FontFactory.GetFont(FontFactory.HELVETICA_BOLD, fontSize) : new Font(Font.FontFamily.HELVETICA, fontSize, Font.NORMAL);
+                    if (isUnderlined)
+                    {
+                        font.SetStyle(Font.UNDERLINE);
+                    }
+                    Paragraph centeredParagraph = new Paragraph(new Chunk(text, font));
+                    centeredParagraph.Alignment = Element.ALIGN_CENTER;
+                    doc.Add(centeredParagraph);
+                }
+
+                void JParagraph(string text, bool isBold = false, bool centerAligned = false, bool isItalic = false)
+                {
+                    Font font;
+                    if (isBold)
+                    {
+                        font = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10f);
+                    }
+                    else if (isItalic)
+                    {
+                        font = FontFactory.GetFont(FontFactory.TIMES_ITALIC, 10f);
+                    }
+                    else
+                    {
+                        font = new Font(Font.FontFamily.HELVETICA, 10f, Font.NORMAL);
+                    }
+
+                    Paragraph justifiedParagraph = new Paragraph();
+
+                    PdfContentByte checkbox = writer.DirectContent;
+                    for (int i = 0; i < 28; i++)
+                    {
+                        if (i == 11 || i == 24  || i == 25) continue; // Exclude certain values
+                        checkbox.SetLineWidth(1f);
+                        checkbox.Rectangle(doc.Left - -112f, doc.Top - 248f - (i * 16f), 10f, 10f);
+                        checkbox.Stroke();
+
+                        // Draw an X mark inside the rectangle
+                        checkbox.MoveTo(doc.Left - -112f + 1f, doc.Top - 248f - (i * 16f) + 1f); // Move to the starting point of the X mark inside the rectangle
+                        checkbox.LineTo(doc.Left - -112f + 9f, doc.Top - 248f - (i * 16f) + 9f); // Draw a line to create one part of the X
+                        checkbox.MoveTo(doc.Left - -112f + 1f, doc.Top - 248f - (i * 16f) + 9f); // Move to another starting point of the X mark inside the rectangle
+                        checkbox.LineTo(doc.Left - -112f + 9f, doc.Top - 248f - (i * 16f) + 1f); // Draw another line to create the other part of the X
+                        checkbox.Stroke(); // Stroke the lines to make them visible
+                    }
+
+                    // Add the text next to the checkbox
+                    justifiedParagraph.Add(new Chunk(" " + text, font));
+
+                    // Set alignment based on centerAligned parameter
+                    justifiedParagraph.Alignment = centerAligned ? Element.ALIGN_CENTER : Element.ALIGN_JUSTIFIED;
+                    doc.Add(justifiedParagraph);
+                }
+
+                void DrawRectangle(float width, float height)
+                {
+                    PdfContentByte contentByte = writer.DirectContent;
+                    contentByte.SetLineWidth(1f);
+
+                    // Calculate the left position to center the rectangle
+                    float leftPosition = (PageSize.A4.Width - width) / 2;
+
+                    // Draw the rectangle using the calculated left position
+                    contentByte.Rectangle(leftPosition, doc.Top - height, width, height);
+                    contentByte.Stroke();
+
+                }
+
+                // Calculate the width of the text "P.U CHECKLIST #1"
+                var textWidth = new Chunk("P.U CHECKLIST #3", FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 20f)).GetWidthPoint();
+                float boxWidth = textWidth + 200; // Add some padding
+                float boxHeight = 40f; // Adjust the height as needed
+                DrawRectangle(boxWidth, boxHeight);
+
+                void DrawRectangleAtPosition(float width, float height, float leftPosition, float topPosition)
+                {
+                    PdfContentByte contentByte = writer.DirectContent;
+                    contentByte.SetLineWidth(1f);
+
+                    // Draw the rectangle at the specified position
+                    contentByte.Rectangle(leftPosition, topPosition - height, width, height);
+                    contentByte.Stroke();
+                }
+
+                // Calculate the width of the text "SUPPORTING DOCUMENTS/DETAILS"
+                var supportingDocsTextWidth = new Chunk("SUPPORTING DOCUMENTS/DETAILS", FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 11f)).GetWidthPoint();
+                float supportingDocsBoxWidth = supportingDocsTextWidth + 180; // Add some padding
+                float supportingDocsBoxHeight = 15f; // Adjust the height as needed
+
+                // Calculate the left position to center the rectangle
+                float supportingDocsLeftPosition = (PageSize.A4.Width - supportingDocsBoxWidth) / 2;
+
+                // Determine the top position for the rectangle based on the previous paragraph's position
+                float supportingDocsTopPosition = doc.Top - 204; // Adjust this value as needed
+
+                // Draw the rectangle for "SUPPORTING DOCUMENTS/DETAILS"
+                DrawRectangleAtPosition(supportingDocsBoxWidth, supportingDocsBoxHeight, supportingDocsLeftPosition, supportingDocsTopPosition);
+
+                CParagraph("P.U CHECKLIST #3", isBold: true, fontSize: 20f);
+                CParagraph("\n");
+                CParagraph("PURCHASE REQUEST (PR) FOR", isBold: true, fontSize: 11f); ;
+                CParagraph("JOB ORDER PROVISION", isBold: true, isUnderlined: true, fontSize: 11f);
+                CParagraph("OF IEC COLLATERALS", isBold: true, isUnderlined: true, fontSize: 11f);
+                CParagraph("\n");
+                CParagraph("(Shirt, Cap Vest, Training Kit, Tarpaulin ", isBold: true);
+                CParagraph("Bags, Jacket, Pants, Mug, Umbrella, etc.)", isBold: true);
+                CParagraph("\n");
+                CParagraph("PR NO. :    42424", isBold: false);
+                CParagraph("DATE : 42424242", isBold: false);
+                CParagraph("\n");
+                CParagraph("SUPPORTING DOCUMENTS/DETAILS", isBold: true, fontSize: 11f);
+                CParagraph("\n");
+                JParagraph("                                             Complete signatures incl. approval");
+                JParagraph("                                             Complete with PR # and date");
+                JParagraph("                                             Estimated unit cost & correct total cost");
+                JParagraph("                                             Purpose of request");
+                JParagraph("                                             Funding source");
+                JParagraph("                                             Quantity");
+                JParagraph("                                             Color");
+                JParagraph("                                             Size(s)");
+                JParagraph("                                             Text/Design");
+                JParagraph("                                             Printed Sample Design");
+                JParagraph("                                             With or without print/embroidery");
+                JParagraph("                                       With Complete description:", isBold:true);
+                JParagraph("                                                Polo shirt or T-shirt (for shirt only)");
+                JParagraph("                                                Type of cloth/material");
+                JParagraph("                                                Number of folds (umbrella only)");
+                JParagraph("                                                With eyelet or none (for tarpaulin only)");
+                JParagraph("                                                Ceramic or glass (for mug only)");
+                JParagraph("                                             Approved Allocation  List or List of Recipients");
+                JParagraph("                                             Date Needed, If applicable");
+                JParagraph("                                             PR description match printed design");
+                JParagraph("                                             Approved Realignment, If applicable");
+                JParagraph("                                             Approved WFP/Supplemental WFP");
+                JParagraph("                                             Approved PPMP/Supplemental PPMP");
+                JParagraph("                                             Others");
+                JParagraph("\n");
+                JParagraph("                                       REMARKS: ");
+                JParagraph("                                             COMPLETE", isBold: true);
+                JParagraph("                                             Please comply with item(s) marked X on or before", isBold: true);
+                JParagraph("\n");
+                JParagraph("                                             CHECKED/REVIEWED BY:", isItalic: true);
+                CParagraph("\n");
+                JParagraph("                                                                        STEFANIE LORRAINE D. TRINIDAD");
+                JParagraph("                                                                                              Printed name and Signature", isItalic: true);
+                CParagraph("\n");
+
+                doc.Close();
+                return File(stream.ToArray(), "application/pdf");
+            }
+        }
+        #endregion
+
+        #region PRINT CHECKLIST 4
+        public IActionResult PrintChecklist4()
+        {
+            using (MemoryStream stream = new System.IO.MemoryStream())
+            {
+                Document doc = new iTextSharp.text.Document(PageSize.A4);
+                doc.SetMargins(30f, 30f, 30f, 30f);
+                PdfWriter writer = PdfWriter.GetInstance(doc, stream);
+                doc.Open();
+
+
+                void CParagraph(string text, bool isBold = false, bool isUnderlined = false, float fontSize = 10f)
+                {
+                    Font font = isBold ? FontFactory.GetFont(FontFactory.HELVETICA_BOLD, fontSize) : new Font(Font.FontFamily.HELVETICA, fontSize, Font.NORMAL);
+                    if (isUnderlined)
+                    {
+                        font.SetStyle(Font.UNDERLINE);
+                    }
+                    Paragraph centeredParagraph = new Paragraph(new Chunk(text, font));
+                    centeredParagraph.Alignment = Element.ALIGN_CENTER;
+                    doc.Add(centeredParagraph);
+                }
+
+                void JParagraph(string text, bool isBold = false, bool centerAligned = false, bool isItalic = false)
+                {
+                    Font font;
+                    if (isBold)
+                    {
+                        font = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10f);
+                    }
+                    else if (isItalic)
+                    {
+                        font = FontFactory.GetFont(FontFactory.TIMES_ITALIC, 10f);
+                    }
+                    else
+                    {
+                        font = new Font(Font.FontFamily.HELVETICA, 10f, Font.NORMAL);
+                    }
+
+                    Paragraph justifiedParagraph = new Paragraph();
+
+                    PdfContentByte checkbox = writer.DirectContent;
+                    for (int i = 0; i < 27; i++)
+                    {
+                        if ( i == 23 || i == 24) continue; // Exclude certain values
+                        checkbox.SetLineWidth(1f);
+                        checkbox.Rectangle(doc.Left - -112f, doc.Top - 260f - (i * 16f), 10f, 10f);
+                        checkbox.Stroke();
+
+                        // Draw an X mark inside the rectangle
+                        checkbox.MoveTo(doc.Left - -112f + 1f, doc.Top - 260f - (i * 16f) + 1f); // Move to the starting point of the X mark inside the rectangle
+                        checkbox.LineTo(doc.Left - -112f + 9f, doc.Top - 260f - (i * 16f) + 9f); // Draw a line to create one part of the X
+                        checkbox.MoveTo(doc.Left - -112f + 1f, doc.Top - 260f - (i * 16f) + 9f); // Move to another starting point of the X mark inside the rectangle
+                        checkbox.LineTo(doc.Left - -112f + 9f, doc.Top - 260f - (i * 16f) + 1f); // Draw another line to create the other part of the X
+                        checkbox.Stroke(); // Stroke the lines to make them visible
+                    }
+
+                    // Add the text next to the checkbox
+                    justifiedParagraph.Add(new Chunk(" " + text, font));
+
+                    // Set alignment based on centerAligned parameter
+                    justifiedParagraph.Alignment = centerAligned ? Element.ALIGN_CENTER : Element.ALIGN_JUSTIFIED;
+                    doc.Add(justifiedParagraph);
+                }
+
+
+                void DrawRectangle(float width, float height)
+                {
+                    PdfContentByte contentByte = writer.DirectContent;
+                    contentByte.SetLineWidth(1f);
+
+                    // Calculate the left position to center the rectangle
+                    float leftPosition = (PageSize.A4.Width - width) / 2;
+
+                    // Draw the rectangle using the calculated left position
+                    contentByte.Rectangle(leftPosition, doc.Top - height, width, height);
+                    contentByte.Stroke();
+
+                }
+
+                // Calculate the width of the text "P.U CHECKLIST #1"
+                var textWidth = new Chunk("P.U CHECKLIST #4", FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 20f)).GetWidthPoint();
+                float boxWidth = textWidth + 200; // Add some padding
+                float boxHeight = 40f; // Adjust the height as needed
+                DrawRectangle(boxWidth, boxHeight);
+
+                void DrawRectangleAtPosition(float width, float height, float leftPosition, float topPosition)
+                {
+                    PdfContentByte contentByte = writer.DirectContent;
+                    contentByte.SetLineWidth(1f);
+
+                    // Draw the rectangle at the specified position
+                    contentByte.Rectangle(leftPosition, topPosition - height, width, height);
+                    contentByte.Stroke();
+                }
+
+                // Calculate the width of the text "SUPPORTING DOCUMENTS/DETAILS"
+                var supportingDocsTextWidth = new Chunk("SUPPORTING DOCUMENTS/DETAILS", FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 11f)).GetWidthPoint();
+                float supportingDocsBoxWidth = supportingDocsTextWidth + 180; // Add some padding
+                float supportingDocsBoxHeight = 15f; // Adjust the height as needed
+
+                // Calculate the left position to center the rectangle
+                float supportingDocsLeftPosition = (PageSize.A4.Width - supportingDocsBoxWidth) / 2;
+
+                // Determine the top position for the rectangle based on the previous paragraph's position
+                float supportingDocsTopPosition = doc.Top - 217; // Adjust this value as needed
+
+                // Draw the rectangle for "SUPPORTING DOCUMENTS/DETAILS"
+                DrawRectangleAtPosition(supportingDocsBoxWidth, supportingDocsBoxHeight, supportingDocsLeftPosition, supportingDocsTopPosition);
+
+                CParagraph("P.U CHECKLIST #4", isBold: true, fontSize: 20f);
+                CParagraph("\n");
+                CParagraph("PURCHASE REQUEST (PR) FOR", isBold: true, fontSize: 11f); ;
+                CParagraph("JOB ORDER FOR LABOR AND/OR", isBold: true, isUnderlined: true, fontSize: 10f);
+                CParagraph("MATERIALS FOR REPAIR, INSTALLATION,", isBold: true, isUnderlined: true, fontSize: 10f);
+                CParagraph("REFURBISH, REPLACEMENT, FABRICATION", isBold: true, isUnderlined: true, fontSize: 10f);
+                CParagraph("RESTORATION, RENOVATION", isBold: true, isUnderlined: true, fontSize: 10f);
+                CParagraph("PREVENTIVE MAINTENANCE, TERMITE", isBold: true, isUnderlined: true, fontSize: 10f);
+                CParagraph("TREATMENT, OVERHAUL, etc.", isBold: true, isUnderlined: true, fontSize: 10f);
+                CParagraph("(Plumbing, Carpentry, Painting, Vehicle, ", isBold: true);
+                CParagraph("Electrical, IT, Termite Treatment, etc.)", isBold: true);
+                CParagraph("PR NO. :    42424", isBold: false);
+                CParagraph("DATE : 42424242", isBold: false);
+                CParagraph("SUPPORTING DOCUMENTS/DETAILS", isBold: true, fontSize: 11f);
+                CParagraph("\n");
+                JParagraph("                                             Complete signatures incl. approval");
+                JParagraph("                                             Complete with PR #, date, unit cost and correct total cost");
+                JParagraph("                                             Purpose of request");
+                JParagraph("                                             Pre-Job Order Inspection Report");
+                JParagraph("                                             IT Job Report (for IT request only)");
+                JParagraph("                                             Scope of Work, if applicable");
+                JParagraph("                                             Detailed Estimates, if applicable");
+                JParagraph("                                             Design, dimensions, etc. if applicable");
+                JParagraph("                                             Bill of Materials, if applicable");
+                JParagraph("                                             Complete description of materials");
+                JParagraph("                                             NO BRAND NAME");
+                JParagraph("                                             Specify - Labor and materials, etc.");
+                JParagraph("                                             Specify - Labor only or materials only");
+                JParagraph("                                             Specify - Spare parts, if applicable");
+                JParagraph("                                             Specify Vehicle Plante No. (for vehicle only)");
+                JParagraph("                                             Specify Vehicle Model Only and Year");
+                JParagraph("                                             Date Needed, if applicable");
+                JParagraph("                                             PR description match printed design");
+                JParagraph("                                             Warranty Period, if applicable");
+                JParagraph("                                             Approved Realignment, If applicable");
+                JParagraph("                                             Approved WFP/Supplemental WFP");
+                JParagraph("                                             Approved PPMP/Supplemental PPMP");
+                JParagraph("                                             Others");
+                JParagraph("\n");
+                JParagraph("                                       REMARKS: ");
+                JParagraph("                                             COMPLETE", isBold: true);
+                JParagraph("                                             Please comply with item(s) marked X on or before", isBold: true);
+                JParagraph("\n");
+                JParagraph("                                             CHECKED/REVIEWED BY:", isItalic: true);
+                CParagraph("\n");
+                JParagraph("                                                                        STEFANIE LORRAINE D. TRINIDAD");
+                JParagraph("                                                                                              Printed name and Signature", isItalic: true);
+
+                doc.Close();
+                return File(stream.ToArray(), "application/pdf");
+            }
+        }
+        #endregion
+
+        #region PRINT CHECKLIST 5
+        public IActionResult PrintChecklist5()
+        {
+            using (MemoryStream stream = new System.IO.MemoryStream())
+            {
+                Document doc = new iTextSharp.text.Document(PageSize.A4);
+                doc.SetMargins(30f, 30f, 30f, 30f);
+                PdfWriter writer = PdfWriter.GetInstance(doc, stream);
+                doc.Open();
+
+
+                void CParagraph(string text, bool isBold = false, bool isUnderlined = false, float fontSize = 10f)
+                {
+                    Font font = isBold ? FontFactory.GetFont(FontFactory.HELVETICA_BOLD, fontSize) : new Font(Font.FontFamily.HELVETICA, fontSize, Font.NORMAL);
+                    if (isUnderlined)
+                    {
+                        font.SetStyle(Font.UNDERLINE);
+                    }
+                    Paragraph centeredParagraph = new Paragraph(new Chunk(text, font));
+                    centeredParagraph.Alignment = Element.ALIGN_CENTER;
+                    doc.Add(centeredParagraph);
+                }
+
+                void JParagraph(string text, bool isBold = false, bool centerAligned = false, bool isItalic = false)
+                {
+                    Font font;
+                    if (isBold)
+                    {
+                        font = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10f);
+                    }
+                    else if (isItalic)
+                    {
+                        font = FontFactory.GetFont(FontFactory.TIMES_ITALIC, 10f);
+                    }
+                    else
+                    {
+                        font = new Font(Font.FontFamily.HELVETICA, 10f, Font.NORMAL);
+                    }
+
+                    Paragraph justifiedParagraph = new Paragraph();
+
+                    PdfContentByte checkbox = writer.DirectContent;
+                    for (int i = 0; i < 18; i++)
+                    {
+                        if (i == 14 || i == 15) continue; // Exclude certain values
+                        checkbox.SetLineWidth(1f);
+                        checkbox.Rectangle(doc.Left - -112f, doc.Top - 248f - (i * 16f), 10f, 10f);
+                        checkbox.Stroke();
+
+                        // Draw an X mark inside the rectangle
+                        checkbox.MoveTo(doc.Left - -112f + 1f, doc.Top - 248f - (i * 16f) + 1f); // Move to the starting point of the X mark inside the rectangle
+                        checkbox.LineTo(doc.Left - -112f + 9f, doc.Top - 248f - (i * 16f) + 9f); // Draw a line to create one part of the X
+                        checkbox.MoveTo(doc.Left - -112f + 1f, doc.Top - 248f - (i * 16f) + 9f); // Move to another starting point of the X mark inside the rectangle
+                        checkbox.LineTo(doc.Left - -112f + 9f, doc.Top - 248f - (i * 16f) + 1f); // Draw another line to create the other part of the X
+                        checkbox.Stroke(); // Stroke the lines to make them visible
+                    }
+
+                    // Add the text next to the checkbox
+                    justifiedParagraph.Add(new Chunk(" " + text, font));
+
+                    // Set alignment based on centerAligned parameter
+                    justifiedParagraph.Alignment = centerAligned ? Element.ALIGN_CENTER : Element.ALIGN_JUSTIFIED;
+                    doc.Add(justifiedParagraph);
+                }
+
+                void DrawRectangle(float width, float height)
+                {
+                    PdfContentByte contentByte = writer.DirectContent;
+                    contentByte.SetLineWidth(1f);
+
+                    // Calculate the left position to center the rectangle
+                    float leftPosition = (PageSize.A4.Width - width) / 2;
+
+                    // Draw the rectangle using the calculated left position
+                    contentByte.Rectangle(leftPosition, doc.Top - height, width, height);
+                    contentByte.Stroke();
+
+                }
+
+                // Calculate the width of the text "P.U CHECKLIST #1"
+                var textWidth = new Chunk("P.U CHECKLIST #5", FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 20f)).GetWidthPoint();
+                float boxWidth = textWidth + 200; // Add some padding
+                float boxHeight = 40f; // Adjust the height as needed
+                DrawRectangle(boxWidth, boxHeight);
+
+                void DrawRectangleAtPosition(float width, float height, float leftPosition, float topPosition)
+                {
+                    PdfContentByte contentByte = writer.DirectContent;
+                    contentByte.SetLineWidth(1f);
+
+                    // Draw the rectangle at the specified position
+                    contentByte.Rectangle(leftPosition, topPosition - height, width, height);
+                    contentByte.Stroke();
+                }
+
+                // Calculate the width of the text "SUPPORTING DOCUMENTS/DETAILS"
+                var supportingDocsTextWidth = new Chunk("SUPPORTING DOCUMENTS/DETAILS", FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 11f)).GetWidthPoint();
+                float supportingDocsBoxWidth = supportingDocsTextWidth + 180; // Add some padding
+                float supportingDocsBoxHeight = 15f; // Adjust the height as needed
+
+                // Calculate the left position to center the rectangle
+                float supportingDocsLeftPosition = (PageSize.A4.Width - supportingDocsBoxWidth) / 2;
+
+                // Determine the top position for the rectangle based on the previous paragraph's position
+                float supportingDocsTopPosition = doc.Top - 204; // Adjust this value as needed
+
+                // Draw the rectangle for "SUPPORTING DOCUMENTS/DETAILS"
+                DrawRectangleAtPosition(supportingDocsBoxWidth, supportingDocsBoxHeight, supportingDocsLeftPosition, supportingDocsTopPosition);
+
+                CParagraph("P.U CHECKLIST #5", isBold: true, fontSize: 20f);
+                CParagraph("\n");
+                CParagraph("PURCHASE REQUEST (PR) FOR", isBold: true, fontSize: 11f); ;
+                CParagraph("JOB ORDER FOR", isBold: true, isUnderlined: true, fontSize: 11f);
+                CParagraph("VEHICLE RENTAL", isBold: true, isUnderlined: true, fontSize: 11f);
+                CParagraph("\n");
+                CParagraph("(Passenger Bus/Van, Car, Shuttle Bus,", isBold: true);
+                CParagraph("Cargo Van, Utility Vehicle)", isBold: true);
+                CParagraph("\n");
+                CParagraph("PR NO. :    42424", isBold: false);
+                CParagraph("DATE : 42424242", isBold: false);
+                CParagraph("\n");
+                CParagraph("SUPPORTING DOCUMENTS/DETAILS", isBold: true, fontSize: 11f);
+                CParagraph("\n");
+                JParagraph("                                             Complete signatures incl. approval");
+                JParagraph("                                             Complete with PR # and date");
+                JParagraph("                                             Estimated unit cost & correct total cost");
+                JParagraph("                                             Purpose of request");
+                JParagraph("                                             Funding source");
+                JParagraph("                                             Date and Time of Activity or Travel");
+                JParagraph("                                             Itinerary of Travel");
+                JParagraph("                                             Number of Passengers");
+                JParagraph("                                             Number of Vehicles");
+                JParagraph("                                             Preferred Type of Vehicle");
+                JParagraph("                                             Passenger Capacity of Vehicle");
+                JParagraph("                                             Approved WFP/Supplemental WFP");
+                JParagraph("                                             Approved PPMP/Supplemental PPMP");
+                JParagraph("                                             Others");
+                JParagraph("\n");
+                JParagraph("                                       REMARKS: ");
+                JParagraph("                                             COMPLETE", isBold: true);
+                JParagraph("                                             Please comply with item(s) marked X on or before", isBold: true);
+                JParagraph("\n");
+                JParagraph("\n");
+                JParagraph("\n");
+                JParagraph("                                             CHECKED/REVIEWED BY:", isItalic: true);
+                CParagraph("\n");
+                JParagraph("                                                                        STEFANIE LORRAINE D. TRINIDAD");
+                JParagraph("                                                                                              Printed name and Signature", isItalic: true);
+                CParagraph("\n");
+
+                doc.Close();
+                return File(stream.ToArray(), "application/pdf");
+            }
+        }
+        #endregion
+
+        #region PRINT CHECKLIST 6
+        public IActionResult PrintChecklist6()
+        {
+            using (MemoryStream stream = new System.IO.MemoryStream())
+            {
+                Document doc = new iTextSharp.text.Document(PageSize.A4);
+                doc.SetMargins(30f, 30f, 30f, 30f);
+                PdfWriter writer = PdfWriter.GetInstance(doc, stream);
+                doc.Open();
+
+
+                void CParagraph(string text, bool isBold = false, bool isUnderlined = false, float fontSize = 10f)
+                {
+                    Font font = isBold ? FontFactory.GetFont(FontFactory.HELVETICA_BOLD, fontSize) : new Font(Font.FontFamily.HELVETICA, fontSize, Font.NORMAL);
+                    if (isUnderlined)
+                    {
+                        font.SetStyle(Font.UNDERLINE);
+                    }
+                    Paragraph centeredParagraph = new Paragraph(new Chunk(text, font));
+                    centeredParagraph.Alignment = Element.ALIGN_CENTER;
+                    doc.Add(centeredParagraph);
+                }
+
+                void JParagraph(string text, bool isBold = false, bool centerAligned = false, bool isItalic = false)
+                {
+                    Font font;
+                    if (isBold)
+                    {
+                        font = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10f);
+                    }
+                    else if (isItalic)
+                    {
+                        font = FontFactory.GetFont(FontFactory.TIMES_ITALIC, 10f);
+                    }
+                    else
+                    {
+                        font = new Font(Font.FontFamily.HELVETICA, 10f, Font.NORMAL);
+                    }
+
+                    Paragraph justifiedParagraph = new Paragraph();
+
+                    PdfContentByte checkbox = writer.DirectContent;
+                    for (int i = 0; i < 24; i++)
+                    {
+                        if (i == 20 || i == 21) continue; // Exclude certain values
+                        checkbox.SetLineWidth(1f);
+                        checkbox.Rectangle(doc.Left - -112f, doc.Top - 220f - (i * 16f), 10f, 10f);
+                        checkbox.Stroke();
+
+                        // Draw an X mark inside the rectangle
+                        checkbox.MoveTo(doc.Left - -112f + 1f, doc.Top - 220f - (i * 16f) + 1f); // Move to the starting point of the X mark inside the rectangle
+                        checkbox.LineTo(doc.Left - -112f + 9f, doc.Top - 220f - (i * 16f) + 9f); // Draw a line to create one part of the X
+                        checkbox.MoveTo(doc.Left - -112f + 1f, doc.Top - 220f - (i * 16f) + 9f); // Move to another starting point of the X mark inside the rectangle
+                        checkbox.LineTo(doc.Left - -112f + 9f, doc.Top - 220f - (i * 16f) + 1f); // Draw another line to create the other part of the X
+                        checkbox.Stroke(); // Stroke the lines to make them visible
+                    }
+
+                    // Add the text next to the checkbox
+                    justifiedParagraph.Add(new Chunk(" " + text, font));
+
+                    // Set alignment based on centerAligned parameter
+                    justifiedParagraph.Alignment = centerAligned ? Element.ALIGN_CENTER : Element.ALIGN_JUSTIFIED;
+                    doc.Add(justifiedParagraph);
+                }
+
+                void DrawRectangle(float width, float height)
+                {
+                    PdfContentByte contentByte = writer.DirectContent;
+                    contentByte.SetLineWidth(1f);
+
+                    // Calculate the left position to center the rectangle
+                    float leftPosition = (PageSize.A4.Width - width) / 2;
+
+                    // Draw the rectangle using the calculated left position
+                    contentByte.Rectangle(leftPosition, doc.Top - height, width, height);
+                    contentByte.Stroke();
+
+                }
+
+                // Calculate the width of the text "P.U CHECKLIST #1"
+                var textWidth = new Chunk("P.U CHECKLIST #6", FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 20f)).GetWidthPoint();
+                float boxWidth = textWidth + 200; // Add some padding
+                float boxHeight = 40f; // Adjust the height as needed
+                DrawRectangle(boxWidth, boxHeight);
+
+                void DrawRectangleAtPosition(float width, float height, float leftPosition, float topPosition)
+                {
+                    PdfContentByte contentByte = writer.DirectContent;
+                    contentByte.SetLineWidth(1f);
+
+                    // Draw the rectangle at the specified position
+                    contentByte.Rectangle(leftPosition, topPosition - height, width, height);
+                    contentByte.Stroke();
+                }
+
+                // Calculate the width of the text "SUPPORTING DOCUMENTS/DETAILS"
+                var supportingDocsTextWidth = new Chunk("SUPPORTING DOCUMENTS/DETAILS", FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 11f)).GetWidthPoint();
+                float supportingDocsBoxWidth = supportingDocsTextWidth + 180; // Add some padding
+                float supportingDocsBoxHeight = 15f; // Adjust the height as needed
+
+                // Calculate the left position to center the rectangle
+                float supportingDocsLeftPosition = (PageSize.A4.Width - supportingDocsBoxWidth) / 2;
+
+                // Determine the top position for the rectangle based on the previous paragraph's position
+                float supportingDocsTopPosition = doc.Top - 176; // Adjust this value as needed
+
+                // Draw the rectangle for "SUPPORTING DOCUMENTS/DETAILS"
+                DrawRectangleAtPosition(supportingDocsBoxWidth, supportingDocsBoxHeight, supportingDocsLeftPosition, supportingDocsTopPosition);
+
+                CParagraph("P.U CHECKLIST #6", isBold: true, fontSize: 20f);
+                CParagraph("\n");
+                CParagraph("PURCHASE REQUEST (PR) FOR", isBold: true, fontSize: 11f); ;
+                CParagraph("JOB ORDER FOR PUBLICATION", isBold: true, isUnderlined: true, fontSize: 11f);
+                CParagraph("IN THE NEWSPAPER AND", isBold: true, isUnderlined: true, fontSize: 11f);
+                CParagraph("RADIO PLUGGING", isBold: true, isUnderlined: true, fontSize: 11f);
+                CParagraph("\n");
+                CParagraph("PR NO. :    42424", isBold: false);
+                CParagraph("DATE : 42424242", isBold: false);
+                CParagraph("\n");
+                CParagraph("SUPPORTING DOCUMENTS/DETAILS", isBold: true, fontSize: 11f);
+                CParagraph("\n");
+                JParagraph("                                             Complete signatures incl. approval");
+                JParagraph("                                             Complete with PR # and date");
+                JParagraph("                                             Estimated unit cost & correct total cost");
+                JParagraph("                                             Purpose of request");
+                JParagraph("                                             Funding source");
+                JParagraph("                                             Date/Period of Publication (for newspaper only)");
+                JParagraph("                                             Announcement or Advertisement for Publication");
+                JParagraph("                                             Number of Days to be Published");
+                JParagraph("                                             Size of Newspaper Space");
+                JParagraph("                                             Number of Newspaper to be Published");
+                JParagraph("                                             Type of Newspaper (Local or National)");
+                JParagraph("                                             Date/Period of Radio Plug (for radio only)");
+                JParagraph("                                             Number of Days to be Plugged");
+                JParagraph("                                             Length of Plug");
+                JParagraph("                                             Frequency of Plug");
+                JParagraph("                                             Number of Radio Stations");
+                JParagraph("                                             Radio Coverage Areas");
+                JParagraph("                                             Approved Realignment, If applicable");
+                JParagraph("                                             Approved WFP/Supplemental WFP");
+                JParagraph("                                             Approved PPMP/Supplemental PPMP");
+                JParagraph("\n");
+                JParagraph("                                       REMARKS: ");
+                JParagraph("                                             COMPLETE", isBold: true);
+                JParagraph("                                             Please comply with item(s) marked X on or before", isBold: true);
+                JParagraph("\n");
+                JParagraph("\n");
+                JParagraph("\n");
+                JParagraph("                                             CHECKED/REVIEWED BY:", isItalic: true);
+                CParagraph("\n");
+                JParagraph("                                                                        STEFANIE LORRAINE D. TRINIDAD");
+                JParagraph("                                                                                              Printed name and Signature", isItalic: true);
+                CParagraph("\n");
+
+                doc.Close();
+                return File(stream.ToArray(), "application/pdf");
+            }
+        }
+        #endregion
+
+        #region PRINT CHECKLIST 7
+        public IActionResult PrintChecklist7()
+        {
+            using (MemoryStream stream = new System.IO.MemoryStream())
+            {
+                Document doc = new iTextSharp.text.Document(PageSize.A4);
+                doc.SetMargins(30f, 30f, 30f, 30f);
+                PdfWriter writer = PdfWriter.GetInstance(doc, stream);
+                doc.Open();
+
+
+                void CParagraph(string text, bool isBold = false, bool isUnderlined = false, float fontSize = 10f)
+                {
+                    Font font = isBold ? FontFactory.GetFont(FontFactory.HELVETICA_BOLD, fontSize) : new Font(Font.FontFamily.HELVETICA, fontSize, Font.NORMAL);
+                    if (isUnderlined)
+                    {
+                        font.SetStyle(Font.UNDERLINE);
+                    }
+                    Paragraph centeredParagraph = new Paragraph(new Chunk(text, font));
+                    centeredParagraph.Alignment = Element.ALIGN_CENTER;
+                    doc.Add(centeredParagraph);
+                }
+
+                void JParagraph(string text, bool isBold = false, bool centerAligned = false, bool isItalic = false)
+                {
+                    Font font;
+                    if (isBold)
+                    {
+                        font = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10f);
+                    }
+                    else if (isItalic)
+                    {
+                        font = FontFactory.GetFont(FontFactory.TIMES_ITALIC, 10f);
+                    }
+                    else
+                    {
+                        font = new Font(Font.FontFamily.HELVETICA, 10f, Font.NORMAL);
+                    }
+
+                    Paragraph justifiedParagraph = new Paragraph();
+
+                    PdfContentByte checkbox = writer.DirectContent;
+                    for (int i = 0; i < 14; i++)
+                    {
+                        if (i == 10 || i == 11) continue; // Exclude certain values
+                        checkbox.SetLineWidth(1f);
+                        checkbox.Rectangle(doc.Left - -112f, doc.Top - 203f - (i * 16f), 10f, 10f);
+                        checkbox.Stroke();
+
+                        // Draw an X mark inside the rectangle
+                        checkbox.MoveTo(doc.Left - -112f + 1f, doc.Top - 203f - (i * 16f) + 1f); // Move to the starting point of the X mark inside the rectangle
+                        checkbox.LineTo(doc.Left - -112f + 9f, doc.Top - 203f - (i * 16f) + 9f); // Draw a line to create one part of the X
+                        checkbox.MoveTo(doc.Left - -112f + 1f, doc.Top - 203f - (i * 16f) + 9f); // Move to another starting point of the X mark inside the rectangle
+                        checkbox.LineTo(doc.Left - -112f + 9f, doc.Top - 203f - (i * 16f) + 1f); // Draw another line to create the other part of the X
+                        checkbox.Stroke(); // Stroke the lines to make them visible
+                    }
+
+                    // Add the text next to the checkbox
+                    justifiedParagraph.Add(new Chunk(" " + text, font));
+
+                    // Set alignment based on centerAligned parameter
+                    justifiedParagraph.Alignment = centerAligned ? Element.ALIGN_CENTER : Element.ALIGN_JUSTIFIED;
+                    doc.Add(justifiedParagraph);
+                }
+
+                void DrawRectangle(float width, float height)
+                {
+                    PdfContentByte contentByte = writer.DirectContent;
+                    contentByte.SetLineWidth(1f);
+
+                    // Calculate the left position to center the rectangle
+                    float leftPosition = (PageSize.A4.Width - width) / 2;
+
+                    // Draw the rectangle using the calculated left position
+                    contentByte.Rectangle(leftPosition, doc.Top - height, width, height);
+                    contentByte.Stroke();
+
+                }
+
+                // Calculate the width of the text "P.U CHECKLIST #1"
+                var textWidth = new Chunk("P.U CHECKLIST #7", FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 20f)).GetWidthPoint();
+                float boxWidth = textWidth + 200; // Add some padding
+                float boxHeight = 40f; // Adjust the height as needed
+                DrawRectangle(boxWidth, boxHeight);
+
+                void DrawRectangleAtPosition(float width, float height, float leftPosition, float topPosition)
+                {
+                    PdfContentByte contentByte = writer.DirectContent;
+                    contentByte.SetLineWidth(1f);
+
+                    // Draw the rectangle at the specified position
+                    contentByte.Rectangle(leftPosition, topPosition - height, width, height);
+                    contentByte.Stroke();
+                }
+
+                // Calculate the width of the text "SUPPORTING DOCUMENTS/DETAILS"
+                var supportingDocsTextWidth = new Chunk("SUPPORTING DOCUMENTS/DETAILS", FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 11f)).GetWidthPoint();
+                float supportingDocsBoxWidth = supportingDocsTextWidth + 180; // Add some padding
+                float supportingDocsBoxHeight = 15f; // Adjust the height as needed
+
+                // Calculate the left position to center the rectangle
+                float supportingDocsLeftPosition = (PageSize.A4.Width - supportingDocsBoxWidth) / 2;
+
+                // Determine the top position for the rectangle based on the previous paragraph's position
+                float supportingDocsTopPosition = doc.Top - 160; // Adjust this value as needed
+
+                // Draw the rectangle for "SUPPORTING DOCUMENTS/DETAILS"
+                DrawRectangleAtPosition(supportingDocsBoxWidth, supportingDocsBoxHeight, supportingDocsLeftPosition, supportingDocsTopPosition);
+
+                CParagraph("P.U CHECKLIST #7", isBold: true, fontSize: 20f);
+                CParagraph("\n");
+                CParagraph("PURCHASE REQUEST (PR) FOR", isBold: true, fontSize: 11f); ;
+                CParagraph("JOB ORDER FOR DOCUMENT", isBold: true, isUnderlined: true, fontSize: 11f);
+                CParagraph("NOTARIZATION", isBold: true, isUnderlined: true, fontSize: 11f);
+                CParagraph("\n");
+                CParagraph("PR NO. :    42424", isBold: false);
+                CParagraph("DATE : 42424242", isBold: false);
+                CParagraph("\n");
+                CParagraph("SUPPORTING DOCUMENTS/DETAILS", isBold: true, fontSize: 11f);
+                CParagraph("\n");
+                JParagraph("                                             Complete signatures incl. approval");
+                JParagraph("                                             Complete with PR # and date");
+                JParagraph("                                             Estimated unit cost & correct total cost");
+                JParagraph("                                             Purpose of request");
+                JParagraph("                                             Funding source");
+                JParagraph("                                             Name of Document");
+                JParagraph("                                             Number of Documents");
+                JParagraph("                                             Approved Realignment, If applicable");
+                JParagraph("                                             Approved WFP/Supplemental WFP");
+                JParagraph("                                             Approved PPMP/Supplemental PPMP");
+                JParagraph("\n");
+                JParagraph("                                       REMARKS: ");
+                JParagraph("                                             COMPLETE", isBold: true);
+                JParagraph("                                             Please comply with item(s) marked X on or before", isBold: true);
+                JParagraph("\n");
+                JParagraph("\n");
+                JParagraph("\n");
+                JParagraph("                                             CHECKED/REVIEWED BY:", isItalic: true);
+                CParagraph("\n");
+                JParagraph("                                                                        STEFANIE LORRAINE D. TRINIDAD");
+                JParagraph("                                                                                              Printed name and Signature", isItalic: true);
+                CParagraph("\n");
+
+                doc.Close();
+                return File(stream.ToArray(), "application/pdf");
+            }
+        }
+        #endregion
+
+        #region PRINT CHECKLIST 8
+        public IActionResult PrintChecklist8()
+        {
+            using (MemoryStream stream = new System.IO.MemoryStream())
+            {
+                Document doc = new iTextSharp.text.Document(PageSize.A4);
+                doc.SetMargins(30f, 30f, 30f, 30f);
+                PdfWriter writer = PdfWriter.GetInstance(doc, stream);
+                doc.Open();
+
+
+                void CParagraph(string text, bool isBold = false, bool isUnderlined = false, float fontSize = 10f)
+                {
+                    Font font = isBold ? FontFactory.GetFont(FontFactory.HELVETICA_BOLD, fontSize) : new Font(Font.FontFamily.HELVETICA, fontSize, Font.NORMAL);
+                    if (isUnderlined)
+                    {
+                        font.SetStyle(Font.UNDERLINE);
+                    }
+                    Paragraph centeredParagraph = new Paragraph(new Chunk(text, font));
+                    centeredParagraph.Alignment = Element.ALIGN_CENTER;
+                    doc.Add(centeredParagraph);
+                }
+
+                void JParagraph(string text, bool isBold = false, bool centerAligned = false, bool isItalic = false)
+                {
+                    Font font;
+                    if (isBold)
+                    {
+                        font = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10f);
+                    }
+                    else if (isItalic)
+                    {
+                        font = FontFactory.GetFont(FontFactory.TIMES_ITALIC, 10f);
+                    }
+                    else
+                    {
+                        font = new Font(Font.FontFamily.HELVETICA, 10f, Font.NORMAL);
+                    }
+
+                    Paragraph justifiedParagraph = new Paragraph();
+
+                    PdfContentByte checkbox = writer.DirectContent;
+                    for (int i = 0; i < 30; i++)
+                    {
+                        if (i== 7 || i == 10 || i == 11 || i == 15 || i == 19 || i == 26 || i == 27) continue; // Exclude certain values
+                        checkbox.SetLineWidth(1f);
+                        checkbox.Rectangle(doc.Left - -112f, doc.Top - 186f - (i * 16f), 10f, 10f);
+                        checkbox.Stroke();
+
+                        // Draw an X mark inside the rectangle
+                        checkbox.MoveTo(doc.Left - -112f + 1f, doc.Top - 186f - (i * 16f) + 1f); // Move to the starting point of the X mark inside the rectangle
+                        checkbox.LineTo(doc.Left - -112f + 9f, doc.Top - 186f - (i * 16f) + 9f); // Draw a line to create one part of the X
+                        checkbox.MoveTo(doc.Left - -112f + 1f, doc.Top - 186f - (i * 16f) + 9f); // Move to another starting point of the X mark inside the rectangle
+                        checkbox.LineTo(doc.Left - -112f + 9f, doc.Top - 186f - (i * 16f) + 1f); // Draw another line to create the other part of the X
+                        checkbox.Stroke(); // Stroke the lines to make them visible
+                    }
+
+                    // Add the text next to the checkbox
+                    justifiedParagraph.Add(new Chunk(" " + text, font));
+
+                    // Set alignment based on centerAligned parameter
+                    justifiedParagraph.Alignment = centerAligned ? Element.ALIGN_CENTER : Element.ALIGN_JUSTIFIED;
+                    doc.Add(justifiedParagraph);
+                }
+
+                void DrawRectangle(float width, float height)
+                {
+                    PdfContentByte contentByte = writer.DirectContent;
+                    contentByte.SetLineWidth(1f);
+
+                    // Calculate the left position to center the rectangle
+                    float leftPosition = (PageSize.A4.Width - width) / 2;
+
+                    // Draw the rectangle using the calculated left position
+                    contentByte.Rectangle(leftPosition, doc.Top - height, width, height);
+                    contentByte.Stroke();
+
+                }
+
+                // Calculate the width of the text "P.U CHECKLIST #1"
+                var textWidth = new Chunk("P.U CHECKLIST #8", FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 20f)).GetWidthPoint();
+                float boxWidth = textWidth + 200; // Add some padding
+                float boxHeight = 40f; // Adjust the height as needed
+                DrawRectangle(boxWidth, boxHeight);
+
+                void DrawRectangleAtPosition(float width, float height, float leftPosition, float topPosition)
+                {
+                    PdfContentByte contentByte = writer.DirectContent;
+                    contentByte.SetLineWidth(1f);
+
+                    // Draw the rectangle at the specified position
+                    contentByte.Rectangle(leftPosition, topPosition - height, width, height);
+                    contentByte.Stroke();
+                }
+
+                // Calculate the width of the text "SUPPORTING DOCUMENTS/DETAILS"
+                var supportingDocsTextWidth = new Chunk("SUPPORTING DOCUMENTS/DETAILS", FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 11f)).GetWidthPoint();
+                float supportingDocsBoxWidth = supportingDocsTextWidth + 180; // Add some padding
+                float supportingDocsBoxHeight = 15f; // Adjust the height as needed
+
+                // Calculate the left position to center the rectangle
+                float supportingDocsLeftPosition = (PageSize.A4.Width - supportingDocsBoxWidth) / 2;
+
+                // Determine the top position for the rectangle based on the previous paragraph's position
+                float supportingDocsTopPosition = doc.Top - 143; // Adjust this value as needed
+
+                // Draw the rectangle for "SUPPORTING DOCUMENTS/DETAILS"
+                DrawRectangleAtPosition(supportingDocsBoxWidth, supportingDocsBoxHeight, supportingDocsLeftPosition, supportingDocsTopPosition);
+
+                CParagraph("P.U CHECKLIST #8", isBold: true, fontSize: 20f);
+                CParagraph("\n");
+                CParagraph("PURCHASE REQUEST (PR) FOR", isBold: true, fontSize: 11f); ;
+                CParagraph("DRUGS AND MEDICINES", isBold: true, isUnderlined: true, fontSize: 11f);
+                CParagraph("\n");
+                CParagraph("PR NO. :    42424", isBold: false);
+                CParagraph("DATE : 42424242", isBold: false);
+                CParagraph("\n");
+                CParagraph("SUPPORTING DOCUMENTS/DETAILS", isBold: true, fontSize: 11f);
+                CParagraph("\n");
+                JParagraph("                                             Complete signatures incl. approval");
+                JParagraph("                                             Complete with PR # and date");
+                JParagraph("                                             Estimated unit cost & correct total cost");
+                JParagraph("                                             Purpose of request");
+                JParagraph("                                             Funding source");
+                JParagraph("                                             With stamp and signature of the Therapeutic Committee");
+                JParagraph("                                             Complete description of item including unit, form, strength, size");
+                JParagraph("                                             (for bottle or container) & quantity per container, bottle or strip");
+                JParagraph("                                             NO BRAND NAME");
+                JParagraph("                                             Must be fresh commercial stock with a total shelf life of 24");
+                JParagraph("                                             months from the date of manufacture facture but not less");
+                JParagraph("                                             than 18 months from the date of delivery");
+                JParagraph("                                             For supplier to submit valid License to Operate");
+                JParagraph("                                             (LTO) as Wholesaler, Manufacturer or Distributor");
+                JParagraph("                                             For supplier to submit valid Certificate of Good");
+                JParagraph("                                             Manufacturing Practice (CGMP)");
+                JParagraph("                                             For supplier to submit EDPMS Certificate of Compliance");
+                JParagraph("                                             For supplier to submit the result of Drug Analysis from FDA");
+                JParagraph("                                             20% Retention shall be deducted pending FDA");
+                JParagraph("                                             PASSED Result of Analysis");
+                JParagraph("                                             Labelling instruction");
+                JParagraph("                                             Preferred delivery period, if applicable");
+                JParagraph("                                             Approved Allocation or Distribution List");
+                JParagraph("                                             Approved Realignment, if applicable");
+                JParagraph("                                             Approved WFP/Supplemental WFP");
+                JParagraph("                                             Approved PPMP/Supplemental PPMP");
+                JParagraph("\n");
+                JParagraph("                                       REMARKS: ");
+                JParagraph("                                             COMPLETE", isBold: true);
+                JParagraph("                                             Please comply with item(s) marked X on or before", isBold: true);
+                JParagraph("\n");
+                JParagraph("\n");
+                JParagraph("\n");
+                JParagraph("                                             CHECKED/REVIEWED BY:", isItalic: true);
+                CParagraph("\n");
+                JParagraph("                                                                        STEFANIE LORRAINE D. TRINIDAD");
+                JParagraph("                                                                                              Printed name and Signature", isItalic: true);
+                CParagraph("\n");
 
                 doc.Close();
                 return File(stream.ToArray(), "application/pdf");
