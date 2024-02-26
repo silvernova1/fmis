@@ -55,10 +55,10 @@ namespace fmis.Controllers.Procurement
         private readonly PpmpContext _ppmpContext;
         private readonly DtsContext _dts;
         private readonly IHttpContextAccessor _httpContextAccessor;
-		private readonly fmisContext _dtsContext;
+        private readonly fmisContext _dtsContext;
         private readonly IHubContext<PrStatus> _hubContext;
 
-		public ProcurementController(MyDbContext context, IUserService userService, PpmpContext ppmpContext, DtsContext dts, IHttpContextAccessor httpContextAccessor, fmisContext dtsContext, IHubContext<PrStatus> hubContext)
+        public ProcurementController(MyDbContext context, IUserService userService, PpmpContext ppmpContext, DtsContext dts, IHttpContextAccessor httpContextAccessor, fmisContext dtsContext, IHubContext<PrStatus> hubContext)
         {
             _context = context;
             _userService = userService;
@@ -68,36 +68,36 @@ namespace fmis.Controllers.Procurement
             _dtsContext = dtsContext;
             _hubContext = hubContext;
 
-		}
+        }
 
         public IActionResult PrStatus(int id)
         {
-            var active = _context.RmopAta.FirstOrDefault(x=>x.Id == id);
+            var active = _context.RmopAta.FirstOrDefault(x => x.Id == id);
 
             return Ok();
         }
 
-		[HttpGet]
-		public IActionResult GetChecklist(int id)
-		{
-			var prChecklist = _context.PuChecklist
-		    .Where(x => x.Prno == id)
-		    .ToList();
+        [HttpGet]
+        public IActionResult GetChecklist(int id)
+        {
+            var prChecklist = _context.PuChecklist
+            .Where(x => x.Prno == id)
+            .ToList();
 
 
-			return Json(prChecklist);
-		}
+            return Json(prChecklist);
+        }
 
-		public IActionResult SaveChecklist(PuChecklist puChecklist)
+        public IActionResult SaveChecklist(PuChecklist puChecklist)
         {
             if (ModelState.IsValid)
             {
                 if (puChecklist.Prno != 0)
                 {
                     puChecklist.PrChecklist = puChecklist.PrChecklist.Where(x => x.IsChecked).ToList();
+                    puChecklist.PrTrackingChecklist = DateTime.Now;
 
-
-                    _context.PuChecklist.Add(puChecklist);
+					_context.PuChecklist.Add(puChecklist);
                     _context.SaveChanges();
 
                     var pr = _context.Pr.FirstOrDefault(x => x.Id == Convert.ToInt32(puChecklist.Prno));
@@ -107,11 +107,11 @@ namespace fmis.Controllers.Procurement
                     _context.SaveChanges();
 
 
-                    return Json(new { success = true } );
+                    return Json(new { success = true });
                 }
             }
 
-            return Json(new { success = false } );
+            return Json(new { success = false });
         }
 
 
@@ -363,7 +363,7 @@ namespace fmis.Controllers.Procurement
                     _context.Add(model);
                     _context.SaveChanges();
                 }
-                return Json(new { success = true} );
+                return Json(new { success = true });
             }
             return Json(new { success = false });
         }
@@ -386,7 +386,7 @@ namespace fmis.Controllers.Procurement
         {
             if (ModelState.IsValid)
             {
-                if(!String.IsNullOrWhiteSpace(newData.BacResNumber))
+                if (!String.IsNullOrWhiteSpace(newData.BacResNumber))
                 {
                     _context.Update(newData);
                     _context.SaveChanges();
@@ -413,7 +413,7 @@ namespace fmis.Controllers.Procurement
         {
             if (ModelState.IsValid)
             {
-                if(!String.IsNullOrWhiteSpace(model.FullName))
+                if (!String.IsNullOrWhiteSpace(model.FullName))
                 {
                     _context.Add(model);
                     _context.SaveChanges();
@@ -439,7 +439,7 @@ namespace fmis.Controllers.Procurement
                     _context.Update(newData);
                     _context.SaveChanges();
                 }
-                return Json(new { success = true } );
+                return Json(new { success = true });
             }
             return Json(new { success = false });
         }
@@ -474,14 +474,14 @@ namespace fmis.Controllers.Procurement
             {
                 if (model.BacNo != null)
                 {
-                    var userId = _context.Pr.FirstOrDefault(x=>x.Prno == model.PrNoOne).UserId;
-					model.UserId = userId;
+                    var userId = _context.Pr.FirstOrDefault(x => x.Prno == model.PrNoOne).UserId;
+                    model.UserId = userId;
                     model.PrTrackingDate = DateTime.Now;
 
-					_context.Add(model);
+                    _context.Add(model);
                     _context.SaveChanges();
 
-					string htmlContent = $@"
+                    string htmlContent = $@"
                     <div role='tabpanel' class='bs-stepper-pane fade active dstepper-block' id='rmopDate'>
                         <div class='form-group'>
                             <label for='inputMailForm'>{model.PrTrackingDate.ToString("MMM d, yyyy")}</label>
@@ -492,8 +492,8 @@ namespace fmis.Controllers.Procurement
                         </div>
                     </div>";
 
-					_hubContext.Clients.All.SendAsync("PrUpdateRmop", model.PrNoOne, htmlContent);
-					return Json(new { success = true });
+                    _hubContext.Clients.All.SendAsync("PrUpdateRmop", model.PrNoOne, htmlContent);
+                    return Json(new { success = true });
                 }
             }
             return Json(new { success = false });
@@ -519,9 +519,9 @@ namespace fmis.Controllers.Procurement
             {
                 if (model.BacNo != null)
                 {
-					var userId = _context.Pr.FirstOrDefault(x => x.Prno == model.PrNoOne).UserId;
-					model.UserId = userId;
-					_context.Add(model);
+                    var userId = _context.Pr.FirstOrDefault(x => x.Prno == model.PrNoOne).UserId;
+                    model.UserId = userId;
+                    _context.Add(model);
                     _context.SaveChanges();
 
                     return Json(new { success = true });
@@ -552,9 +552,9 @@ namespace fmis.Controllers.Procurement
             {
                 if (model.BacNo != null)
                 {
-					var userId = _context.Pr.FirstOrDefault(x => x.Prno == model.PrNoOne).UserId;
-					model.UserId = userId;
-					_context.Add(model);
+                    var userId = _context.Pr.FirstOrDefault(x => x.Prno == model.PrNoOne).UserId;
+                    model.UserId = userId;
+                    _context.Add(model);
                     _context.SaveChanges();
 
                     return Json(new { success = true });
@@ -585,10 +585,10 @@ namespace fmis.Controllers.Procurement
             {
                 if (model.BacNo != null)
                 {
-					var userId = _context.Pr.FirstOrDefault(x => x.Prno == model.PrNoOne).UserId;
-					model.UserId = userId;
+                    var userId = _context.Pr.FirstOrDefault(x => x.Prno == model.PrNoOne).UserId;
+                    model.UserId = userId;
 
-					_context.Add(model);
+                    _context.Add(model);
                     _context.SaveChanges();
 
                     return Json(new { success = true });
@@ -634,10 +634,10 @@ namespace fmis.Controllers.Procurement
             {
                 if (model.BacNo != null)
                 {
-					var userId = _context.Pr.FirstOrDefault(x => x.Prno == model.PrNoOne).UserId;
-					model.UserId = userId;
+                    var userId = _context.Pr.FirstOrDefault(x => x.Prno == model.PrNoOne).UserId;
+                    model.UserId = userId;
 
-					_context.Add(model);
+                    _context.Add(model);
                     _context.SaveChanges();
 
                     return Json(new { success = true });
@@ -666,10 +666,10 @@ namespace fmis.Controllers.Procurement
             {
                 if (model.BacNo != null)
                 {
-					var userId = _context.Pr.FirstOrDefault(x => x.Prno == model.PrNoOne).UserId;
-					model.UserId = userId;
+                    var userId = _context.Pr.FirstOrDefault(x => x.Prno == model.PrNoOne).UserId;
+                    model.UserId = userId;
 
-					_context.Add(model);
+                    _context.Add(model);
                     _context.SaveChanges();
 
                     return Json(new { success = true });
@@ -700,10 +700,10 @@ namespace fmis.Controllers.Procurement
             {
                 if (model.BacNo != null)
                 {
-					var userId = _context.Pr.FirstOrDefault(x => x.Prno == model.PrNoOne).UserId;
-					model.UserId = userId;
+                    var userId = _context.Pr.FirstOrDefault(x => x.Prno == model.PrNoOne).UserId;
+                    model.UserId = userId;
 
-					_context.Add(model);
+                    _context.Add(model);
                     _context.SaveChanges();
 
                     return Json(new { success = true });
@@ -734,10 +734,10 @@ namespace fmis.Controllers.Procurement
             {
                 if (model.BacNo != null)
                 {
-					var userId = _context.Pr.FirstOrDefault(x => x.Prno == model.PrNoOne).UserId;
-					model.UserId = userId;
+                    var userId = _context.Pr.FirstOrDefault(x => x.Prno == model.PrNoOne).UserId;
+                    model.UserId = userId;
 
-					_context.Add(model);
+                    _context.Add(model);
                     _context.SaveChanges();
 
                     return Json(new { success = true });
@@ -759,6 +759,8 @@ namespace fmis.Controllers.Procurement
             var canvass = _context.Canvass.ToList();
             PrDdl();
 
+            ViewBag.addReCanvass = _context.AddReCanvass.ToList();
+
             return View(canvass);
         }
 
@@ -773,7 +775,7 @@ namespace fmis.Controllers.Procurement
                     _context.Canvass.Add(model);
                     _context.SaveChanges();
 
-					string htmlContent = $@"
+                    string htmlContent = $@"
                     <div role='tabpanel' class='bs-stepper-pane fade active dstepper-block'>
                         <div class='form-group' id='rmopDiv'>
                             <label for='inputMailForm'>{model?.SubmissionDate.ToString("MMM d, yyyy")}</label>
@@ -784,8 +786,8 @@ namespace fmis.Controllers.Procurement
                         </div>
                     </div>";
 
-					_hubContext.Clients.All.SendAsync("PrUpdateCanvass", model.PrNo, htmlContent);
-					return Json(new { success = true });
+                    _hubContext.Clients.All.SendAsync("PrUpdateCanvass", model.PrNo, htmlContent);
+                    return Json(new { success = true });
                 }
             }
 
@@ -838,10 +840,109 @@ namespace fmis.Controllers.Procurement
         #endregion
 
         [HttpGet]
-        public IActionResult ReCanvassAdditional()
+        [Route("Procurement/Additional")]
+        public IActionResult AdditionalOrReCanvass(int canvassId)
         {
-            // You can pass any necessary model or data to the partial view
-            return PartialView("ReCanvassAdditional");
+            ViewBag.filter = new FilterSidebar("Procurement", "LogBook", "Canvass");
+
+            ViewBag.Canvass = canvassId;
+            PrDdl();
+
+            var additional = _context.AddReCanvass.FirstOrDefault(x=>x.CanvassId == canvassId && x.Step == "Additional");
+
+            return View(additional);
+        }
+        [HttpPost]
+        public IActionResult SaveAr(AddReCanvass model)
+        {
+            if(ModelState.IsValid)
+            {
+                var canvassStep = "Additional";
+                model.Step = canvassStep;
+
+
+
+                _context.AddReCanvass.Add(model);
+                _context.SaveChanges();
+
+                return Json(new { success = true });
+            }
+
+            return Json(new { success = false });
+        }
+        [Route("Procurement/Second")]
+        public IActionResult SecondAdditionalOrReCanvass(int canvassId)
+        {
+            ViewBag.filter = new FilterSidebar("Procurement", "LogBook", "Canvass");
+            ViewBag.Canvass = canvassId;
+            PrDdl();
+
+            var second = _context.AddReCanvass.FirstOrDefault(x => x.CanvassId == canvassId && x.Step == "Second");
+
+            return View(second);
+        }
+
+        [HttpPost]
+        public IActionResult SaveSar(AddReCanvass model)
+        {
+            if (ModelState.IsValid)
+            {
+                var canvassStep = "Second";
+                model.Step = canvassStep;
+
+                _context.AddReCanvass.Add(model);
+                _context.SaveChanges();
+
+                return Json(new { success = true });
+            }
+
+            return Json(new { success = false });
+        }
+
+        [Route("Procurement/Third")]
+        public IActionResult ThirdAdditionalOrReCanvass(int canvassId)
+        {
+            ViewBag.filter = new FilterSidebar("Procurement", "LogBook", "Canvass");
+            ViewBag.Canvass = canvassId;
+            PrDdl();
+
+            var third = _context.AddReCanvass.FirstOrDefault(x => x.CanvassId == canvassId && x.Step == "Third");
+
+            return View(third);
+        }
+
+        [HttpPost]
+        public IActionResult SaveTar(AddReCanvass model)
+        {
+            if (ModelState.IsValid)
+            {
+                var canvassStep = "Third";
+                model.Step = canvassStep;
+
+                _context.AddReCanvass.Add(model);
+                _context.SaveChanges();
+
+                return Json(new { success = true });
+            }
+
+            return Json(new { success = false });
+        }
+
+        [HttpPost]
+        public IActionResult AddReCanvass(AddReCanvass formData)
+        {
+            if (ModelState.IsValid)
+            {
+                if (!string.IsNullOrEmpty(formData.RpqNo))
+                {
+                    _context.AddReCanvass.Add(formData);
+                    _context.SaveChanges();
+
+                    return Json(new { success = true });
+                }
+            }
+
+            return Json(new { success = false });
         }
 
 
@@ -2265,6 +2366,67 @@ namespace fmis.Controllers.Procurement
         }
         #endregion
 
+        #region SIGNATORIES
+        public IActionResult BacSignature(int id, int abstractId, int poid)
+        {
+            var rmopAta = _context.RmopAta.FirstOrDefault(x => x.Id == id);
+
+            var abstractNo = _context.Abstract.FirstOrDefault(x=>x.Id == id);
+
+            var poNo = _context.Po.FirstOrDefault(x => x.Id == poid);
+
+
+            if (abstractNo != null)
+            {
+                abstractNo.IsForBac = true;
+
+                _context.Abstract.Update(abstractNo);
+                _context.SaveChanges();
+
+                return Json(new { success = true, message = "ABSTRACT forwarded to the BAC for signature." });
+            }
+            else if(rmopAta != null)
+            {
+                rmopAta.IsForBac = true;
+
+                _context.RmopAta.Update(rmopAta);
+                _context.SaveChanges();
+
+                return Json(new { success = true, message = "RMOP forwarded to the BAC for signature." });
+            }
+            else if (poNo != null)
+            {
+                poNo.IsForBudget = true;
+
+                _context.Po.Update(poNo);
+                _context.SaveChanges();
+
+                return Json(new { success = true, message = "PO forwarded to the Budget." });
+            }
+            else
+            {
+                return Json(new { success = false, message = "ERROR saving to database." });
+            }
+        }
+
+        public IActionResult RdSignature(int id)
+        {
+            var rmopAta = _context.RmopAta.FirstOrDefault(x => x.Id == id);
+
+            if (rmopAta == null)
+            {
+                return NotFound();
+            }
+
+            rmopAta.IsForRd = true;
+
+            _context.RmopAta.Update(rmopAta);
+            _context.SaveChanges();
+
+            return Json(new { success = true, message = "RMOP forwarded to the RD for signature." });
+        }
+        #endregion
+
         //PRINT DIRECT CONTRACTING
         #region
         public IActionResult PrintDirectContracting(string[] token, int id)
@@ -3556,8 +3718,6 @@ namespace fmis.Controllers.Procurement
 
             return RedirectToAction("PuUser");
         }
-
-        #endregion
 
         [HttpGet]
         [AllowAnonymous]

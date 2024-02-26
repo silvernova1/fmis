@@ -43,6 +43,8 @@ using DocumentFormat.OpenXml.Office2010.ExcelAc;
 using System.Runtime.InteropServices.WindowsRuntime;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Database;
+using DocumentFormat.OpenXml.Office2021.DocumentTasks;
+using AutoMapper.Configuration.Annotations;
 
 namespace fmis.Controllers.Employee
 {
@@ -82,10 +84,17 @@ namespace fmis.Controllers.Employee
             IEnumerable<SelectListItem> itemList = Query.ToList();
 
             ViewBag.ItemId = itemList;
+			//ViewBag.PrNo = _context.Pr.FirstOrDefault(x => x.UserId == UserId).Prno;
 
 
-            return View(pr);
+			return View(pr);
         }
+
+		[HttpGet]
+		public IActionResult GetPr(int id)
+		{
+			return Ok();
+		}
 
         [HttpPost]
         public async Task<IActionResult> Create(Pr pr)
@@ -151,8 +160,79 @@ namespace fmis.Controllers.Employee
             ViewBag.Approval = new SelectList(employee, "Id", "Fullname");
         }
 
+        public IActionResult GetPrStatus(string prNo)
+        {
+            var pr = _context.Pr.FirstOrDefault(x => x.Prno == prNo && x.UserId == UserId);
+            if (pr == null)
+            {
+                return NotFound();
+            }
 
-		public IActionResult PrintPr(string[] token, int id)
+            var prId = pr.Id;
+
+            var checklist = _context.PuChecklist.FirstOrDefault(x => x.Prno == prId);
+
+            var rmopAta = _context?.RmopAta.FirstOrDefault(x => x.PrNoOne == prNo);
+
+            var bacSig = rmopAta?.IsForBac == true;
+
+            var rdSig = rmopAta?.IsForRd == true;
+
+            var canvass = _context.Canvass.FirstOrDefault(x => x.PrNo == prNo);
+
+            var canvassId = canvass != null ? canvass.Id : (int?)null;
+
+            var additionalCanvass = _context.AddReCanvass.FirstOrDefault(x => x.CanvassId == canvassId && x.Step == "Additional");
+
+            var secondAdditionalCanvass = _context.AddReCanvass.FirstOrDefault(x => x.CanvassId == canvassId && x.Step == "Second");
+
+            var thirdAdditionalCanvass = _context.AddReCanvass.FirstOrDefault(x => x.CanvassId == canvassId && x.Step == "Third");
+
+            var abstractPr = _context.Abstract.FirstOrDefault(x => x.PrNo == prNo);
+
+            var abstractForBac = abstractPr?.IsForBac == true;
+
+            var poRemarks = _context.Po.FirstOrDefault(x => x.PrNo == prNo);
+
+            var poIsforBudget = poRemarks?.IsForBudget == true;
+
+            var response = new
+            {
+                Checklist = new
+                {
+                    checklist = checklist?.PrTrackingChecklist,
+                    remarks = checklist?.Remarks ?? "",
+                },
+                RmopAta = new
+                {
+                    rmopAta = rmopAta?.PrTrackingDate,
+                    bacSig = bacSig == true ? "BAC for Signature" : "",
+                    rdSig = rdSig == true ? "RD for Signature" : "",
+                },
+                Canvass = new
+                {
+                    canvass = canvass?.Remarks ?? "",
+                    additionalCanvass = additionalCanvass?.Remarks ?? "",
+                    secondAdditionalCanvass = secondAdditionalCanvass?.Remarks ?? "",
+                    thirdAdditionalCanvass = thirdAdditionalCanvass?.Remarks ?? "",
+                },
+                AbstractPr = new
+                {
+                    abstractPr = abstractPr?.Remarks ?? "",
+                    abstractForBac = abstractForBac == true ? "BAC for Signature" : "",
+                },
+                Po = new
+                {
+                    poRemarks = poRemarks?.Remarks ?? "",
+                    poIsforBudget = poIsforBudget == true ? "Forwarded to Budget" : "",
+                }
+            };
+
+            return Ok(response);
+        }
+
+
+        public IActionResult PrintPr(string[] token, int id)
 		{
 			using (MemoryStream stream = new System.IO.MemoryStream())
 			{

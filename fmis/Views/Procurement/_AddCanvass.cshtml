@@ -13,7 +13,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                     <h3 class="smaller lighter blue no-margin">Create Canvass</h3>
                 </div>
-                <form asp-action="SaveCanvass" method="post">
+                <form method="post" id="addCanvass">
                     <div class="modal-body">
                         <div>
                             <h4 class="grey lighter smaller">
@@ -27,7 +27,7 @@
                                         <input type="text" class="form-control" name="RpqNo" required>
                                     </div>
                                     <div class="form-group">
-                                        <label for="" style="font-weight:bold">RPQ DATE </label>
+                                        <label for="" style="font-weight:bold">RPQ DATE asdasd</label>
                                         <input type="text" class="form-control" id="rpqdate" name="rpqdate">
                                     </div>
                                     <div class="form-group">
@@ -115,7 +115,7 @@
             });
         });
 
-        $('form').submit(function (e) {
+        $('#addCanvass').submit(function (e) {
             e.preventDefault();
 
             $.ajax({
@@ -139,7 +139,7 @@
                             sound: false
                         });
                         setTimeout(function () {
-                            $("#my-modal").modal("hide");
+                            $("#createCanvass").modal("hide");
                             location.reload();
                         }, 1000);
                     }

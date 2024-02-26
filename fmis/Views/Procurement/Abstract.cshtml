@@ -97,7 +97,7 @@
 </p>
 <h1 style="margin-left : 200px; font-weight:bold;">2023 ABSTRACT LOG BOOK</h1>
 <br />
-<table class="table table-hover" style="width: 900px">
+<table class="table table-hover" style="width: 1200px">
     <thead>
         <tr>
             <th>
@@ -156,6 +156,9 @@
                     <td>
                         <a class="btn btn-xs btn-primary btn-edit" data-id="@item.Id">
                             <i class="ace-icon fa fa-edit"></i>Edit
+                        </a> |
+                        <a class="btn btn-xs btn-primary" id="bacSignature" data-id="@item.Id">
+                            <i class="ace-icon fa fa-users"></i>Forward to BAC
                         </a>
                     </td>
                 </tr>
@@ -251,5 +254,37 @@
             });
         });
 
+        $("#bacSignature").on("click", function (e) {
+            e.preventDefault();
+            
+            var id = $(this).data("id");
+            console.log(id);
+
+            $.ajax({
+                url: "@Url.Action("BacSignature", "Procurement")",
+                type: "POST",
+                data: { id: id },
+                success: function (response) {
+                    if (response.success) {
+                        Lobibox.notify('success', {
+                            title: 'Success',
+                            msg: response.message
+                        });
+                    } else {
+                        Lobibox.notify('error', {
+                            title: 'Error',
+                            msg: response.message
+                        });
+                    }
+                },
+                error: function () {
+                    Lobibox.notify('error', {
+                        size: 'mini',
+                        title: 'Error',
+                        msg: 'An error occurred during the request.'
+                    });
+                }
+            });
+        });
     });
 </script>

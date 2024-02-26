@@ -14,6 +14,10 @@ namespace fmis.Models.Procurement
 
         public DateTime PuChecklistDate { get; set; }
 
-        public List<PrChecklist> PrChecklist { get; set; }
+		public DateTime PrTrackingChecklist { get; set; }
+
+        public string Remarks { get; set; }
+
+		public List<PrChecklist> PrChecklist { get; set; }
     }
 }
