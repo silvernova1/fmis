@@ -1,12 +1,12 @@
 ﻿@model fmis.Models.Procurement.PuChecklist
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewData["Title"] = "Procurement" + " " + "(Checklist18)";
+    ViewData["Title"] = "Procurement" + " " + "(Checklist20)";
 }
 
 
 <h3 class="grey lighter smaller">
-    P.U Checklist #18
+    P.U Checklist #21
 </h3>
 <hr>
 <div class="background-wrapper">
@@ -14,17 +14,17 @@
 
         <div class="row">
             <form asp-controller="Procurement" asp-action="SaveChecklist">
-                <input type="hidden" asp-for="ChecklistNo" value="18" />
+                <input type="hidden" asp-for="ChecklistNo" value="21" />
                 <div class="col-md-12">
                     <center>
                         <div class="rectangle">
-                            <h2>P.U CHECKLIST #18 </h2>
+                            <h2>P.U CHECKLIST #21 </h2>
                         </div>
                         <h5 style="font-weight:bold">
                             PURCHASE REQUEST (PR) FOR <br />
                             <u>
-                                I.T SOFTWARE SUBSCRIPTION/<br />
-                                LICENSING
+                                VARIOUS HARDWARE <br />
+                                SUPPLIES/MATERIALS 
                             </u>
                         </h5>
                         <h6>
@@ -73,54 +73,51 @@
                             <input type="hidden" asp-for="PrChecklist[5].Description" value="Funding Source" />
                             Funding Source
                         </p>
+
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[6].IsChecked" class="form-check-input">
-                            <input type="hidden" asp-for="PrChecklist[6].Description" value="Period of Subscription" />
-                            Period of Subscription
+                            <input type="hidden" asp-for="PrChecklist[6].Description" value="Complete specifications/requirements" />
+                            Complete specifications/requirements <br />
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[7].IsChecked" class="form-check-input">
-                            <input type="hidden" asp-for="PrChecklist[7].Description" value="Complete specifications/requirements" />
-                            Complete specifications/requirements
+                            <input type="hidden" asp-for="PrChecklist[7].Description" value=" With stamp and signature of Clearing House Committee, if applicable" />
+                            With stamp and signature of Clearing <br />
+                            &nbsp; &nbsp; &nbsp; &nbsp; House Committee, if applicable
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[8].IsChecked" class="form-check-input">
-                            <input type="hidden" asp-for="PrChecklist[8].Description" value="Warranty, if applicable" />
-                            Warranty, if applicable
-                        </p>
-                        <p>
-                            <input type="checkbox" asp-for="PrChecklist[9].IsChecked" class="form-check-input">
-                            <input type="hidden" asp-for="PrChecklist[9].Description" value="Approved Realignment, If applicable" />
+                            <input type="hidden" asp-for="PrChecklist[8].Description" value="Approved Realignment, If applicable" />
                             Approved Realignment, If applicable
                         </p>
                         <p>
-                            <input type="checkbox" asp-for="PrChecklist[10].IsChecked" class="form-check-input">
-                            <input type="hidden" asp-for="PrChecklist[10].Description" value="Approved WFP/Supplemental WFP" />
+                            <input type="checkbox" asp-for="PrChecklist[9].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[9].Description" value="Approved WFP/Supplemental WFP" />
                             Approved WFP/Supplemental WFP
                         </p>
                         <p>
-                            <input type="checkbox" asp-for="PrChecklist[11].IsChecked" class="form-check-input">
-                            <input type="hidden" asp-for="PrChecklist[11].Description" value="Approved PPMP/Supplemental PPMP" />
+                            <input type="checkbox" asp-for="PrChecklist[10].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[10].Description" value="Approved PPMP/Supplemental PPMP" />
                             Approved PPMP/Supplemental PPMP
                         </p>
                         <p>
-                            <input type="checkbox" asp-for="PrChecklist[12].IsChecked" class="form-check-input">
-                            <input type="hidden" asp-for="PrChecklist[12].Description" value="Others" />
+                            <input type="checkbox" asp-for="PrChecklist[11].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[11].Description" value="Others" />
                             <u style="font-weight:bold">Others</u> <br />
-                            &nbsp; &nbsp; &nbsp; &nbsp;  <input type="text" asp-for="PrChecklist[12].Others" style="border: none; border-bottom: 1px solid black;" />
+                            &nbsp; &nbsp; &nbsp; &nbsp;  <input type="text" asp-for="PrChecklist[11].Others" style="border: none; border-bottom: 1px solid black;" />
                         </p>
                         <br />
                         <p style="font-weight:bold">
                             REMARKS:
                         </p>
                         <p style="font-weight:bold">
-                            <input type="checkbox" asp-for="PrChecklist[13].IsChecked" class="form-check-input">
-                            <input type="hidden" asp-for="PrChecklist[13].Description" value="COMPLETE" />
+                            <input type="checkbox" asp-for="PrChecklist[12].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[12].Description" value="COMPLETE" />
                             COMPLETE
                         </p>
                         <p style="font-weight:bold">
-                            <input type="checkbox" asp-for="PrChecklist[14].IsChecked" class="form-check-input">
-                            <input type="hidden" asp-for="PrChecklist[14].Description" value="Please comply with item(s) marked X on or before" />
+                            <input type="checkbox" asp-for="PrChecklist[13].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[13].Description" value="Please comply with item(s) marked X on or before" />
                             Please comply with item(s) marked <br />
                             &nbsp; &nbsp; &nbsp; &nbsp; X on or before <input type="text" asp-for="PrChecklist[14].Others" style="border: none; border-bottom: 1px solid black;" />
                         </p>

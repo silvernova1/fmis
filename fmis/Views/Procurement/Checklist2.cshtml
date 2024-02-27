@@ -5,122 +5,6 @@
 }
 
 
-
-<style>
-
-    .card-container {
-        width: calc(30% - 40px);
-        padding: 20px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-        background-color: #fff;
-        margin-left: 50px;
-    }
-
-    .underline {
-        text-decoration: underline;
-        width: 300px;
-        margin: 0 auto;
-    }
-
-    .card-container input[type="checkbox"] {
-        width: 18px;
-        height: 18px;
-        margin-right: 5px;
-        margin-top: 2px;
-    }
-
-    .card-container p {
-        margin-bottom: -2px;
-    }
-
-    .card-container form {
-        /* Add your form element styles here */
-    }
-
-    .card-container label {
-        font-weight: bold;
-    }
-
-    .card-container input[type="text"],
-    .card-container select,
-    .card-container textarea {
-        width: 100%;
-        padding: 8px;
-        margin-bottom: 15px;
-        border: 1px solid #ccc;
-        border-radius: 3px;
-    }
-
-    @@media (max-width: 1024px) {
-        .card-container {
-            width: calc(80% - 40px);
-        }
-    }
-
-    @@media (max-width: 767px) {
-        .background-wrapper {
-            min-height: 100vh;
-        }
-
-        .card-container {
-            width: 90%;
-        }
-    }
-
-
-
-    .rectangle h6 {
-        white-space: nowrap;
-    }
-
-    .rectangle {
-        border: 1px solid black;
-        padding-left: 5%; /* Adjust percentage for padding */
-        padding-right: 5%; /* Adjust percentage for padding */
-        margin-top: 10px;
-        margin-bottom: 10px;
-        width: 90%; /* Adjust percentage for width */
-        display: inline-block;
-    }
-    .text-input-container {
-        display: inline-block;
-    }
-
-    input[type="checkbox"] {
-        -webkit-appearance: initial;
-        appearance: initial;
-        background: white;
-        width: 40px;
-        height: 40px;
-        border: 1px solid black;
-        position: relative;
-    }
-
-    input[type="checkbox"]:checked {
-        background: black;
-    }
-
-
-    .text-input-container {
-        display: inline-block;
-    }
-
-    input[type="checkbox"]:checked:after {
-       content: "X";
-       color: #fff;
-       position: absolute;
-       left: 50%;
-       top: 50%;
-       -webkit-transform: translate(-50%,-50%);
-       -moz-transform: translate(-50%,-50%);
-       -ms-transform: translate(-50%,-50%);
-       transform: translate(-50%,-50%);
-    }
-
-
-</style>
 <h3 class="grey lighter smaller">
     P.U Checklist #2
 </h3>
@@ -288,12 +172,19 @@
                             CHECKED/REVIEWED BY:
                         </p>
                         <br />
+                        <br />
                         <center>
                             <p class="underline">
                                 STEFANIE LORRAINE D. TRINIDAD
                             </p>
+                            <p style="font-size:8pt; font-style:italic">
+                                Printed name, Signature and Date
+                            </p>
                             <br />
                             <button type="submit" class="bnt btn-primary" style="float: right;">Submit</button>
+                            <a class="btn btn-xs btn-success" target="_blank" href="@Url.Action("PrintChecklist2","Procurement",new { id = "" })" data-bs-toggle="print" title="Print">
+                                <i class="ace-icon fa fa-file-pdf-o"></i> Print to PDF
+                            </a>
                         </center>
                     </div>
                 </div>

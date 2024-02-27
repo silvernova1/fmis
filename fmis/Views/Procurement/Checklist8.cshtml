@@ -5,132 +5,6 @@
 }
 
 
-
-<style>
-
-    .card-container {
-        width: calc(30% - 40px); /* Adjust the total width by considering padding (20px on each side) */
-        padding: 20px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-        background-color: #fff;
-        margin-left: 50px;
-        
-    }
-
-    .underline {
-        text-decoration: underline;
-        width: 200px; /* Adjust the width as needed (percentage or other units) */
-        margin: 0 auto; /* Center-align the underline */
-    }
-
-    .card-container input[type="checkbox"] {
-        width: 18px; /* Adjust the width */
-        height: 18px; /* Adjust the height */
-        margin-right: 5px;
-        margin-top: 2px;/* Add some space between the checkbox and label */
-
-    }
-
-        .card-container p {
-            margin-bottom: -2px;
-        }
-
-
-        /* Style for the form elements within the card */
-        .card-container form {
-            /* Add your form element styles here */
-        }
-
-        .card-container label {
-            font-weight: bold;
-        }
-
-        .card-container input[type="text"]
-        card-container select,
-        .card-container textarea {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-        }
-
-    
-    /* Media query for tablets (landscape and portrait) */
-    @@media (max-width: 1024px) {
-        .card-container {
-            width: calc(80% - 40px); /* Adjust width for tablets */
-        }
-    }
-
-    /* Media query for mobile devices */
-    @@media (max-width: 767px) {
-        .background-wrapper {
-            min-height: 100vh;
-        }
-
-        .card-container {
-            width: 90%; /* Adjust width for mobile devices */
-        }
-    }
-
-
-
-    .rectangle h2 {
-        white-space: nowrap;
-        margin-top: 5px; /* Add space at the top */
-        margin-bottom: 5px; /* Add space at the bottom */
-    }
-
-    .rectangle h6 {
-        white-space: nowrap;
-    }
-
-    .rectangle {
-        border: 1px solid black;
-        padding-left: 100px;
-        padding-right: 100px;
-        margin-top: 10px;
-        margin-bottom: 10px;
-        width: fit-content;
-        display: inline-block;
-    }
-
-        .text-input-container {
-        display: inline-block;
-    }
-
-    input[type="checkbox"] {
-        -webkit-appearance: initial;
-        appearance: initial;
-        background: white;
-        width: 40px;
-        height: 40px;
-        border: 1px solid black;
-        position: relative;
-    }
-
-    input[type="checkbox"]:checked {
-        background: black;
-    }
-
-    input[type="checkbox"]:checked:after {
-       content: "X";
-       color: #fff;
-       position: absolute;
-       left: 50%;
-       top: 50%;
-       -webkit-transform: translate(-50%,-50%);
-       -moz-transform: translate(-50%,-50%);
-       -ms-transform: translate(-50%,-50%);
-       transform: translate(-50%,-50%);
-    }
-
-
-
-</style>
 <h3 class="grey lighter smaller">
     P.U Checklist #1
 </h3>
@@ -148,8 +22,7 @@
                         </div>
                         <h5 style="font-weight:bold">
                             PURCHASE REQUEST (PR) FOR <br />
-                            JOB ORDER FOR VENUE,<br />
-                            MEALS, AND ACCOMMODATION
+                            DRUGS AND MEDICINES
                         </h5>
                         <h6>
                             PR NO. :
@@ -175,129 +48,103 @@
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[1].IsChecked" class="form-check-input">
-                            <input type="hidden" asp-for="PrChecklist[1].Description" value="Title of Activity" />
-                            Title of Activity
+                            <input type="hidden" asp-for="PrChecklist[1].Description" value="Complete with PR # and date" />
+                            Complete with PR # and date
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[2].IsChecked" class="form-check-input">
-                            <input type="hidden" asp-for="PrChecklist[2].Description" value="Meals and meal type" />
-                            Meals and meal type
+                            <input type="hidden" asp-for="PrChecklist[2].Description" value="Estimated unit cost & correct total cost" />
+                            Estimated unit cost & correct total cost
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[3].IsChecked" class="form-check-input">
-                            <input type="hidden" asp-for="PrChecklist[3].Description" value="Number of EXPECTED pax" />
-                            Number of EXPECTED pax
+                            <input type="hidden" asp-for="PrChecklist[3].Description" value="Purpose of Request" />
+                            Purpose of Request
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[4].IsChecked" class="form-check-input">
-                            <input type="hidden" asp-for="PrChecklist[4].Description" value="Number of GUARANTEED pax" />
-                            Number of GUARANTEED pax
+                            <input type="hidden" asp-for="PrChecklist[4].Description" value="Funding Source" />
+                            Funding Source
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[5].IsChecked" class="form-check-input">
-                            <input type="hidden" asp-for="PrChecklist[5].Description" value="Date/Period of Activity" />
-                            Date/Period of Activity
+                            <input type="hidden" asp-for="PrChecklist[5].Description" value="With stamp and signature of the Therapeutic Committee" />
+                            With stamp and signature of the Therapeutic Committee
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[6].IsChecked" class="form-check-input">
                             <input type="hidden" asp-for="PrChecklist[6].Description" value="Specify - Meals and Accommodation" />
-                            Specify - Meals and Accommodation
+                            Complete description of item including unit, form, strength, size <br />
+                            &nbsp; &nbsp; &nbsp; &nbsp; (for bottle or container) & quantity per container, bottle or strip
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[7].IsChecked" class="form-check-input">
                             <input type="hidden" asp-for="PrChecklist[7].Description" value="Check-in and Check-out time" />
-                            Check-in and Check-out time
+                            NO BRAND NAME
+                        </p>
+                        <p>
+                            <input type="checkbox" asp-for="PrChecklist[6].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[6].Description" value="Specify - Meals and Accommodation" />
+                            Must be fresh commercial stock with a total shelf life of 24  <br />
+                            &nbsp; &nbsp; &nbsp; &nbsp;  months from the date of manufacture facture but not less  <br />
+                            &nbsp; &nbsp; &nbsp; &nbsp;  than 18 months from the date of delivery
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[8].IsChecked" class="form-check-input">
                             <input type="hidden" asp-for="PrChecklist[8].Description" value="Specify - Meals only" />
-                            Specify - Meals only
+                            For supplier to submit valid License to Operate <br />
+                            &nbsp; &nbsp; &nbsp; &nbsp; (LTO) as Wholesaler, Manufacturer or Distributor
                         </p>
                         <p>
-                            <input type="checkbox" asp-for="PrChecklist[9].IsChecked" class="form-check-input">
-                            <input type="hidden" asp-for="PrChecklist[9].Description" value="Preferred Menu, if desired" />
-                            Preferred Menu, if desired
+                            <input type="checkbox" asp-for="PrChecklist[8].IsChecked" class="form-check-input">
+                            <input type="hidden" asp-for="PrChecklist[8].Description" value="Specify - Meals only" />
+                            For supplier to submit valid Certificate of Good <br />
+                            &nbsp; &nbsp; &nbsp; &nbsp; Manufacturing Practice (CGMP)
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[10].IsChecked" class="form-check-input">
                             <input type="hidden" asp-for="PrChecklist[10].Description" value="Specify - Venue and Meals only" />
-                            Specify - Venue and Meals only
+                            For supplier to submit EDPMS Certificate of Compliance
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[11].IsChecked" class="form-check-input">
                             <input type="hidden" asp-for="PrChecklist[11].Description" value="Specify - Accommodation only" />
-                            Specify - Accommodation only
+                            For supplier to submit the result of Drug Analysis from FDA
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[12].IsChecked" class="form-check-input">
                             <input type="hidden" asp-for="PrChecklist[12].Description" value="Room Sharing" />
-                            Room Sharing
+                            20% Retention shall be deducted pending FDA <br />
+                            &nbsp; &nbsp; &nbsp; &nbsp; "PASSED" Result of Analysis
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[13].IsChecked" class="form-check-input">
                             <input type="hidden" asp-for="PrChecklist[13].Description" value="Specify - Venue only" />
-                            Specify - Venue only
+                            Labelling instruction
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[14].IsChecked" class="form-check-input">
                             <input type="hidden" asp-for="PrChecklist[14].Description" value="Location of venue/hotel/office" />
-                            Location of venue/hotel/office
+                            Preferred delivery period, if applicable
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[15].IsChecked" class="form-check-input">
                             <input type="hidden" asp-for="PrChecklist[15].Description" value="Classification of hotel/venue" />
-                            Classification of hotel/venue
+                            Approved Allocation or Distribution List
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[16].IsChecked" class="form-check-input">
                             <input type="hidden" asp-for="PrChecklist[16].Description" value="Function room preference" />
-                            Function room preference
+                            Approved Realignment, if applicable
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[17].IsChecked" class="form-check-input">
                             <input type="hidden" asp-for="PrChecklist[17].Description" value="Funding source" />
-                            Funding source
+                            Approved WFP/Supplemental WFP
                         </p>
                         <p>
                             <input type="checkbox" asp-for="PrChecklist[18].IsChecked" class="form-check-input">
                             <input type="hidden" asp-for="PrChecklist[18].Description" value="Specify others ameneties, if applicable" />
-                            Specify others ameneties, if applicable <br />
-                            &nbsp; &nbsp; &nbsp; &nbsp;  <input type="text" asp-for="PrChecklist[18].Others" style="border: none; border-bottom: 1px solid black;" />
-                        </p>
-                        <p>
-                            <input type="checkbox" asp-for="PrChecklist[19].IsChecked" class="form-check-input">
-                            <input type="hidden" asp-for="PrChecklist[19].Description" value="Others" />
-                            Others <br />
-                            &nbsp; &nbsp; &nbsp; &nbsp;  <input type="text" asp-for="PrChecklist[19].Others" style="border: none; border-bottom: 1px solid black;" />
-                        </p>
-                        <p style="font-weight:bold">
-                            <input type="checkbox" asp-for="PrChecklist[20].IsChecked" class="form-check-input">
-                            <input type="hidden" asp-for="PrChecklist[20].Description" value="CONCEPT NOTE (CN)" />
-                            <u>CONCEPT NOTE (CN)</u>
-                        </p>
-                        <p>
-                            <input type="checkbox" asp-for="PrChecklist[21].IsChecked" class="form-check-input">
-                            <input type="hidden" asp-for="PrChecklist[21].Description" value="Complete signatures incl. approval" />
-                            Complete signatures incl. approval
-                        </p>
-                        <p>
-                            <input type="checkbox" asp-for="PrChecklist[22].IsChecked" class="form-check-input">
-                            <input type="hidden" asp-for="PrChecklist[22].Description" value="Specs/details in CN match specs in PR" />
-                            Specs/details in CN match specs in PR
-                        </p>
-                        <p>
-                            <input type="checkbox" asp-for="PrChecklist[23].IsChecked" class="form-check-input">
-                            <input type="hidden" asp-for="PrChecklist[23].Description" value="Approved Realignment, If applicable" />
-                            Approved Realignment, If applicable
-                        </p>
-                        <p>
-                            <input type="checkbox" asp-for="PrChecklist[24].IsChecked" class="form-check-input">
-                            <input type="hidden" asp-for="PrChecklist[24].Description" value="Approved WFP/Supplemental WFP" />
-                            Approved WFP/Supplemental WFP
-                        </p>
-                        <p>
-                            <input type="checkbox" asp-for="PrChecklist[25].IsChecked" class="form-check-input">
-                            <input type="hidden" asp-for="PrChecklist[25].Description" value="Approved PPMP/Supplemental PPMP" />
                             Approved PPMP/Supplemental PPMP
                         </p>
                         <p>
@@ -330,9 +177,16 @@
                         <br />
                         <center>
                             <p class="underline">
-                                LUCHE F. QUIRANTE
+                                STEFANIE LORRAINE D. TRINIDAD
+                            </p>
+                            <p style="font-size:8pt; font-style:italic">
+                                Printed name, Signature and Date
                             </p>
                             <button type="submit" class="bnt btn-primary" style="float: right;">Submit</button>
+                            <br />
+                            <a class="btn btn-xs btn-success" target="_blank" href="@Url.Action("PrintChecklist8","Procurement",new { id = "" })" data-bs-toggle="print" title="Print">
+                                <i class="ace-icon fa fa-file-pdf-o"></i> Print to PDF
+                            </a>
                         </center>
 
                     </div>
