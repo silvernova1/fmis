@@ -240,7 +240,10 @@
                     </td>
                     <td>
                         <a class="btn btn-xs btn-primary btn-edit" data-id="@item.Id">
-                            <i class="ace-icon fa fa-edit"></i> Update
+                            <i class="ace-icon fa fa-edit"></i>Edit
+                        </a> |
+                        <a class="btn btn-xs btn-primary" id="forBudget" data-poid="@item.Id">
+                            <i class="ace-icon fa fa-users"></i>Forward to Budget
                         </a>
                     </td>
                 </tr>
@@ -434,6 +437,39 @@
                 },
                 error: function () {
                     console.log('Error fetching date');
+                }
+            });
+        });
+
+        $("#forBudget").on("click", function (e) {
+            e.preventDefault();
+
+            var poid = $(this).data("poid");
+            console.log(poid);
+
+            $.ajax({
+                url: "@Url.Action("BacSignature", "Procurement")",
+                type: "POST",
+                data: { poid: poid },
+                success: function (response) {
+                    if (response.success) {
+                        Lobibox.notify('success', {
+                            title: 'Success',
+                            msg: response.message
+                        });
+                    } else {
+                        Lobibox.notify('error', {
+                            title: 'Error',
+                            msg: response.message
+                        });
+                    }
+                },
+                error: function () {
+                    Lobibox.notify('error', {
+                        size: 'mini',
+                        title: 'Error',
+                        msg: 'An error occurred during the request.'
+                    });
                 }
             });
         });

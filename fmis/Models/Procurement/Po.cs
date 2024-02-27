@@ -27,5 +27,7 @@ namespace fmis.Models.Procurement
         public string Remarks { get; set; }
 
 		public DateTime PrTrackingDate { get; set; }
-	}
+
+        public bool IsForBudget { get; set; } = false;
+    }
 }
