@@ -1,7 +1,7 @@
 ﻿@model fmis.Models.Procurement.PuChecklist
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewData["Title"] = "Procurement" + " " + "(Checklist20)";
+    ViewData["Title"] = "Procurement" + " " + "(Checklist21)";
 }
 
 
@@ -135,6 +135,10 @@
                                 Printed name, Signature and Date
                             </p>
                             <button type="submit" class="bnt btn-primary" style="float: right;">Submit</button>
+                            <br />
+                            <a class="btn btn-xs btn-success" target="_blank" href="@Url.Action("PrintChecklist21","Procurement",new { id = "" })" data-bs-toggle="print" title="Print">
+                                <i class="ace-icon fa fa-file-pdf-o"></i> Print to PDF
+                            </a>
                         </center>
                     </div>
                 </div>
