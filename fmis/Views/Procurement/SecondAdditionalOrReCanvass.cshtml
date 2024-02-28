@@ -1,0 +1,160 @@
+﻿@model fmis.Models.Procurement.AddReCanvass
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Procurement" + " " + "(Second Additional or ReCanvass)";
+}
+
+<style>
+    .ui-datepicker {
+        width: 250px !important;
+    }
+</style>
+<div class="card border-primary text-left" style="width: 80%;">
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="Procurement" asp-action="AdditionalOrReCanvass" asp-route-canvassId="@ViewBag.Canvass">Additional Canvass</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" asp-controller="Procurement" asp-action="SecondAdditionalOrReCanvass" asp-route-canvassId="@ViewBag.Canvass">2nd Additional Canvass</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="Procurement" asp-action="ThirdAdditionalOrReCanvass" asp-route-canvassId="@ViewBag.Canvass">3rd Additional Canvass</a>
+            </li>
+        </ul>
+    </div>
+    <div class="card-body tab-content">
+        <div role="tabpanel" class="tab-pane active" id="tab1">
+            <form method="post" id="SaveSar">
+                <input type="hidden" asp-for="CanvassId" value="@ViewBag.Canvass" />
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="" style="font-weight:bold">RPQ NO. </label>
+                        <input type="text" class="form-control" name="RpqNo" value="@Model?.RpqNo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="" style="font-weight:bold">RPQ DATE </label>
+                        <input type="text" class="form-control" id="rpqdate" name="RpqDate" value="@Model?.RpqDate.ToString("MMM dd, yyyy")">
+                    </div>
+                    <div class="form-group">
+                        <label for="" style="font-weight:bold">SUBMISSION DATE </label>
+                        <input type="text" class="form-control" id="subdate" name="SubmissionDate" value="@Model?.SubmissionDate.ToString("MMM dd, yyyy")">
+                    </div>
+                    <div class="form-group">
+                        <label for="" style="font-weight:bold">RMOP</label>
+                        <select class="form-control" name="Rmop">
+                            <option value="AGENCY TO AGENCY">AGENCY TO AGENCY</option>
+                            <option value="DIRECT CONTRACTING (DRUGS AND MEDS)">DIRECT CONTRACTING (DRUGS AND MEDS)</option>
+                            <option value="EMERGENCY CASES (DRUGS AND MEDS)">EMERGENCY CASES (DRUGS AND MEDS)</option>
+                            <option value="LEASE OF VENUE (GOODS)">LEASE OF VENUE (GOODS)</option>
+                            <option value="PUBLIC BIDDING (GOODS AND EQUIPMENT)">PUBLIC BIDDING (GOODS AND EQUIPMENT)</option>
+                            <option value="PS-DBM">PS-DBM</option>
+                            <option value="SCIENTIFIC SCHOLARLY">SCIENTIFIC SCHOLARLY</option>
+                            <option value="SMALL VALUE PROCUREMENT (GOODS AND EQUIPMENT)">SMALL VALUE PROCUREMENT (GOODS AND EQUIPMENT)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="" style="font-weight:bold"> PR NO  </label>
+                        <select class="form-control" id="prNo" name="PrNo" asp-items="ViewBag.Pr">
+                            <option value="">Select Pr No.</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="" style="font-weight:bold"> PR DATE </label>
+                        <input type="text" class="form-control" id="Date" name="PrDate" value="@Model?.PrDate.ToString("MMM dd, yyyy")">
+                    </div>
+                    <div class="form-group">
+                        <label for="" style="font-weight:bold"> ITEM/DESCRIPTION: </label>
+                        <textarea class="form-control" name="ItemDesc">@Model?.ItemDesc</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="" style="font-weight:bold"> REMARKS </label>
+                        <textarea class="form-control" name="Remarks">@Model?.Remarks</textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-xs btn-primary @(Model != null ? "disabled" : "")">Submit <span class="fa fa-check-square-o"></span> </button>
+                    <a data-dismiss="modal" class="btn btn-xs btn-danger">Cancel</a>
+                </div>
+            </form>
+        </div>
+        <br />
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#rpqdate").datepicker({
+            dateFormat: "MM d, yy"
+
+        });
+
+        $("#prdate").datepicker({
+            dateFormat: "MM d, yy"
+
+        });
+        $("#subdate").datepicker({
+            dateFormat: "MM d, yy"
+
+        });
+
+        $("#prNo").change(function () {
+            var selectedPrNo = $(this).val();
+            $.ajax({
+                url: '@Url.Action("GetDate", "Procurement")',
+                type: 'GET',
+                data: { prNo: selectedPrNo },
+                success: function (result) {
+                    $("#Date").val(result);
+                },
+                error: function () {
+                    console.log('Error fetching date');
+                }
+            });
+        });
+
+        $('#SaveSar').submit(function (e) {
+            e.preventDefault();
+
+            if ($(this).find('.btn-primary').hasClass('disabled')) {
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("SaveSar", "Procurement")',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function (result) {
+                    if (result.success) {
+                        Lobibox.notify('success', {
+                            title: 'Success',
+                            msg: 'Data saved successfully..',
+                            sound: false
+                        });
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1500);
+                    } else {
+                        Lobibox.notify('error', {
+                            title: 'Error',
+                            msg: 'Error submitting the form..',
+                            sound: false
+                        });
+                        setTimeout(function () {
+                            $("#createCanvass").modal("hide");
+                            location.reload();
+                        }, 1000);
+                    }
+                    $('form')[0].reset();
+
+                },
+                error: function () {
+                }
+            });
+        });
+
+    });
+</script>

@@ -31,24 +31,54 @@
 		color: #777;
 	}
 
-	.custom-stepper-content {
-		display: flex;
-		flex-direction: row;
-		justify-content: space-between;
+	.custom-width {
+		max-width: 1400px;
+		width: 100%;
 	}
 
-	.custom-modal-dialog {
-		max-width: 800px;
+	.highlight-header {
+		background-color: darkgray;
 	}
+
+	.trackFontSize {
+		font-size: 8pt;
+	}
+
+	.loading-spinner {
+		display: none;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		border: 4px solid rgba(0, 0, 0, 0.1);
+		border-radius: 50%;
+		border-top: 4px solid #3498db;
+		width: 40px;
+		height: 40px;
+		animation: spin 1s linear infinite;
+	}
+	@@keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
 </style>
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<link href="https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css" rel="stylesheet" />
 
 <div class="col-xs-12">
-	<button class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-		Create New Pr
-		<i class="ace-icon glyphicon-plus  align-top bigger-125 icon-on-right"></i>
-	</button>
+	<div class="row">
+		<div class="col-xs-6">
+			<button class="btn btn-primary" data-toggle="modal" data-target="#createPr">
+				Create New Pr
+				<i class="ace-icon glyphicon-plus"></i>
+			</button>
+		</div>
+		<div class="col-xs-6 text-right">
+			<button class="btn btn-secondary track-button" data-toggle="modal" data-target="#trackPr">
+				<i class="ace-icon fa fa-search nav-search-icon"></i>
+				Track Pr
+			</button>
+		</div>
+	</div>
 </div>
 <br />
 <br />
@@ -81,10 +111,6 @@
 						<i class="ace-icon fa fa-user bigger-110 hidden-480"></i>
 						Requested by
 					</th>
-					@* <th>
-				<i class="ace-icon fa fa-check-square-o bigger-110 hidden-480"></i>
-				Status
-				</th> *@
 					<th>
 						ACTIONS
 					</th>
@@ -107,7 +133,7 @@
 							<a class="btn btn-xs btn-primary" target="_blank" href="@Url.Action("PrintPr","Pr",new { id = @items.Id })" data-bs-toggle="print" title="Print Pr">
 								<i class="ace-icon fa fa-file-pdf-o"></i>
 							</a> | <a href="#" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#smallModal-@items.Id" data-id="@items.Id"><i class="ace-icon fa fa-list-ul"></i></a>
-							| <a class="btn btn-xs btn-primary " data-toggle="modal" data-target="#trackModal-@items.Id" data-id="@items.Id"><i class="ace-icon fa fa-search"></i></a>
+							@* <a class="btn btn-xs btn-primary " data-toggle="modal" data-target="#trackModal" data-id="@items.Id" data-prno="@items.Prno"><i class="ace-icon fa fa-search"></i></a> *@
 						</td>
 					</tr>
 
@@ -130,204 +156,24 @@
 												{
 													foreach (var prCheck in puCheck)
 													{
-														<li>@prCheck.Description</li>
+															<li>@prCheck.Description</li>
 														if (prCheck.Others != null)
 														{
-															<p>- @prCheck.Others</p>
+																<p>- @prCheck.Others</p>
 														}
 													}
 												}
 												else
 												{
-													<li>No data</li>
+														<li>No data</li>
 												}
 											}
 											else
 											{
-												<li>No data</li>
+													<li>No data</li>
 											}
 										}
 									</ul>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					var rmop = context.RmopAta.FirstOrDefault(x => x.PrNoOne == items.Prno);
-					var canvass = context.Canvass.FirstOrDefault(x => x.PrNo == items.Prno);
-					var abstractNo = context.Abstract.FirstOrDefault(x => x.PrNo == items.Prno);
-					var po = context.Po.FirstOrDefault(x => x.PrNo == items.Prno);
-					var twg = context.Twg.FirstOrDefault(x => x.Prno == items.Prno);
-
-					<div class="modal fade" id="trackModal-@items.Id" tabindex="-1" role="dialog" aria-labelledby="trackModal" aria-hidden="true">
-						<div class="modal-dialog modal-lg">
-							<div class="modal-content">
-								<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-									<h4 class="modal-title" id="myModalLabel">PR Status for PR No. <b>@items.Prno</b></h4>
-								</div>
-								<div class="modal-body">
-									<div id="stepper1" class="bs-stepper linear">
-										<div class="bs-stepper-header" role="tablist">
-											<div class="step rmop-step @((rmop != null) ? "active" : "" )" data-prno="@items.Prno">
-												<button type="button" class="step-trigger" role="tab" aria-controls="test-l-1" aria-selected="false" disabled="disabled">
-													<span class="bs-stepper-circle">1</span>
-													<span class="bs-stepper-label">RMOP</span>
-												</button>
-											</div>
-											<div class="bs-stepper-line"></div>
-											<div class="step canvass-step @((canvass != null) ? "active" : "" )" data-prno="@items.Prno">
-												<button type="button" class="step-trigger" role="tab" aria-controls="test-l-2" aria-selected="false" disabled="disabled">
-													<span class="bs-stepper-circle">2</span>
-													<span class="bs-stepper-label">CANVASS</span>
-												</button>
-											</div>
-											<div class="bs-stepper-line"></div>
-											<div class="step twg-step @((twg != null) ? "active" : "" )" data-prno="@items.Prno">
-												<button type="button" class="step-trigger" role="tab" aria-controls="test-l-2" aria-selected="false" disabled="disabled">
-													<span class="bs-stepper-circle">3</span>
-													<span class="bs-stepper-label">TWG</span>
-												</button>
-											</div>
-											<div class="bs-stepper-line"></div>
-											<div class="step abstractNo-step @((abstractNo != null) ? "active" : "" )" data-prno="@items.Prno">
-												<button type="button" class="step-trigger stepper1trigger3" role="tab" aria-controls="test-l-3" aria-selected="false" disabled="disabled">
-													<span class="bs-stepper-circle">4</span>
-													<span class="bs-stepper-label">ABSTRACT</span>
-												</button>
-											</div>
-											<div class="bs-stepper-line"></div>
-											<div class="step po-step @((po != null) ? "active" : "" )" data-prno="@items.Prno">
-												<button type="button" class="step-trigger" role="tab" aria-controls="test-l-3" aria-selected="false" disabled="disabled">
-													<span class="bs-stepper-circle">5</span>
-													<span class="bs-stepper-label">PO</span>
-												</button>
-											</div>
-										</div>
-
-										<div class="bs-stepper-content custom-stepper-content">
-											@if (rmop != null)
-											{
-												<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block rmop-date" data-prno="@items.Prno">
-													<div class="form-group">
-														<label for="inputMailForm">@rmop?.PrTrackingDate.ToString("MMM d, yyyy")</label>
-														<br />
-														<br />
-														<b>Remarks</b>
-														<div class="invalid-feedback">Sample Remarks</div>
-													</div>
-												</div>
-											}
-											else
-											{
-												<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block rmop-date" data-prno="@items.Prno">
-													<div class="form-group">
-														<label for="inputMailForm"></label>
-														<br />
-														<br />
-														<b></b>
-														<div class="invalid-feedback"></div>
-													</div>
-												</div>
-											}
-											@if (canvass != null)
-											{
-												<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block canvass-date" data-prno="@items.Prno">
-													<div class="form-group">
-														<label for="inputMailForm">@canvass?.SubmissionDate.ToString("MMM d, yyyy")</label>
-														<br />
-														<br />
-														<b>Remarks</b>
-														<div class="invalid-feedback">@canvass?.Remarks</div>
-													</div>
-												</div>
-											}
-											else
-											{
-												<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block canvass-date" data-prno="@items.Prno">
-													<div class="form-group">
-														<label for="inputMailForm"></label>
-														<br />
-														<br />
-														<b></b>
-														<div class="invalid-feedback"></div>
-													</div>
-												</div>
-											}
-											@if (twg != null)
-											{
-												<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block twg-date" data-prno="@items.Prno">
-													<div class="form-group">
-														<label for="inputMailForm">@twg?.TwgDate.ToString("MMM d, yyyy")</label>
-														<br />
-														<br />
-														<b>Remarks</b>
-														<div class="invalid-feedback">@twg?.Remarks</div>
-													</div>
-												</div>
-											}
-											else
-											{
-												<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block twg-date" data-prno="@items.Prno">
-													<div class="form-group">
-														<label for="inputMailForm"></label>
-														<br />
-														<br />
-														<b></b>
-														<div class="invalid-feedback"></div>
-													</div>
-												</div>
-											}
-											@if (abstractNo != null)
-											{
-												<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block abstractNo-date" data-prno="@items.Prno">
-													<div class="form-group">
-														<label for="inputMailForm">@abstractNo?.AbstractDate.ToString("MMM d, yyyy")</label>
-														<br />
-														<br />
-														<b>Remarks</b>
-														<div class="invalid-feedback">@abstractNo?.Remarks</div>
-													</div>
-												</div>
-											}
-											else
-											{
-												<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block abstractNo-date" data-prno="@items.Prno">
-													<div class="form-group">
-														<label for="inputMailForm"></label>
-														<br />
-														<br />
-														<b></b>
-														<div class="invalid-feedback"></div>
-													</div>
-												</div>
-											}
-											@if (po != null)
-											{
-												<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block po-date" data-prno="@items.Prno">
-													<div class="form-group">
-														<label for="inputMailForm">@po?.PoDate.ToString("MMM d, yyyy")</label>
-														<br />
-														<br />
-														<b>Remarks</b>
-														<div class="invalid-feedback">@po?.Remarks</div>
-													</div>
-												</div>
-											}
-											else
-											{
-												<div role="tabpanel" class="bs-stepper-pane fade active dstepper-block po-date" data-prno="@items.Prno">
-													<div class="form-group">
-														<label for="inputMailForm"></label>
-														<br />
-														<br />
-														<b></b>
-														<div class="invalid-feedback"></div>
-													</div>
-												</div>
-											}
-										</div>
-									</div>
 								</div>
 							</div>
 						</div>
@@ -353,7 +199,7 @@ else
 	<div class="modal fade" id="modal-@items.Id" tabindex="-1" role="dialog" aria-labelledby="modalLabel-@items.Id" aria-hidden="true">
 		<div class="modal-dialog modal-lg" style="width: 90%" role="document">
 			<div class="modal-content">
-				<div class="modal-header">
+				<div class="modal-header" style="background-color: #438EB9;">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
 				</div>
 				<div class="modal_content">
@@ -544,10 +390,10 @@ else
 	</div>
 }
 
-<div class="modal fade" id="exampleModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="createPr" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	<div id="my_modal" class="modal-dialog modal-lg" style="width: 90%" role="document">
 		<div class="modal-content">
-			<div class="modal-header">
+			<div class="modal-header" style="background-color: #438EB9;">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
 			</div>
 			<div class="modal_content">
@@ -743,15 +589,126 @@ else
 	</div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<div class="modal fade" id="trackPr" tabindex="-1" role="dialog" aria-labelledby="trackModal" data-id="">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #438EB9;">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title"><i class="fa fa-line-chart"></i>Track Purchase Request</h4>
+			</div>
+			<div class="modal-body">
+				<table class="table">
+					<tbody>
+						<tr>
+							<form id="trackPrForm">
+								<td class="col-sm-3"><label>Purchase Request Number</label></td>
+							<td class="col-sm-8"><input type="text" id="prNo" placeholder="Enter Pr Number..." class="form-control" autocomplete="off" style="height: 34px;"></td>
+								<td class="col-sm-1"><button type="button" id="trackBtn" class="btn btn-default" style="height: 34px;"><i class="fa fa-search"></i> Track</button> </td>
+							</form>
+						</tr>
+					</tbody>
+				</table>
+				<hr />
+				<center id="loading" style="display: none;">
+					<img src="~/assets/images/loading.gif" alt="Loading..." />
+				</center>
+				<div class="pr_history">
+					<div class="alert alert-danger" id="errorAlert" style="display: none;">
+						<i class="fa fa-times"></i> No PR found
+					</div>
+					<table class="table table-hover table-striped" id="prHistory" style="display: none;">
+						<thead>
+							<tr>
+								<th width="14.2%">PR Received on PU</th>
+								<th width="13.2%">Checklist</th>
+								<th width="14.2%">Rmop</th>
+								<th width="14.2%">Rmop forwarded to</th>
+								<th width="14.2%">Rmop forwarded to</th>
+								<th width="13.2%">Canvass</th>
+								<th width="16.2%">Twg</th>
+							</tr>
+						</thead>
+						<tbody id="prHistoryBody">
+							<tr>
+								<td class="text-bold trackFontSize text-success">
+								</td>
+								<td class="trackFontSize text-success" id="prChecklist">
+								</td>
+								<td class="trackFontSize text-success" id="prRmopAta">
+								</td>
+								<td class="trackFontSize text-success" id="bacSig">
+								</td>
+								<td class="trackFontSize text-success" id="rdSig">
+								</td>
+								<td class="trackFontSize text-success">
+									<a href="#" id="canvass"></a>
+								</td>
+								<td class="trackFontSize text-success"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="secondModal" tabindex="-1" role="dialog" aria-labelledby="secondModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #438EB9;">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title"><i class="fa fa-line-chart"></i>Track Purchase Request</h4>
+			</div>
+			<div class="modal-body">
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th style="width: 8%;">Additional Canvass or Re Canvass</th>
+							<th style="width: 8%;">2nd Additional Canvass or <br> Re Canvass</th>
+							<th style="width: 8%;">3rd Additional Canvass or <br> Re Canvass</th>
+							<th style="width: 8%;">Abstract</th>
+							<th style="width: 8%;">Abstract forwarded to</th>
+							<th style="width: 8%;">Purchase Order</th>
+							<th style="width: 8%;">PO</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td class="trackFontSize text-success" id="additionalCanvass">
+							<td class="trackFontSize text-success" id="secondAdditionalCanvass">
+							<td class="trackFontSize text-success" id="thirdAdditionalCanvass">
+							<td class="trackFontSize text-success" id="abstractPr">
+							<td class="trackFontSize text-success" id="abstractForBac">
+							<td class="trackFontSize text-success" id="poRemarks">
+							<td class="trackFontSize text-success" id="poIsforBudget">
+						</tr>
+						<tr>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+@* <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> *@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="~/js/signalr/signalr.js"></script>
 <script src="~/js/prStatus.js"></script>
 
 <script>
 	$(document).ready(function () {
-		$('.select2basic').select2();
+		$('.select2basic').select2({
+			width: '82%'
+		});
 		$("#items").on("change", function () {
 			var selectedValue = $(this).val();
 
@@ -778,6 +735,114 @@ else
 			});
 
 		});
+
+		$("#trackBtn").on("click", function () {
+			var prNo = $("#prNo").val();
+			$("#loading").show();
+
+			$.ajax({
+				url: '@Url.Action("GetPrStatus", "Pr")',
+				method: 'POST',
+				data: { prNo: prNo },
+				beforeSend: function () {
+					$("#prHistory").hide();
+				},
+				success: function (data) {
+					$("#loading").show();
+
+					setTimeout(function () {
+						$("#loading").hide();
+						$("#errorAlert").hide();
+
+						const checklistDate = data.checklist?.checklist;
+						const checklistRemarks = data.checklist?.remarks;
+						const rmopAtaDate = data.rmopAta?.rmopAta;
+						const rmopBacSig = data.rmopAta?.bacSig;
+						const rmopRdSig = data.rmopAta?.rdSig;
+						const canvass = data.canvass?.canvass;
+
+						const options = {
+							year: 'numeric',
+							month: 'short',
+							day: 'numeric',
+							hour: 'numeric',
+							minute: 'numeric',
+							hour12: true,
+						};
+						const formattedDate = new Intl.DateTimeFormat('en-US', options).format(new Date(checklistDate));
+						const formattedRmopAtaDate = new Intl.DateTimeFormat('en-US', options).format(new Date(rmopAtaDate));
+
+						const splitIndex = formattedDate.indexOf('2024') + 5;
+						const datePart = formattedDate.slice(0, splitIndex).trim();
+						const timePart = formattedDate.slice(splitIndex).trim();
+
+						const splitIndexRmopAta = formattedRmopAtaDate.indexOf('2024') + 5;
+						const datePartRmopAta = formattedRmopAtaDate.slice(0, splitIndexRmopAta).trim();
+						const timePartRmopAta = formattedRmopAtaDate.slice(splitIndexRmopAta).trim();
+
+						const td2 = document.getElementById('prChecklist');
+						td2.innerHTML = `${checklistRemarks}`;
+
+						const td3 = document.getElementById('prRmopAta');
+						td3.innerHTML = "asdasd";
+
+						const td4 = document.getElementById('bacSig');
+						td4.innerHTML = `${rmopBacSig}`;
+
+						const td5 = document.getElementById('rdSig');
+						td5.innerHTML = `${rmopRdSig}`;
+
+						const td6 = document.getElementById('canvass');
+						td6.innerHTML = `${canvass}`;
+
+						$("#prHistory").show();
+
+						$("#canvass").on("click", function () {
+							$("#secondModal").modal("show");
+
+							const additionalCanvass = data.canvass?.additionalCanvass;
+							const secondAdditionalCanvass = data.canvass?.secondAdditionalCanvass;
+							const thirdAdditionalCanvass = data.canvass?.thirdAdditionalCanvass;
+							const abstractPr = data.abstractPr?.abstractPr;
+							const abstractForBac = data.abstractPr?.abstractForBac;
+							const poRemarks = data.po?.poRemarks;
+							const poIsforBudget = data.po?.poIsforBudget;
+
+							const td7 = document.getElementById('additionalCanvass');
+							td7.innerHTML = `${additionalCanvass}`;
+
+							const td8 = document.getElementById('secondAdditionalCanvass');
+							td8.innerHTML = `${secondAdditionalCanvass}`;
+
+							const td9 = document.getElementById('thirdAdditionalCanvass');
+							td9.innerHTML = `${thirdAdditionalCanvass}`;
+
+							const td10 = document.getElementById('abstractPr');
+							td10.innerHTML = `${abstractPr}`;
+
+							const td11 = document.getElementById('abstractForBac');
+							td11.innerHTML = `${abstractForBac}`;
+
+							const td12 = document.getElementById('poRemarks');
+							td12.innerHTML = `${poRemarks}`;
+
+							const td13 = document.getElementById('poIsforBudget');
+							td13.innerHTML = `${poIsforBudget}`;
+
+						});
+
+					}, 1500);
+
+					
+				},
+				error: function (error) {
+					$("#errorAlert").show();
+					$("#loading").hide();
+					
+				}
+			});
+		});
+
 	});
 	//Estimated Unit Cost
 	const unitCostInput = document.getElementById('unitCost');
@@ -954,4 +1019,12 @@ else
 			});
 		}
 	}
+
+	//var viewMoreLink = document.querySelector('.view-more-link');
+
+	// Add click event listener to open the second modal
+	//viewMoreLink.addEventListener('click', function (event) {
+		//event.preventDefault();
+		//$('#secondModal').modal('show');
+	//});
 </script>

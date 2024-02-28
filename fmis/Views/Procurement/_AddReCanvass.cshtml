@@ -1,0 +1,218 @@
+﻿@model int
+
+@{
+    int itemId = Model;
+}
+
+<style>
+    .ui-datepicker {
+        width: 250px !important;
+    }
+
+    .stepper-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .circle {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: #3498db;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+
+        .circle span {
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+    .connector {
+        height: 2px;
+        width: 100px;
+        background-color: #3498db;
+    }
+
+        .connector:not(:last-child) {
+            margin-right: -15px;
+        }
+
+    .custom-width {
+        width: 100%;
+        max-width: 800px;
+    }
+</style>
+
+<div class="col-xs-12">
+    <div id="recanvass-modal" class="modal fade" style="display: none;">
+        <div class="modal-dialog custom-width">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 class="smaller lighter blue no-margin">Additional or Re Canvass</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="card border-primary text-left" style="width: 100%;">
+                        <div class="card-header">
+                            <ul class="nav nav-tabs card-header-tabs">
+                                <li class="nav-item active">
+                                    <a class="nav-link" href="#tab1" data-toggle="tab">Additional Canvass</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#tab2" data-toggle="tab">2nd Additional Canvass</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#tab3" data-toggle="tab">3rd Additional Canvass</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="card-body tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="tab1">
+                                <form name="additionalRecanvass">
+                                    <input type="hidden" name="CanvassId" value="@itemId" />
+                                    <input type="hidden" name="Steps" value="Additional" />
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="" style="font-weight:bold">RPQ NO. </label>
+                                            <input type="text" class="form-control" name="RpqNo" value="model" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="" style="font-weight:bold">RPQ DATE </label>
+                                            <input type="text" class="form-control" id="datepicker" name="RpqDate">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="" style="font-weight:bold">SUBMISSION DATE </label>
+                                            <input type="text" class="form-control" name="SubmissionDate">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="" style="font-weight:bold">RMOP</label>
+                                            <select class="form-control" name="Rmop">
+                                                <option value="AGENCY TO AGENCY">AGENCY TO AGENCY</option>
+                                                <option value="DIRECT CONTRACTING (DRUGS AND MEDS)">DIRECT CONTRACTING (DRUGS AND MEDS)</option>
+                                                <option value="EMERGENCY CASES (DRUGS AND MEDS)">EMERGENCY CASES (DRUGS AND MEDS)</option>
+                                                <option value="LEASE OF VENUE (GOODS)">LEASE OF VENUE (GOODS)</option>
+                                                <option value="PUBLIC BIDDING (GOODS AND EQUIPMENT)">PUBLIC BIDDING (GOODS AND EQUIPMENT)</option>
+                                                <option value="PS-DBM">PS-DBM</option>
+                                                <option value="SCIENTIFIC SCHOLARLY">SCIENTIFIC SCHOLARLY</option>
+                                                <option value="SMALL VALUE PROCUREMENT (GOODS AND EQUIPMENT)">SMALL VALUE PROCUREMENT (GOODS AND EQUIPMENT)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="" style="font-weight:bold"> PR NO  </label>
+                                            <select class="form-control" id="prNo" name="PrNo" asp-items="ViewBag.Pr">
+                                                <option value="">Select Pr No.</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="" style="font-weight:bold"> PR DATE </label>
+                                            <input type="text" class="form-control" id="prdate" name="PrDate">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="" style="font-weight:bold"> ITEM/DESCRIPTION: </label>
+                                            <textarea class="form-control" name="ItemDesc"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="" style="font-weight:bold"> REMARKS </label>
+                                            <textarea class="form-control" name="Remarks"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-xs btn-primary" onclick="submitForms()">Submit <span class="fa fa-check-square-o"></span> </button>
+                                        <a data-dismiss="modal" class="btn btn-xs btn-danger">Cancel</a>
+                                    </div>
+                                </form>
+                            </div>
+                            <div role="tabpanel" class="tab-pane" id="tab2">
+                                <h5 class="card-title">2nd Additional Canvass</h5>
+                                <p class="card-text">Some content for tab 2.</p>
+                            </div>
+                            <div role="tabpanel" class="tab-pane" id="tab3">
+                                <h5 class="card-title">3rd Additional Canvass</h5>
+                                <p class="card-text">Some content for tab 3.</p>
+                            </div>
+                            <br />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(function () {
+        //$("#datepicker").datepicker({
+           //dateFormat: "MM d, yy"
+        //});
+    });
+    $(document).ready(function () {
+        $(document).on('change', '#prNo', function () {
+            var selectedPrNo = $(this).val();
+            console.log(selectedPrNo);
+            $.ajax({
+                url: '@Url.Action("GetDate", "Procurement")',
+                type: 'GET',
+                data: { prNo: selectedPrNo },
+                success: function (result) {
+                    console.log(result);
+                    $("#prdate").val(result);
+                },
+                error: function () {
+                    console.log('Error fetching date');
+                }
+            });
+        });
+    });
+    function submitForms() {
+        var form1 = document.forms['additionalRecanvass'];
+        if (!form1) {
+            console.error('Form not found. Check form name.');
+            return;
+        }
+
+        var formData1 = new FormData(form1);
+        //var formData = $("#additionalRecanvass").serialize();
+        if (formData1) {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("AddReCanvass", "Procurement")',
+                data: formData1,
+                processData: false,
+                contentType: false,
+                success: function (result) {
+                    if (result.success) {
+                        Lobibox.notify('success', {
+                            title: 'Success',
+                            msg: 'Data saved successfully..',
+                            sound: false
+                        });
+                        setTimeout(function () {
+                            location.reload();
+                        }, 2000);
+                    } else {
+                        Lobibox.notify('error', {
+                            title: 'Error',
+                            msg: 'Error submitting the form..',
+                            sound: false
+                        });
+                        setTimeout(function () {
+                            $("#editModal").modal("hide");
+                            location.reload();
+                        }, 2000);
+                    }
+                }
+            });
+        } else {
+            console.error('Form data not captured. Check form structure and elements.');
+        }
+    }
+</script>

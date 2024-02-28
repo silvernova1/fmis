@@ -9,8 +9,6 @@
     .ui-datepicker {
         width: 250px !important;
     }
-
-
 </style>
 
 <h3 class="grey lighter smaller">
@@ -99,7 +97,7 @@
 </div>
 
 <p>
-	<a class="btn btn-success btn-sm" href="#my-modal" role="button" data-toggle="modal" >
+    <a class="btn btn-success btn-sm" href="#my-modal" role="button" data-toggle="modal">
         <i class="ace-icon fa fa-plus "></i>Create New
     </a>
 </p>
@@ -145,6 +143,7 @@
     <tbody>
         @if(Model.Count > 0)
         {
+            int itemId = 0;
             @foreach (var item in Model)
             {
                 <tr>
@@ -178,22 +177,22 @@
                         </a>
                     </td>
                     <td>
-                        @* <a id="openModalBtn" class="btn btn-xs btn-success btn-recanvass" href="#reCanvassModal" data-toggle="modal">
-                            <i class="ace-icon fa fa-exchange"></i> STATUS
-                        </a> *@
-
-                        <a class="btn btn-success btn-sm" href="#recanvass-modal" role="button" data-toggle="modal">
-                            <i class="ace-icon fa fa-exchange "></i>STATUS
+                        <a class="btn btn-success btn-sm" asp-controller="Procurement" asp-action="AdditionalOrReCanvass" asp-route-canvassId="@item.Id">
+                            <i class="ace-icon fa fa-exchange "></i>Additional Or Re-Canvass
                         </a>
                     </td>
-
+                    
                 </tr>
+
+                itemId = item.Id;
             }
+
+            @await Html.PartialAsync("_AddReCanvass", itemId)
         }
         else
         {
             <tr>
-                <td colspan="9">
+                <td colspan="10">
                     <div class="alert alert-danger">
                         No data found.
                     </div>
@@ -205,39 +204,18 @@
 
 
 @await Html.PartialAsync("_AddCanvass")
-@await Html.PartialAsync("ReCanvassAdditional")
+
+
+
+
 
 
  <script>
-
-    var itemId;
-
-    $(document).ready(function () {
-        // Attach click event to the button
-        $("#openModalBtn").on("click", function () {
-            // Make an AJAX call to retrieve data
-            $.ajax({
-             
-                url: '@Url.Action("ReCanvassAdditional", "Procurement")',
-                type: "GET",
-                success: function (data) {
-                    // Update the modal-body with the received data
-                    $("#reCanvassModal .modal-body").html(data);
-                    // Show the modal
-                    $("#reCanvassModal").modal("show");
-                },
-                error: function () {
-                    alert("Error fetching data.");
-                }
-            });
-        });
-    });
-
-
     $(document).ready(function () {
 
         $("#prNo").change(function () {
             var selectedPrNo = $(this).val();
+            alert(selectedPrNo);
             $.ajax({
                 url: '@Url.Action("GetDate", "Procurement")',
                 type: 'GET',

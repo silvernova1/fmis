@@ -116,6 +116,7 @@ namespace fmis.Data
         public DbSet<RmopSs> RmopSs { get; set; }
         public DbSet<RmopSvp> RmopSvp { get; set; }
         public DbSet<Canvass> Canvass { get; set; }
+        public DbSet<AddReCanvass> AddReCanvass { get; set; }
         public DbSet<Po> Po { get; set; }
         public DbSet<Abstract> Abstract { get; set; }
         public DbSet<Twg> Twg { get; set; }
@@ -138,6 +139,14 @@ namespace fmis.Data
         {
 
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Canvass>()
+                .HasMany(x => x.AddReCanvass)
+                .WithOne(x => x.Canvass)
+                .HasForeignKey(x => x.CanvassId)
+                .IsRequired();
+
+
 
             modelBuilder.Entity<InfraRetention>()
                 .HasOne(x => x.Dv)

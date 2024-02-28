@@ -28,6 +28,10 @@ namespace fmis.Models.Procurement
 
         public string PrDate { get; set; }
 
+        public bool IsForBac { get; set; } = false;
+
+        public bool IsForRd { get; set; } = false;
+
         public DateTime PrTrackingDate { get; set; }
 
         

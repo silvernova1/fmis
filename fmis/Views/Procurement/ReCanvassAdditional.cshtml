@@ -8,7 +8,7 @@
     .stepper-container {
         display: flex;
         align-items: center;
-        justify-content: center; /* Center the stepper horizontally */
+        justify-content: center;
     }
 
     .circle {
@@ -23,7 +23,6 @@
         position: relative;
     }
 
-        /* Additional styling for the numbers inside the circle */
         .circle span {
             font-size: 15px;
             font-weight: bold;
@@ -31,16 +30,14 @@
 
     .connector {
         height: 2px;
-        width: 100px; /* Adjust the width based on your design preference */
+        width: 100px;
         background-color: #3498db;
     }
 
-        /* Styling for connectors between circles */
         .connector:not(:last-child) {
-            margin-right: -15px; /* Adjusted margin for better alignment */
+            margin-right: -15px;
         }
 </style>
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link href="https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css" rel="stylesheet" />
 <div class="col-xs-12">
     <div id="recanvass-modal" class="modal fade" style="display: none;">
@@ -54,14 +51,14 @@
                     <div class="modal-body">
                         <div id="stepper1 col-xs-12" class="bs-stepper linear">
                             <div class="bs-stepper-header" role="tablist">
-                                <div class="step rmop-step" >
+                                <div class="step rmop-step active" >
                                     <button type="button" class="step-trigger" role="tab" aria-controls="test-l-1" aria-selected="false" disabled="disabled">
                                         <span class="bs-stepper-circle">1</span>
                                         <span class="bs-stepper-label">1ST</span>
                                     </button>
                                 </div>
                                 <div class="bs-stepper-line"></div>
-                                <div class="step canvass-step" >
+                                <div class="step canvass-step active">
                                     <button type="button" class="step-trigger" role="tab" aria-controls="test-l-2" aria-selected="false" disabled="disabled">
                                         <span class="bs-stepper-circle">2</span>
                                         <span class="bs-stepper-label">2ND </span>
@@ -129,11 +126,3 @@
             </div>
         </div>
     </div>
-
-
-
-<script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script src="~/js/signalr/signalr.js"></script>
-<script src="~/js/prStatus.js"></script>
