@@ -2214,6 +2214,8 @@ namespace fmis.Controllers.Procurement
         {
             using (MemoryStream stream = new System.IO.MemoryStream())
             {
+
+
                 Document doc = new iTextSharp.text.Document(PageSize.LEGAL);
                 doc.SetMargins(10f, 10f, 10f, 10f);
                 PdfWriter writer = PdfWriter.GetInstance(doc, stream);
@@ -2225,6 +2227,7 @@ namespace fmis.Controllers.Procurement
                 iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(logoPath);
                 logo.ScaleAbsolute(70f, 70f);
 
+                int currentYear = DateTime.Now.Year;
 
                 float totalWidth = doc.PageSize.Width - 50; // Adjust for 50px right margin
                 PdfPTable logoTable = new PdfPTable(1);
@@ -2270,8 +2273,6 @@ namespace fmis.Controllers.Procurement
                 }
 
 
-
-
                 // Method to add a cell with content (without borders)
                 void AddCellWithContent(PdfPTable table, string content, bool isBold = false, int fontSize = 10, float cellHeight = 0f)
                 {
@@ -2292,7 +2293,7 @@ namespace fmis.Controllers.Procurement
                 AddCellWithContent(nT, "                                                                                              Department Of Health", false, 10);
                 AddCellWithContent(nT, "                                 CENTRAL VISAYAS CENTER for HEALTH DEVELOPMENT", true, 13);
                 AddCellWithContent(nT, "", false, 10, 10f);
-                AddCellWithContent(nT, "                                                         BAC RESOLUTION NO. " + ata.BacNo + "-AMP s. 2023", true, 11);
+                AddCellWithContent(nT, "                                                         BAC RESOLUTION NO. " + ata.BacNo + "-AMP s. " + currentYear , true, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "                             “RECOMMENDING THE USE OF ALTERNATIVE MODE OF PROCUREMENT:", true, 11);
                 AddCellWithContent(nT, "                              NEGOTIATED PROCUREMENT (AGENCY TO AGENCY) UNDER SEC. 53.5 OF", true, 11);
@@ -2330,7 +2331,7 @@ namespace fmis.Controllers.Procurement
                 AddCellWithContent(nT, "              " + ata.PrDescriptionOne , false, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "", false, 10, 10f);
-                AddCellWithContent(nT, "                                 " + ata.PrDate + " 2023 , Cebu City, Philippines.", false, 11);
+                AddCellWithContent(nT, "                                 " + ata.PrDate + currentYear + ", Cebu City, Philippines.", false, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "", false, 10, 10f);
@@ -2438,6 +2439,8 @@ namespace fmis.Controllers.Procurement
                 PdfWriter writer = PdfWriter.GetInstance(doc, stream);
                 doc.Open();
 
+                int currentYear = DateTime.Now.Year;
+
                 var dc = _context.RmopDc.FirstOrDefault(x => x.Id == id);
 
                 string logoPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "assets", "images", "doh_logo_updated.png");
@@ -2512,7 +2515,7 @@ namespace fmis.Controllers.Procurement
                 AddCellWithContent(nT, "                                                     Regional Director’s Office Tel. No. (032) 253-6355 Fax No. (032) 254-0109", false, 10);
                 AddCellWithContent(nT, "                                             Official Website http://www.ro7.doh.gov.ph E-mail Address: dohro7@gmail.com", false, 10);
                 AddCellWithContent(nT, "", false, 10, 10f);
-                AddCellWithContent(nT, "                                                         BAC RESOLUTION NO. " + dc.BacNo + "-AMP s. 2023", true, 11);
+                AddCellWithContent(nT, "                                                         BAC RESOLUTION NO. " + dc.BacNo + "-AMP s. " + currentYear, true, 11);
                 AddCellWithContent(nT, "                             “RECOMMENDING THE USE OF ALTERNATIVE MODE OF PROCUREMENT:", true, 11);
                 AddCellWithContent(nT, "                              DIRECT CONTRACTING UNDER SEC. 50 OF THE REVISED IMPLEMENTING", true, 11);
                 AddCellWithContent(nT, "                                                         RULES AND REGULATIONS OF RA 9184.”", true, 11);
@@ -2549,7 +2552,7 @@ namespace fmis.Controllers.Procurement
                 AddCellWithContent(nT, "             of PHP " + dc.PrAmountOne.ToString("##,#00.00") + "  for the Procurement of " + dc.PrDescriptionOne, false, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "", false, 10, 10f);
-                AddCellWithContent(nT, "                                 " + dc.PrDate + " 2023, Cebu City, Philippines.", false, 11);
+                AddCellWithContent(nT, "                                 " + dc.PrDate + ", Cebu City, Philippines.", false, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "", false, 10, 10f);
@@ -2597,6 +2600,8 @@ namespace fmis.Controllers.Procurement
                 doc.SetMargins(10f, 10f, 10f, 10f);
                 PdfWriter writer = PdfWriter.GetInstance(doc, stream);
                 doc.Open();
+
+                int currentYear = DateTime.Now.Year;
 
                 var rmopEc = _context.RmopEc.FirstOrDefault(x => x.Id == id);
 
@@ -2673,7 +2678,7 @@ namespace fmis.Controllers.Procurement
                 AddCellWithContent(nT, "                                                     Regional Director’s Office Tel. No. (032) 253-6355 Fax No. (032) 254-0109", false, 10);
                 AddCellWithContent(nT, "                                             Official Website http://www.ro7.doh.gov.ph E-mail Address: dohro7@gmail.com", false, 10);
                 AddCellWithContent(nT, "", false, 10, 10f);
-                AddCellWithContent(nT, "                                                         BAC RESOLUTION NO. " + rmopEc.BacNo + "-AMP s. 2023", true, 11);
+                AddCellWithContent(nT, "                                                         BAC RESOLUTION NO. " + rmopEc.BacNo + "-AMP s. " + currentYear, true, 11);
                 AddCellWithContent(nT, "                             “RECOMMENDING THE USE OF ALTERNATIVE MODE OF PROCUREMENT:", true, 11);
                 AddCellWithContent(nT, "                              NEGOTIATED PROCUREMENT (EMERGENCY CASES) UNDER SEC. 53.2 OF", true, 11);
                 AddCellWithContent(nT, "                               THE REVISED IMPLEMENTING RULES AND REGULATIONS OF RA 9184.”", true, 11);
@@ -2708,7 +2713,7 @@ namespace fmis.Controllers.Procurement
                 AddCellWithContent(nT, "             " + rmopEc.PrDescriptionOne, false, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "", false, 10, 10f);
-                AddCellWithContent(nT, "                                 " + rmopEc.PrDate + " 2023 , Cebu City, Philippines.", false, 11);
+                AddCellWithContent(nT, "                                 " + rmopEc.PrDate + ", Cebu City, Philippines.", false, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "", false, 10, 10f);
@@ -2754,6 +2759,8 @@ namespace fmis.Controllers.Procurement
                 doc.SetMargins(10f, 10f, 10f, 10f);
                 PdfWriter writer = PdfWriter.GetInstance(doc, stream);
                 doc.Open();
+
+                int currentYear = DateTime.Now.Year;
 
                 var rmopLov = _context.RmopLov.FirstOrDefault(x => x.Id == id);
 
@@ -2825,7 +2832,7 @@ namespace fmis.Controllers.Procurement
                 AddCellWithContent(nT, "                                                                                              Department Of Health", false, 10);
                 AddCellWithContent(nT, "                                 CENTRAL VISAYAS CENTER for HEALTH DEVELOPMENT", true, 12);
                 AddCellWithContent(nT, "", false, 10, 10f);
-                AddCellWithContent(nT, "                                                         BAC RESOLUTION NO. " + rmopLov.BacNo + "-AMP s. 2023", true, 11);
+                AddCellWithContent(nT, "                                                         BAC RESOLUTION NO. " + rmopLov.BacNo + "-AMP s. " + currentYear, true, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "                                         “RECOMMENDING THE USE OF ALTERNATIVE MODE OF", true, 11);
                 AddCellWithContent(nT, "                                   PROCUREMENT: NEGOTIATED PROCUREMENT (LEASE OF REAL", true, 11);
@@ -2861,7 +2868,7 @@ namespace fmis.Controllers.Procurement
                 AddCellWithContent(nT, "              " + rmopLov.PrAmountOne.ToString("##,#00.00") + " for the Procurement of " + rmopLov.PrDescriptionOne, false, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "", false, 10, 10f);
-                AddCellWithContent(nT, "                                 "+ rmopLov.PrDate + " 2023 , Cebu City, Philippines.", false, 11);
+                AddCellWithContent(nT, "                                 "+ rmopLov.PrDate + ", Cebu City, Philippines.", false, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "", false, 10, 10f);
@@ -2902,6 +2909,8 @@ namespace fmis.Controllers.Procurement
                 PdfWriter writer = PdfWriter.GetInstance(doc, stream);
                 doc.Open();
 
+                int currentYear = DateTime.Now.Year;
+
                 var rmopPb = _context.RmopPb.FirstOrDefault(x => x.Id == id);
 
                 string logoPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "assets", "images", "doh_logo_updated.png");
@@ -2971,7 +2980,7 @@ namespace fmis.Controllers.Procurement
                 AddCellWithContent(nT, "                                                                                              Department Of Health", false, 10);
                 AddCellWithContent(nT, "                                 CENTRAL VISAYAS CENTER for HEALTH DEVELOPMENT", true, 12);
                 AddCellWithContent(nT, "", false, 10, 10f);
-                AddCellWithContent(nT, "                                                         BAC RESOLUTION NO. " + rmopPb.BacNo + "-AMP s. 2023", true, 11);
+                AddCellWithContent(nT, "                                                         BAC RESOLUTION NO. " + rmopPb.BacNo + "-AMP s. " + currentYear, true, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "                                         “RECOMMENDING THE USE OF COMPETITIVE BIDDING (PUBLIC", true, 11);
                 AddCellWithContent(nT, "                                       BIDDING) UNDER SEC. 10 OF THE REVISED IMPLEMENTING RULES", true, 11);
@@ -2997,7 +3006,7 @@ namespace fmis.Controllers.Procurement
                 AddCellWithContent(nT, "                        " + rmopPb.PrDescriptionOne, false, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "", false, 10, 10f);
-                AddCellWithContent(nT, "                                             " + rmopPb.PrDate + " 2023 , Cebu City, Philippines.", false, 11);
+                AddCellWithContent(nT, "                                             " + rmopPb.PrDate + ", Cebu City, Philippines.", false, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "", false, 10, 10f);
@@ -3037,6 +3046,8 @@ namespace fmis.Controllers.Procurement
                 PdfWriter writer = PdfWriter.GetInstance(doc, stream);
                 doc.Open();
 
+                int currentYear = DateTime.Now.Year;
+
                 var rmopPb = _context.RmopPb.FirstOrDefault(x => x.Id == id);
 
                 string logoPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "assets", "images", "doh_logo_updated.png");
@@ -3106,7 +3117,7 @@ namespace fmis.Controllers.Procurement
                 AddCellWithContent(nT, "                                                                                              Department Of Health", false, 10);
                 AddCellWithContent(nT, "                                 CENTRAL VISAYAS CENTER for HEALTH DEVELOPMENT", true, 12);
                 AddCellWithContent(nT, "", false, 10, 10f);
-                AddCellWithContent(nT, "                                                         BAC RESOLUTION NO. " + "" + "-AMP s. 2023", true, 11);
+                AddCellWithContent(nT, "                                                         BAC RESOLUTION NO. " + "" + "-AMP s. " +currentYear, true, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "                                         “RECOMMENDING THE USE OF COMPETITIVE BIDDING (PUBLIC", true, 11);
                 AddCellWithContent(nT, "                                       BIDDING) UNDER SEC. 10 OF THE REVISED IMPLEMENTING RULES", true, 11);
@@ -3174,6 +3185,8 @@ namespace fmis.Controllers.Procurement
                 doc.SetMargins(10f, 10f, 10f, 10f);
                 PdfWriter writer = PdfWriter.GetInstance(doc, stream);
                 doc.Open();
+
+                int currentYear = DateTime.Now.Year;
 
                 var rmopPsdbm = _context.RmopPsDbm.FirstOrDefault(x => x.Id == id);
 
@@ -3259,7 +3272,7 @@ namespace fmis.Controllers.Procurement
                 AddCellWithContent(nT, "                                 CENTRAL VISAYAS CENTER for HEALTH DEVELOPMENT", true, 12);
                 AddCellWithContent(nT, "", false, 10, 10f);
 
-                AddCellWithContent(nT, "                                                         BAC RESOLUTION NO. " + rmopPsdbm.BacNo + "-AMP s. 2023", true, 11);
+                AddCellWithContent(nT, "                                                         BAC RESOLUTION NO. " + rmopPsdbm.BacNo + "-AMP s. " + currentYear, true, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "                                “RECOMMENDING THE USE OF ALTERNATIVE MODE OF PROCUREMENT", true, 11);
                 AddCellWithContent(nT, "                                (PS-DBM), IF NOT AVAILBLE SHOPPING UNDER SEC. 52.1 OF THE REVISED", true, 11);
@@ -3339,6 +3352,8 @@ namespace fmis.Controllers.Procurement
                 PdfWriter writer = PdfWriter.GetInstance(doc, stream);
                 doc.Open();
 
+                int currentYear = DateTime.Now.Year;
+
                 var rmopSs = _context.RmopSs.FirstOrDefault(x => x.Id == id);
 
                 string logoPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "assets", "images", "doh_logo_updated.png");
@@ -3411,7 +3426,7 @@ namespace fmis.Controllers.Procurement
                 AddCellWithContent(nT, "                                                                                              Department Of Health", false, 10);
                 AddCellWithContent(nT, "                                 CENTRAL VISAYAS CENTER for HEALTH DEVELOPMENT", true, 12);
                 AddCellWithContent(nT, "", false, 10, 10f);
-                AddCellWithContent(nT, "                                                         BAC RESOLUTION NO. " + rmopSs.BacNo + "-AMP s. 2023", true, 11);
+                AddCellWithContent(nT, "                                                         BAC RESOLUTION NO. " + rmopSs.BacNo + "-AMP s. " + currentYear, true, 11);
                 AddCellWithContent(nT, "", false, 10, 10f);
                 AddCellWithContent(nT, "                              “RECOMMENDING THE USE OF ALTERNATIVE MODE OF PROCUREMENT:", true, 11);
                 AddCellWithContent(nT, "                                 NEGOTIATED PROCUREMENT (SCIENTIFIC, SCHOLARLY, OR ARTISTIC", true, 11);
@@ -3634,7 +3649,6 @@ namespace fmis.Controllers.Procurement
                 doc.SetMargins(30f, 30f, 30f, 30f);
                 PdfWriter writer = PdfWriter.GetInstance(doc, stream);
                 doc.Open();
-
 
                 void CParagraph(string text, bool isBold = false, bool isUnderlined = false, float fontSize = 10f)
                 {

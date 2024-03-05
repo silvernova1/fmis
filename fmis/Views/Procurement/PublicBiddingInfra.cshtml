@@ -56,7 +56,7 @@
         display: inline-block;
     }
 
-    .TimesNewRoman {
+    .TnR {
         font-family: 'Times New Roman';
         margin: 0;
         padding: 0;
@@ -93,6 +93,10 @@
     RMOP PUBLIC BIDDING (INFRA)
 </h3>
 <hr>
+@{
+    // Get the current year
+    int currentYear = DateTime.Now.Year;
+}
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-8 card-container">
@@ -102,20 +106,20 @@
                 </div>
                 <center>
                     <div style="margin-right: 300px;">
-                        <p class="TimesNewRoman">Republic of the Philippines</p>
-                        <p class="TimesNewRoman">Department Of Health </p>
-                        <h4 class="TimesNewRoman" style="font-weight:bold">CENTRAL VISAYAS CENTER for HEALTH DEVELOPMENT </h4>
+                        <p class="TnR">Republic of the Philippines</p>
+                        <p class="TnR">Department Of Health </p>
+                        <h4 class="TnR" style="font-weight:bold">CENTRAL VISAYAS CENTER for HEALTH DEVELOPMENT </h4>
                         <br />
                         <br />
-                        <h5 class="TimesNewRoman" style="font-weight:bold">
+                        <h5 class="TnR" style="font-weight:bold">
                             BAC RESOLUTION NO.
                             <b id="bacNo" data-type="select">______ </b>
                             <input type="hidden" name="BacNo" id="BacNoHidden" />
-                            -AMP s. 2023
+                            -AMP s. @currentYear
                         </h5>
                     </div>
                     <br />
-                    <h5 class="TimesNewRoman" style="font-weight:bold">
+                    <h5 class="TnR" style="font-weight:bold">
                         “RECOMMENDING THE USE OF COMPETITIVE BIDDING (PUBLIC  <br />
                         BIDDING) UNDER SEC. 10 OF THE REVISED IMPLEMENTING RULES  <br />
                         AND REGULATIONS OF RA 9184.” <br />
@@ -124,75 +128,70 @@
                     <br />
                 </center>
                 <div class="justify">
-                    <h5 style="margin-left:300px;" class="TimesNewRoman"><b>WHEREAS,</b> pursuant to Sec. 10 of the IRR, all procurement shall be done through  </h5>
-                    <h5 style="margin-left:245px;" class="TimesNewRoman"> competitive bidding, except as provided in Rule XVI;  </h5>
+                    <h5 style="margin-left:300px;" class="TnR"><b>WHEREAS,</b> pursuant to Sec. 10 of the IRR, all procurement shall be done through  </h5>
+                    <h5 style="margin-left:245px;" class="TnR"> competitive bidding, except as provided in Rule XVI;  </h5>
                     <br />
-                    <h5 style="margin-left:300px;" class="TimesNewRoman">
+                    <h5 style="margin-left:300px;" class="TnR">
                         <b>WHEREAS,</b> corollary thereto, Purchase Request No.
                         <b id="prNoOne" data-type="select">______ </b>
                         <input type="hidden" name="PrNoOne" id="PrNoOneHidden" />
                         for the Procurement of
                     </h5>
                   @*   <input type="text" name="PrDescriptionOne" style="border: none; border-bottom: 1px solid black; text-align: center; margin-left: 245px; width: 580px; font-family: 'Times New Roman'; font-size: 14px;"> *@
-                    <h5 style="margin-left:245px;" class="TimesNewRoman"> ________________________________________________________________________ in the</h5>
-                    <h5 style="margin-left:245px;" class="TimesNewRoman"> amount of PHP <input type="text" style="border: none; border-bottom: 1px solid black; width: 80px;" name="PrAmountOne"> was referred to the Bids and Awards Committee for processing;</h5>
+                    <h5 style="margin-left:245px;" class="TnR"> ________________________________________________________________________ in the</h5>
+                    <h5 style="margin-left:245px;" class="TnR"> amount of PHP <input type="text" style="border: none; border-bottom: 1px solid black; width: 80px;" name="PrAmountOne"> was referred to the Bids and Awards Committee for processing;</h5>
                     <br />
-                    <h5 style="margin-left:300px;" class="TimesNewRoman"> <b>WHEREAS,</b> after evaluation of the purchase request vis-à-vis the implementing  </h5>
-                    <h5 style="margin-left:245px;" class="TimesNewRoman"> rules and finding no substantial ground to depart from the general rule, the BAC has come to a    </h5>
-                    <h5 style="margin-left:245px;" class="TimesNewRoman"> resolution that Competitive Bidding, as the Mode of Procurement, be adopted for the purchase   </h5>
-                    <h5 style="margin-left:245px;" class="TimesNewRoman"> request referred to in the immediately preceding clause; </h5>
+                    <h5 style="margin-left:300px;" class="TnR"> <b>WHEREAS,</b> after evaluation of the purchase request vis-à-vis the implementing  </h5>
+                    <h5 style="margin-left:245px;" class="TnR"> rules and finding no substantial ground to depart from the general rule, the BAC has come to a    </h5>
+                    <h5 style="margin-left:245px;" class="TnR"> resolution that Competitive Bidding, as the Mode of Procurement, be adopted for the purchase   </h5>
+                    <h5 style="margin-left:245px;" class="TnR"> request referred to in the immediately preceding clause; </h5>
                     <br />
-                    <h5 style="margin-left:300px;" class="TimesNewRoman"> <b>NOW THEREFORE,</b> above premises considered, resolved as it is hereby resolved, </h5>
-                    <h5 style="margin-left:245px;" class="TimesNewRoman"> to recommend the use of Competitive Bidding (Public Bidding) under Sec. 10 of the Revised  </h5>
-                    <h5 style="margin-left:245px;" class="TimesNewRoman"> Implementing  Rules and Regulations of the Republic Act No. 9184 for Purchase Request No.   </h5>
-                    <h5 style="margin-left:245px;" class="TimesNewRoman">
+                    <h5 style="margin-left:300px;" class="TnR"> <b>NOW THEREFORE,</b> above premises considered, resolved as it is hereby resolved, </h5>
+                    <h5 style="margin-left:245px;" class="TnR"> to recommend the use of Competitive Bidding (Public Bidding) under Sec. 10 of the Revised  </h5>
+                    <h5 style="margin-left:245px;" class="TnR"> Implementing  Rules and Regulations of the Republic Act No. 9184 for Purchase Request No.   </h5>
+                    <h5 style="margin-left:245px;" class="TnR">
                         <b id="prNoTwo" data-type="select">______ </b>
                         <input type="hidden" name="PrNoTwo" id="PrNoTwoHidden" />, in the amount of PHP <input type="text" style="border: none; border-bottom: 1px solid black; width: 120px;" name="PrAmountTwo"> for the  Procurement of
                     </h5>
-                    <h5 style="margin-left:245px;" class="TimesNewRoman"><input type="text" style="border: none; border-bottom: 1px solid black; width: 580px;" name="PrDescriptionTwo">.</h5>
+                    <h5 style="margin-left:245px;" class="TnR"><input type="text" style="border: none; border-bottom: 1px solid black; width: 580px;" name="PrDescriptionTwo">.</h5>
                     <br />
-                    @{
-                        // Get the current year
-                        int currentYear = DateTime.Now.Year;
-                    }
-                    <h5 style="margin-left:320px;" class="TimesNewRoman"> <input type="text" style="border: none; border-bottom: 1px solid black; width: 120px;" name="PrDate"> @currentYear , Cebu City, Philippines. </h5>
+                    <h5 style="margin-left:320px;" class="TnR"> <input type="text" style="border: none; border-bottom: 1px solid black; width: 120px;" name="PrDate"> @currentYear , Cebu City, Philippines. </h5>
                     <br />
                     <br />
                 </div>
                 <div class="grid-container">
                     <div class="grid-item" style="margin-left:150px;">
-                        <h5 class="TimesNewRoman" style="font-weight:bold"> ENGR. JOEY SALAGANTING</h5>
-                        <p class="TimesNewRoman">Provisional Member</p>
+                        <h5 class="TnR" style="font-weight:bold; border:none; outline:none" id="signatorypm1"> ENGR. JOEY SALAGANTING</h5>
+                        <p class="TnR">Provisional Member</p>
                     </div>
                     <div class="grid-item">
-                        <h5 class="TimesNewRoman" style="font-weight:bold">ATTY. MARISSA C. GOROSIN</h5>
-                        <p class="TimesNewRoman">Provisional Member</p>
+                        <h5 class="TnR" style="font-weight:bold; border:none; outline:none" id="signatorypm2">ATTY. MARISSA C. GOROSIN</h5>
+                        <p class="TnR">Provisional Member</p>
                     </div>
                     <div class="grid-item" style="margin-right:150px;">
-                        <h5 class="TimesNewRoman" style="font-weight:bold">MR. RAMIL R. ABREA</h5>
-                        <p class="TimesNewRoman">Member</p>
+                        <h5 class="TnR" style="font-weight:bold; border:none; outline:none" id="signatorym1">MR. RAMIL R. ABREA</h5>
+                        <p class="TnR">Member</p>
                     </div>
 
                     <div class="grid-item" style="margin-left:150px;">
-                        <h5 class="TimesNewRoman" style="font-weight:bold">MR. ROLDAN A. CUBILLO</h5>
-                        <p class="TimesNewRoman">Member </p>
+                        <h5 class="TnR" style="font-weight:bold; border:none; outline:none" id="signatorym2">MR. ROLDAN A. CUBILLO</h5>
+                        <p class="TnR">Member </p>
                     </div>
 
                     <div class="grid-item">
-                        <h5 class="TimesNewRoman" style="font-weight:bold">ATTY. JO DAVID Z. BORCES</h5>
-                        <p class="TimesNewRoman">Member</p>
+                        <h5 class="TnR" style="font-weight:bold; border:none; outline:none" id="signatorym2">ATTY. JO DAVID Z. BORCES</h5>
+                        <p class="TnR">Member</p>
                         <br />
                         <br />
                         <br />
-                        <h5 class="TimesNewRoman" style="font-weight:bold">DR. JONATHAN NEIL V. ERASMO</h5>
-                        <p class="TimesNewRoman">Chairperson</p>
+                        <h5 class="TnR" style="font-weight:bold; border:none; outline:none" id="signatoryc">DR. JONATHAN NEIL V. ERASMO</h5>
+                        <p class="TnR">Chairperson</p>
                         <br />
-                      
                     </div>
 
                     <div class="grid-item" style="margin-right:150px;">
-                        <h5 class="TimesNewRoman" style="font-weight:bold">DR. SOPHIA M. MANCAO</h5>
-                        <p class="TimesNewRoman">Vice-Chairperson</p>
+                        <h5 class="TnR" style="font-weight:bold; border:none; outline:none" id="signatoryvc">DR. SOPHIA M. MANCAO</h5>
+                        <p class="TnR">Vice-Chairperson</p>
                     </div>
                 </div>
                 <br />
@@ -258,6 +257,87 @@
     $(document).ready(function () {
         var sourceData = @Json.Serialize(ViewBag.BacResNo);
         var prData = @Json.Serialize(ViewBag.Pr);
+
+        //PROVISIONAL MEMBER 1
+        $('#signatorypm1').editable({
+            type: 'select',
+            source: sourceData,
+            title: 'Select Signatory',
+            success: function (response, newValue) {
+                $('#signatorypm1').val(newValue);
+            }
+        });
+
+        //PROVISIONAL MEMBER 2
+        $('#signatorypm2').editable({
+            type: 'select',
+            source: sourceData,
+            title: 'Select Signatory',
+            success: function (response, newValue) {
+                $('#signatorypm2').val(newValue);
+            }
+        });
+
+        //MEMBER 1
+        $('#signatorym1').editable({
+            type: 'select',
+            source: sourceData,
+            title: 'Select Signatory',
+            success: function (response, newValue) {
+                $('#signatorym1').val(newValue);
+            }
+        });
+
+        //MEMBER 2
+        $('#signatorym2').editable({
+            type: 'select',
+            source: sourceData,
+            title: 'Select Signatory',
+            success: function (response, newValue) {
+                $('#signatorym2').val(newValue);
+            }
+        });
+
+        //MEMBER 3
+        $('#signatorym3').editable({
+            type: 'select',
+            source: sourceData,
+            title: 'Select Signatory',
+            success: function (response, newValue) {
+                $('#signatorym3').val(newValue);
+            }
+        });
+
+        //VICE CHAIRPERSON
+        $('#signatoryvc').editable({
+            type: 'select',
+            source: sourceData,
+            title: 'Select Signatory',
+            success: function (response, newValue) {
+                $('#signatoryvc').val(newValue);
+            }
+        });
+
+        //CHAIR PERSON
+        $('#signatoryc').editable({
+            type: 'select',
+            source: sourceData,
+            title: 'Select Signatory',
+            success: function (response, newValue) {
+                $('#signatoryc').val(newValue);
+            }
+        });
+
+        //REGIONAL DIRECTOR
+        $('#signatoryd').editable({
+            type: 'select',
+            source: sourceData,
+            title: 'Select Signatory',
+            success: function (response, newValue) {
+                $('#signatoryd').val(newValue);
+            }
+        });
+
 
         // Initialize X-Editable
         $('#bacNo').editable({
