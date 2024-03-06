@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.Office.CoverPageProps;
+using System;
 
 namespace fmis.Models.Procurement
 {
@@ -33,6 +34,8 @@ namespace fmis.Models.Procurement
         public bool IsForRd { get; set; } = false;
 
         public DateTime PrTrackingDate { get; set; }
+
+        public string? Remarks { get; set; }
 
         
     }

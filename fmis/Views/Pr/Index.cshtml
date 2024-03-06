@@ -619,7 +619,7 @@ else
 					<table class="table table-hover table-striped" id="prHistory" style="display: none;">
 						<thead>
 							<tr>
-								<th width="14.2%">PR Received on PU</th>
+								<th width="14.2%">PR</th>
 								<th width="13.2%">Checklist</th>
 								<th width="14.2%">Rmop</th>
 								<th width="14.2%">Rmop forwarded to</th>
@@ -630,7 +630,7 @@ else
 						</thead>
 						<tbody id="prHistoryBody">
 							<tr>
-								<td class="text-bold trackFontSize text-success">
+								<td class="text-bold trackFontSize text-success" id="prRecievedOnPu">
 								</td>
 								<td class="trackFontSize text-success" id="prChecklist">
 								</td>
@@ -643,7 +643,7 @@ else
 								<td class="trackFontSize text-success">
 									<a href="#" id="canvass"></a>
 								</td>
-								<td class="trackFontSize text-success"></td>
+								<td class="trackFontSize text-success" id="twg"></td>
 							</tr>
 						</tbody>
 					</table>
@@ -671,6 +671,7 @@ else
 							<th style="width: 8%;">Abstract forwarded to</th>
 							<th style="width: 8%;">Purchase Order</th>
 							<th style="width: 8%;">PO</th>
+							<th style="width: 8%;">Dts Tracking</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -682,8 +683,11 @@ else
 							<td class="trackFontSize text-success" id="abstractForBac">
 							<td class="trackFontSize text-success" id="poRemarks">
 							<td class="trackFontSize text-success" id="poIsforBudget">
+							<td class="trackFontSize text-success">
+								<a href="#" id="prRouteNumber">Dts</a>
 						</tr>
 						<tr>
+							<td></td>
 							<td></td>
 							<td></td>
 							<td></td>
@@ -694,6 +698,22 @@ else
 						</tr>
 					</tbody>
 				</table>
+				<br>
+				<br>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="dtsModal" tabindex="-1" role="dialog" aria-labelledby="secondModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #438EB9;">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title"><i class="fa fa-line-chart"></i>Track Purchase Request</h4>
+			</div>
+			<div class="modal-body">
+				<iframe src="https://mis.cvchd7.com/dts/document/trackPO/2023-9852410802091330" width="850" height="400" frameborder="0"></iframe>
 			</div>
 		</div>
 	</div>
@@ -754,12 +774,14 @@ else
 						$("#loading").hide();
 						$("#errorAlert").hide();
 
+						const prRecievedOnPu = data.pr?.pr;
 						const checklistDate = data.checklist?.checklist;
 						const checklistRemarks = data.checklist?.remarks;
 						const rmopAtaDate = data.rmopAta?.rmopAta;
 						const rmopBacSig = data.rmopAta?.bacSig;
 						const rmopRdSig = data.rmopAta?.rdSig;
 						const canvass = data.canvass?.canvass;
+						const twg = data.twg?.twg;
 
 						const options = {
 							year: 'numeric',
@@ -780,6 +802,9 @@ else
 						const datePartRmopAta = formattedRmopAtaDate.slice(0, splitIndexRmopAta).trim();
 						const timePartRmopAta = formattedRmopAtaDate.slice(splitIndexRmopAta).trim();
 
+						const td1 = document.getElementById('prRecievedOnPu');
+						td1.innerHTML = `${prRecievedOnPu}`;
+
 						const td2 = document.getElementById('prChecklist');
 						td2.innerHTML = `${checklistRemarks}`;
 
@@ -794,6 +819,9 @@ else
 
 						const td6 = document.getElementById('canvass');
 						td6.innerHTML = `${canvass}`;
+						
+						const td7 = document.getElementById('twg');
+						td7.innerHTML = `${twg}`;
 
 						$("#prHistory").show();
 
@@ -807,27 +835,42 @@ else
 							const abstractForBac = data.abstractPr?.abstractForBac;
 							const poRemarks = data.po?.poRemarks;
 							const poIsforBudget = data.po?.poIsforBudget;
+							const prRouteNumber = data.pr?.prRouteNumber;
 
-							const td7 = document.getElementById('additionalCanvass');
-							td7.innerHTML = `${additionalCanvass}`;
+							const td8 = document.getElementById('additionalCanvass');
+							td8.innerHTML = `${additionalCanvass}`;
 
-							const td8 = document.getElementById('secondAdditionalCanvass');
-							td8.innerHTML = `${secondAdditionalCanvass}`;
+							const td9 = document.getElementById('secondAdditionalCanvass');
+							td9.innerHTML = `${secondAdditionalCanvass}`;
 
-							const td9 = document.getElementById('thirdAdditionalCanvass');
-							td9.innerHTML = `${thirdAdditionalCanvass}`;
+							const td10 = document.getElementById('thirdAdditionalCanvass');
+							td10.innerHTML = `${thirdAdditionalCanvass}`;
 
-							const td10 = document.getElementById('abstractPr');
-							td10.innerHTML = `${abstractPr}`;
+							const td11 = document.getElementById('abstractPr');
+							td11.innerHTML = `${abstractPr}`;
 
-							const td11 = document.getElementById('abstractForBac');
-							td11.innerHTML = `${abstractForBac}`;
+							const td12 = document.getElementById('abstractForBac');
+							td12.innerHTML = `${abstractForBac}`;
 
-							const td12 = document.getElementById('poRemarks');
-							td12.innerHTML = `${poRemarks}`;
+							const td13 = document.getElementById('poRemarks');
+							td13.innerHTML = `${poRemarks}`;
 
-							const td13 = document.getElementById('poIsforBudget');
-							td13.innerHTML = `${poIsforBudget}`;
+							const td14 = document.getElementById('poIsforBudget');
+							td14.innerHTML = `${poIsforBudget}`;
+
+							const td15 = document.getElementById('prRouteNumber');
+							td15.innerHTML = `${prRouteNumber}`;
+
+						});
+
+						$("#prRouteNumber").on("click", function () {
+
+							const prRouteNumber = data.pr?.prRouteNumber;
+							const dtsUrl = `https://mis.cvchd7.com/dts/document/trackPO/${prRouteNumber}`;
+
+							$("#dtsModal iframe").attr("src", dtsUrl);
+
+							$("#dtsModal").modal("show");
 
 						});
 

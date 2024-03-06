@@ -168,6 +168,8 @@ namespace fmis.Controllers.Employee
                 return NotFound();
             }
 
+			var prRecievedOnPu = pr?.IsReceiveOnPU == true;
+
             var prId = pr.Id;
 
             var checklist = _context.PuChecklist.FirstOrDefault(x => x.Prno == prId);
@@ -196,8 +198,15 @@ namespace fmis.Controllers.Employee
 
             var poIsforBudget = poRemarks?.IsForBudget == true;
 
+			var twgRemarks = _context.Twg.FirstOrDefault(x => x.Prno == prNo);
+
             var response = new
             {
+                Pr = new
+                {
+                    pr = prRecievedOnPu == true ? "Recieved on PU" : "",
+					prRouteNumber = pr?.RouteNumber ?? "",
+                },
                 Checklist = new
                 {
                     checklist = checklist?.PrTrackingChecklist,
@@ -225,6 +234,10 @@ namespace fmis.Controllers.Employee
                 {
                     poRemarks = poRemarks?.Remarks ?? "",
                     poIsforBudget = poIsforBudget == true ? "Forwarded to Budget" : "",
+                },
+				Twg = new
+				{
+					twg = twgRemarks?.Remarks ?? "",
                 }
             };
 

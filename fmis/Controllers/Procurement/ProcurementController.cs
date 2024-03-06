@@ -70,7 +70,36 @@ namespace fmis.Controllers.Procurement
         public IActionResult PurchaseRequest()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "PurchaseRequest", "");
-            return View();
+
+            var pr = _context.Pr.ToList();
+
+            return View(pr);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddRouteNumber(int id, string routeNumber)
+        {
+            var pr = await _context.Pr.FirstOrDefaultAsync(x => x.Id == id);
+
+            pr.RouteNumber = routeNumber;
+
+            _context.Pr.Update(pr);
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PrRecieve(int id)
+        {
+            var pr = await _context.Pr.FirstOrDefaultAsync(x => x.Id == id);
+
+            pr.IsReceiveOnPU = !pr.IsReceiveOnPU;
+
+            _context.Pr.Update(pr);
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true });
         }
 
         #endregion
@@ -513,6 +542,24 @@ namespace fmis.Controllers.Procurement
             return Json(new { success = false });
         }
 
+        public IActionResult AddRemarks(int id, string remarks)
+        {
+            var rmopAta = _context.RmopAta.FirstOrDefault(x=>x.Id == id);
+
+            if(rmopAta != null)
+            {
+                rmopAta.Remarks = remarks;
+
+                _context.RmopAta.Update(rmopAta);
+                _context.SaveChanges();
+
+                return Json(new { success = true });
+            }
+
+            return Json(new { success = false });
+
+        }
+
         #endregion
 
         #region RMOP DIRECT CONTRACTING
@@ -725,7 +772,6 @@ namespace fmis.Controllers.Procurement
             ViewBag.filter = new FilterSidebar("Procurement", "Rmop", "SmallValue");
             BacResNoDownList();
             PrDdl();
-            //PrDropDownList();
 
 
             return View(_context.RmopSvp.ToList());
@@ -1472,16 +1518,25 @@ namespace fmis.Controllers.Procurement
 
         private void PrDropDownList()
         {
-            ViewBag.PrId = new SelectList((from pr in _context.Pr.Where(x => x.Prno != null).ToList()
-                                           select new
-                                           {
-                                               Id = pr.Id,
-                                               Prno = pr.Prno
-                                           }),
-                                     "Id",
-                                     "Prno",
-                                     null);
+            var query = from pr in _context.Pr
+                        where pr.Prno != null
+                        select new
+                        {
+                            Id = pr.Id,
+                            Prno = pr.Prno
+                        };
 
+            var items = query.ToList();
+            if (items.Any())
+            {
+                items.Insert(0, new { Id = 0, Prno = "Select an option" });
+
+                ViewBag.PrId = new SelectList(items, "Id", "Prno");
+            }
+            else
+            {
+                ViewBag.PrId = new SelectList(new List<object>(), "Id", "Prno");
+            }
         }
 
         private void BacResNoDownList()
@@ -2368,7 +2423,7 @@ namespace fmis.Controllers.Procurement
         #endregion
 
         #region SIGNATORIES
-        public IActionResult BacSignature(int id, int abstractId, int poid)
+        public IActionResult BacSignature(int id, int poid)
         {
             var rmopAta = _context.RmopAta.FirstOrDefault(x => x.Id == id);
 
@@ -2377,16 +2432,7 @@ namespace fmis.Controllers.Procurement
             var poNo = _context.Po.FirstOrDefault(x => x.Id == poid);
 
 
-            if (abstractNo != null)
-            {
-                abstractNo.IsForBac = true;
-
-                _context.Abstract.Update(abstractNo);
-                _context.SaveChanges();
-
-                return Json(new { success = true, message = "ABSTRACT forwarded to the BAC for signature." });
-            }
-            else if(rmopAta != null)
+            if(rmopAta != null)
             {
                 rmopAta.IsForBac = true;
 

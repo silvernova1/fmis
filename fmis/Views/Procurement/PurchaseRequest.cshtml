@@ -1,6 +1,4 @@
-﻿@model fmis.Models.Procurement.PuChecklist
-
-@* TEMPORARY MODEL *@
+﻿@model List<fmis.Models.pr.Pr>
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -12,67 +10,185 @@
 </h3>
 <hr>
 <br />
-<table class="table table-hover" style="width: 1300px">
+<table id="pr" class="table table-hover">
     <thead>
         <tr>
+            <th>PR Number</th>
             <th>
-                TABLE HEADER1
+                <i class="ace-icon fa fa-calendar bigger-110 hidden-480"></i>
+                Pr Date
             </th>
             <th>
-                TABLE HEADER2
+                <i class="ace-icon fa fa-money bigger-110 hidden-480"></i>
+                Grand Total
             </th>
             <th>
-                TABLE HEADER3
+                Purpose
+            </th>
+            <th class="hidden-480">
+                <i class="ace-icon fa fa-money bigger-110 hidden-480"></i>
+                Fund Source
             </th>
             <th>
-                TABLE HEADER4
+                <i class="ace-icon fa fa-user bigger-110 hidden-480"></i>
+                Requested by
             </th>
             <th>
-                TABLE HEADER5
+                <i class="ace-icon fa fa-hashtag bigger-110 hidden-480"></i>
+                Dts Route Number
             </th>
             <th>
-                TABLE HEADER6
-            </th>
-            <th>
-                TABLE HEADER7
-            </th>
-            <th>
-                Actions
+                ACTIONS
             </th>
         </tr>
     </thead>
     <tbody>
-     
-        <tr>
-            <td>
-                SAMPLE TD 1
-            </td>
-            <td>
-                SAMPLE TD 2
-            </td>
-            <td>
-                SAMPLE TD 3
-            </td>
-            <td>
-                SAMPLE TD 4
-            </td>
-            <td>
-                SAMPLE TD 5
-            </td>
-            <td>
-                SAMPLE TD 6
-            </td>
-            <td>
-                SAMPLE TD 7
-            </td>
-            <td>
-                <a class="btn btn-xs btn-primary btn-edit" >
-                    <i class="ace-icon fa fa-edit"></i>Edit
-                </a>
-            </td>
-        </tr>
-    
-
-
+     @foreach(var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.Prno
+                </td>
+                <td>
+                    @item.PrnoDate
+                </td>
+                <td>
+                    @item.GrandTotal
+                </td>
+                <td>
+                    @item.Purpose
+                </td>
+                <td>
+                    @item.FundCharging
+                </td>
+                <td>
+                    @item.RequestedBy
+                </td>
+                <td>
+                    @if(item.RouteNumber != null)
+                    {
+                        @item.RouteNumber
+                    }
+                    else
+                    {
+                        <button type="button" class="btn btn-xs btn-primary route-number" data-toggle="modal" data-target=".add-route" data-id="@item.Id">Add route number</button>
+                    }
+                </td>
+                <td>
+                    <button type="button" class="btn btn-xs btn-primary toggle-btn" data-id="@item.Id" @if (item.IsReceiveOnPU)
+                    {
+                        <text>disabled</text>
+                    }>
+                        Recieved on PU
+                    </button>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+<div class="modal fade add-route" id="myModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-body">
+                <form id="routeForm">
+                    <div class="form-group">
+                        <input type="text" name="RouteNumber" class="form-control" placeholder="Enter Route Number">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="saveChangesBtn" class="btn btn-xs btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+<script>
+    $(document).ready(function ($) {
+        $('#pr').DataTable();
+
+        $(".route-number").click(function (e) {
+            e.preventDefault();
+
+            var id = $(this).data("id");
+            $("#saveChangesBtn").data("id", id);
+        });
+
+        $("#saveChangesBtn").click(function () {
+            var id = $(this).data("id");
+
+            var routeNumber = $("#routeForm input[name='RouteNumber']").val();
+
+            $.ajax({
+                url: '@Url.Action("AddRouteNumber", "Procurement")',
+                type: "POST",
+                data: { id: id, routeNumber: routeNumber },
+                success: function (result) {
+                    if (result.success) {
+                        Lobibox.notify('success', {
+                            title: 'Success',
+                            msg: 'PR route number added successfully..',
+                            sound: false
+                        });
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 2000);
+                    } else {
+                        Lobibox.notify('error', {
+                            title: 'Error',
+                            msg: 'Error adding route number',
+                            sound: false
+                        });
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 2000);
+                    }
+                },
+                error: function () {
+                    console.error("Error updating Account.");
+                }
+            });
+        });
+
+        $(".toggle-btn").click(function () {
+            var id = $(this).data("id");
+
+            $.ajax({
+                url: '@Url.Action("PrRecieve", "Procurement")',
+                type: "POST",
+                data: { id: id },
+                success: function (result) {
+                    if (result.success) {
+                        Lobibox.notify('success', {
+                            title: 'Success',
+                            msg: 'PR status updated successfully..',
+                            sound: false
+                        });
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 2000);
+                        }
+                        else
+                        {
+                            Lobibox.notify('error', {
+                                title: 'Error',
+                                msg: 'Error updating status',
+                                sound: false
+                            });
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 2000);
+                        }
+                },
+                error: function () {
+                    console.error("Error updating Account.");
+                }
+            });
+
+        });
+    });
+</script>
