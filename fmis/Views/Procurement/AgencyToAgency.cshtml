@@ -5,7 +5,6 @@
 }
 
 <style>
-
     .card-container {
         width: calc(70% - 10px);
         padding: 20px;
@@ -240,15 +239,25 @@
                                     <td>@item.PrNoOne</td>
                                     <td>@item.PrAmountOne.ToString("##,#00.00")</td>
                                     <td>
+                                        <button type="button" class="btn btn-xs btn-success addRemarks" data-toggle="modal" data-target=".add-remarks" data-id="@item.Id" data-remarks="@item.Remarks" title="Remarks">
+                                            <i class="ace-icon fa fa-sticky-note"></i>
+                                        </button>
                                         <a class="btn btn-xs btn-success" target="_blank" href="@Url.Action("PrintAgencytoAgency","Procurement",new { id = @item.Id })" data-bs-toggle="print" title="Print">
                                             <i class="ace-icon fa fa-file-pdf-o"></i>
-                                        </a> |
-                                        <a class="btn btn-xs btn-success" href="#" title="for BAC" id="bacSignature" data-id="@item.Id">
-                                            <i class="ace-icon fa fa-users"></i>
-                                        </a> |
-                                        <a class="btn btn-xs btn-success" href="#" title="for RD" id="rdSignature" data-id="@item.Id">
-                                            <i class="ace-icon fa fa-pencil"></i>
                                         </a>
+                                        <button class="btn btn-xs btn-success bacSignature" href="#" title="Forward to BAC" data-id="@item.Id"@if (item.IsForBac)
+                                        {
+                                            <text>disabled</text>
+                                        }>
+                                            <i class="ace-icon fa fa-users"></i>
+                                        </button>
+
+                                        <button class="btn btn-xs btn-success rdSignature" href="#" title="Forward to RD" data-id="@item.Id" @if (item.IsForRd)
+                                        {
+                                            <text>disabled</text>
+                                        }>
+                                            <i class="ace-icon fa fa-pencil"></i>
+                                        </button>
                                     </td>
                                 </tr>
                             }
@@ -272,6 +281,23 @@
     </div>
 </div>
 
+<div class="modal fade add-remarks" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-body">
+                <form id="remarksForm">
+                    <div class="form-group">
+                        <textarea class="form-control" type="text" name="Remarks" rows="3" placeholder="Input Remarks" id="remarksTextArea"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="saveChangesBtn" class="btn btn-xs btn-primary">Save remarks</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet" />
@@ -282,6 +308,55 @@
     $(document).ready(function () {
         var sourceData = @Json.Serialize(ViewBag.BacResNo);
         var prData = @Json.Serialize(ViewBag.Pr);
+
+        $(".addRemarks").click(function (e) {
+            e.preventDefault();
+            var remarks = $(this).data('remarks');
+            $('#remarksTextArea').val(remarks);
+
+            var id = $(this).data("id");
+            $("#saveChangesBtn").data("id", id);
+        });
+
+        $('.addRemarks').on('hidden.bs.modal', function () {
+            $('#remarksTextArea').val('');
+        });
+
+        $("#saveChangesBtn").click(function () {
+            var id = $(this).data("id");
+            var remarks = $("#remarksForm textarea[name='Remarks']").val();
+
+            $.ajax({
+                url: '@Url.Action("AddRemarks", "Procurement")',
+                type: "POST",
+                data: { id: id, remarks: remarks },
+                success: function (result) {
+                    if (result.success) {
+                        Lobibox.notify('success', {
+                            title: 'Success',
+                            msg: 'Remarks added successfully..',
+                            sound: false
+                        });
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 2000);
+                    } else {
+                        Lobibox.notify('error', {
+                            title: 'Error',
+                            msg: 'Error adding remarks',
+                            sound: false
+                        });
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 2000);
+                    }
+                },
+                error: function () {
+                    console.error("Error updating Account.");
+                }
+            });
+
+        });
 
         //PROVISIONAL MEMBER 1
         $('#signatorypm1').editable({
@@ -429,10 +504,11 @@
         });
 
 
-        $("#bacSignature").on("click", function (e) {
+        $(".bacSignature").on("click", function (e) {
             e.preventDefault();
 
             var id = $(this).data("id");
+            console.log(id);
 
             $.ajax({
                 url: "@Url.Action("BacSignature", "Procurement")",
@@ -444,11 +520,17 @@
                             title: 'Success',
                             msg: response.message
                         });
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 2000);
                     } else {
                         Lobibox.notify('error', {
                             title: 'Error',
                             msg: response.message
                         });
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 2000);
                     }
                 },
                 error: function () {
@@ -461,7 +543,7 @@
             });
         });
 
-        $("#rdSignature").on("click", function (e) {
+        $(".rdSignature").on("click", function (e) {
             e.preventDefault();
 
             var id = $(this).data("id");
@@ -474,13 +556,21 @@
                     if (response.success) {
                         Lobibox.notify('success', {
                             title: 'Success',
-                            msg: response.message
+                            msg: response.message,
+                            sound: false
                         });
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 2000);
                     } else {
                         Lobibox.notify('error', {
                             title: 'Error',
-                            msg: response.message
+                            msg: response.message,
+                            sound: false
                         });
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 2000);
                     }
                 },
                 error: function () {

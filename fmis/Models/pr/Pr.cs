@@ -29,6 +29,10 @@ namespace fmis.Models.pr
 
         public string Rmop { get; set; }
 
+        public string RouteNumber { get; set; }
+
+        public bool IsReceiveOnPU { get; set; } = false;
+
         public virtual List<PrItems> PrItems { get; set; }
     }
 }
