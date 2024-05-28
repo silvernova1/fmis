@@ -335,7 +335,9 @@ namespace fmis
             app.UseCookiePolicy();
             app.UseRouting();
 
-			app.UseAuthentication();
+            app.UseSession();
+
+            app.UseAuthentication();
             app.UseAuthorization();
 
 			app.UseEndpoints(endpoints =>

@@ -1,0 +1,243 @@
+﻿@model List<fmis.Models.Employee.Wfp>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "WFP";
+}
+<div class="col-md-12">
+    <div class="card card-outline card-primary">
+        <div class="box-header">
+            <h3 class="box-title">Work and Financial Plan</h3>
+            <div class="box-tools">
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered" id="myTable">
+                <thead>
+                    <tr>
+                        <td rowspan="4" style="text-align: center; vertical-align: middle; width: 100px;">OUTPUT FUNCTIONS/ DELIVERABLES</td>
+                        <td rowspan="4" style="text-align: center; vertical-align: middle; width: 250px;">ACTIVITIES FOR OUTPUTS</td>
+                        <td rowspan="4" style="text-align: center; vertical-align: middle; width: 100px;">TIME FRAME</td>
+                        <td colspan="4" style="text-align: center;">RESOURCE REQUIREMENTS</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="3" style="text-align: center; vertical-align: middle; width: 100px;">Particular(Name of UACS)</td>
+                        <td rowspan="3" style="text-align: center; vertical-align: middle; width: 100px;">Code(UACS)</td>
+                        <td rowspan="3" style="text-align: center; vertical-align: middle; width: 100px;">SOURCE OF FUND</td>
+                        <td rowspan="3" style="text-align: center; vertical-align: middle; width: 100px;">TOTAL COST</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th colspan="2">OO No. 1 : Access to Promotive and Preventive Health Care Services Improved</th>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <th colspan="3">Impact: Better, Equitable Health Outcomes; Responsibe Health System; Improved Financial Risk Protection</th>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <th>Section/Unit</th>
+                        <td>: Health Systems Development Section (HSDS)</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <!--A-->
+                    <tr>
+                        <th colspan="2">A. Strategic Functions</th>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <th colspan="4">1. Strategic Thrusts- Enable to be Healthy; Protect from Health Risks; Care for Health & Wellness; Strengthen Health Institutions & Workforce</th>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                        <tr>
+                            <td>
+                                <input type="text" class="form-control input-sm">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control input-sm">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control input-sm">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control input-sm">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control input-sm">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control input-sm">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control input-sm">
+                            </td>
+                        </tr>
+                    <tr>
+                        <td colspan="6" style="text-align: center; vertical-align: middle;">Sub-total Strategic Function Cost of all activities per Output:</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td colspan="7">
+                            <button type="button" class="btn btn-block btn-primary btn-xs" id="addRow">Add Item</button>
+                        </td>
+                    </tr>
+                    <!--B-->
+                    <tr>
+                        <th colspan="2">B. Core Functions</th>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <th colspan="4">1. To ensure efficacy on the provision of technical assistance to LGUs and other health partners towards the achievement of UHC; & <br> To ensure that relevant policies, guidelines, and programs are cascaded to LGUs and other health partners.</th>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                        <tr>
+                            <td>
+                                <input type="text" class="form-control input-sm">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control input-sm">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control input-sm">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control input-sm">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control input-sm">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control input-sm">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control input-sm">
+                            </td>
+                        </tr>
+                    
+                    <tr>
+                        <td colspan="6" style="text-align: center; vertical-align: middle;">Sub-total Strategic Function Cost of all activities per Output:</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td colspan="7">
+                            <button type="button" class="btn btn-block btn-primary btn-xs">Add Item</button>
+                        </td>
+                    </tr>
+                    <!--C-->
+                    <tr>
+                        <th colspan="2">C. Support Functions</th>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <th colspan="4">1. To increase capacity of DOH personnel in order to improve workplace performance; To ensure compliance with cross-cutting requirements based on standard <br> procedures and timelines in accordance to ARTA and other relevant laws; & To increase access to quality essential health products and services.</th>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="text" class="form-control input-sm">
+                        </td>
+                        <td>
+                            <input type="text" class="form-control input-sm">
+                        </td>
+                        <td>
+                            <input type="text" class="form-control input-sm">
+                        </td>
+                        <td>
+                            <input type="text" class="form-control input-sm">
+                        </td>
+                        <td>
+                            <input type="text" class="form-control input-sm">
+                        </td>
+                        <td>
+                            <input type="text" class="form-control input-sm">
+                        </td>
+                        <td>
+                            <input type="text" class="form-control input-sm">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="6" style="text-align: center; vertical-align: middle;">Sub-total Strategic Function Cost of all activities per Output:</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td colspan="7">
+                            <button type="button" class="btn btn-block btn-primary btn-xs">Add Item</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#addRow").click(function () {
+                Lobibox.prompt('info', {
+                    title: 'Add Item',
+                    label: 'Item:',
+                    buttons: {
+                        ok: {
+                            'class': 'btn btn-info',
+                            text: 'OK'
+                        },
+                        cancel: {
+                            'class': 'btn btn-default',
+                            text: 'Cancel'
+                        }
+                    },
+                    callback: function (data) {
+                        var userInput = data.$input.val();
+                        if (userInput === "") {
+                            console.log('User canceled');
+                        } else {
+                            $.ajax({
+                                url: '@Url.Action("AddItem", "Pr")',
+                                method: 'POST',
+                                data: { userInput: userInput },
+                                success: function (response) {
+                                    console.log('Item added successfully');
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error('Error occurred while adding item:', error);
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+}

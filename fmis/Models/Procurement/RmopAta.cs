@@ -1,5 +1,7 @@
 ﻿using DocumentFormat.OpenXml.Office.CoverPageProps;
+using DocumentFormat.OpenXml.Office2010.ExcelAc;
 using System;
+using System.Collections.Generic;
 
 namespace fmis.Models.Procurement
 {
@@ -8,6 +10,8 @@ namespace fmis.Models.Procurement
         public int Id { get; set; }
 
         public string UserId { get; set; }
+
+        public string Token { get; set; }
 
         public string BacNo { get; set; }
 
@@ -37,6 +41,7 @@ namespace fmis.Models.Procurement
 
         public string? Remarks { get; set; }
 
-        
+
+
     }
 }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Extensions.Hosting;
+using System;
+using System.Collections.Generic;
 
 namespace fmis.Models.Procurement
 {
@@ -29,5 +31,7 @@ namespace fmis.Models.Procurement
 		public DateTime PrTrackingDate { get; set; }
 
         public bool IsForBudget { get; set; } = false;
+
+        public ICollection<PoList> PoList { get; set; }
     }
 }
