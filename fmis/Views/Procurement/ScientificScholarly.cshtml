@@ -216,7 +216,7 @@
             <div class="p-3">
                 @if (Model.Count > 0)
                 {
-                    <table class="table table-striped" id="dataTable">
+                    <table class="table table-striped" id="rmopSs">
                         <thead>
                             <tr>
                                 <th scope="col">Bac No</th>
@@ -234,27 +234,48 @@
                                     <td>@item.PrNoOne</td>
                                     <td>@item.PrAmountOne.ToString("##,#00.00")</td>
                                     <td>
+                                        <button type="button" class="btn btn-xs btn-success addRemarks" data-toggle="modal" data-target=".add-remarks" data-token="@item.Token" data-remarks="@item.Remarks" title="Remarks">
+                                            <i class="ace-icon fa fa-sticky-note"></i>
+                                        </button>
                                         <a class="btn btn-xs btn-success" target="_blank" href="@Url.Action("PrintScientificScholarly","Procurement",new { id = @item.Id })" data-bs-toggle="print" title="Print">
                                             <i class="ace-icon fa fa-file-pdf-o"></i>
                                         </a>
+                                        <button class="btn btn-xs btn-success bacSignature" href="#" title="Forward to BAC" data-token="@item.Token" @if (item.IsForBac)
+                                        {
+                                            <text>disabled</text>
+                                        }>
+                                            <i class="ace-icon fa fa-users"></i>
+                                        </button>
+
+                                        <button class="btn btn-xs btn-success rdSignature" href="#" title="Forward to RD" data-token="@item.Token" @if (item.IsForRd)
+                                        {
+                                            <text>disabled</text>
+                                        }>
+                                            <i class="ace-icon fa fa-pencil"></i>
+                                        </button>
                                     </td>
                                 </tr>
                             }
                         </tbody>
                     </table>
-
-                    <script>
-                        $(document).ready(function () {
-                            $('#dataTable').DataTable({
-                                searching: true,
-                                paging: true,
-                                pageLength: 10,
-                                ordering: false,
-                                lengthChange: false
-                            });
-                        });
-                    </script>
                 }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade add-remarks" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-body">
+                <form id="remarksForm">
+                    <div class="form-group">
+                        <textarea class="form-control" type="text" name="Remarks" rows="3" placeholder="Input Remarks" id="remarksTextArea"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="saveChangesBtn" class="btn btn-xs btn-primary">Save remarks</button>
             </div>
         </div>
     </div>
@@ -268,6 +289,64 @@
     $(document).ready(function () {
         var sourceData = @Json.Serialize(ViewBag.BacResNo);
         var prData = @Json.Serialize(ViewBag.Pr);
+
+        $('#rmopSs').DataTable({
+            searching: true,
+            paging: true,
+            pageLength: 10,
+            ordering: false,
+            lengthChange: false
+        });
+
+        $(".addRemarks").click(function (e) {
+            e.preventDefault();
+            var remarks = $(this).data('remarks');
+            $('#remarksTextArea').val(remarks);
+
+            var token = $(this).data("token");
+            $("#saveChangesBtn").data("token", token);
+        });
+
+        $('.addRemarks').on('hidden.bs.modal', function () {
+            $('#remarksTextArea').val('');
+        });
+
+        $("#saveChangesBtn").click(function () {
+            var token = $(this).data("token");
+            var remarks = $("#remarksForm textarea[name='Remarks']").val();
+
+            $.ajax({
+                url: '@Url.Action("AddRemarks", "Procurement")',
+                type: "POST",
+                data: { token: token, remarks: remarks },
+                success: function (result) {
+                    if (result.success) {
+                        Lobibox.notify('success', {
+                            title: 'Success',
+                            msg: 'Remarks added successfully..',
+                            sound: false
+                        });
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 2000);
+                    } else {
+                        Lobibox.notify('error', {
+                            title: 'Error',
+                            msg: 'Error adding remarks',
+                            sound: false
+                        });
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 2000);
+                    }
+                },
+                error: function () {
+                    console.error("Error updating Account.");
+                }
+            });
+
+        });
+
 
         //PROVISIONAL MEMBER 1
         $('#signatorypm1').editable({
@@ -412,6 +491,85 @@
                     $('#PrNoTwoHidden').val('');
                 },
                 error: function () {
+                }
+            });
+        });
+
+        $(".bacSignature").on("click", function (e) {
+            e.preventDefault();
+
+            var token = $(this).data("token");
+            console.log(token);
+
+            $.ajax({
+                url: "@Url.Action("BacSignature", "Procurement")",
+                type: "POST",
+                data: { token: token },
+                success: function (response) {
+                    if (response.success) {
+                        Lobibox.notify('success', {
+                            title: 'Success',
+                            msg: response.message
+                        });
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 2000);
+                    } else {
+                        Lobibox.notify('error', {
+                            title: 'Error',
+                            msg: response.message
+                        });
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 2000);
+                    }
+                },
+                error: function () {
+                    Lobibox.notify('error', {
+                        size: 'mini',
+                        title: 'Error',
+                        msg: 'An error occurred during the request.'
+                    });
+                }
+            });
+        });
+
+        $(".rdSignature").on("click", function (e) {
+            e.preventDefault();
+
+            var token = $(this).data("token");
+
+            $.ajax({
+                url: "@Url.Action("RdSignature", "Procurement")",
+                type: "POST",
+                data: { token: token },
+                success: function (response) {
+                    if (response.success) {
+                        Lobibox.notify('success', {
+                            title: 'Success',
+                            msg: response.message,
+                            sound: false
+                        });
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 2000);
+                    } else {
+                        Lobibox.notify('error', {
+                            title: 'Error',
+                            msg: response.message,
+                            sound: false
+                        });
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 2000);
+                    }
+                },
+                error: function () {
+                    Lobibox.notify('error', {
+                        size: 'mini',
+                        title: 'Error',
+                        msg: 'An error occurred during the request.'
+                    });
                 }
             });
         });

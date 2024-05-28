@@ -6,6 +6,8 @@
 
         public string UserId { get; set; }
 
+        public string Token { get; set; }
+
         public string BacNo { get; set; }
 
         public string PrNoOne { get; set; }
@@ -25,5 +27,7 @@
         public bool IsForBac { get; set; } = false;
 
         public bool IsForRd { get; set; } = false;
+
+        public string? Remarks { get; set; }
     }
 }

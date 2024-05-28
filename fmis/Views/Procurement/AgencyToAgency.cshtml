@@ -82,7 +82,6 @@
     }
 
 
-
 </style>
 <h3 class="grey lighter smaller">
     RMOP AGENCY TO AGENCY 
@@ -172,41 +171,49 @@
                 </div>
                 <div class="grid-container">
                     <div class="grid-item" style="margin-left:150px;">
-                        <h5 class="TnR" style="font-weight:bold; border:none; outline:none" id="signatorypm1"> DR. ANESSA PATINDOL</h5>
+                        <h5 class="TnR" style="font-weight:bold; border:none; outline:none" id="signatory1">DR. ANESSA PATINDOL</h5>
+                        <input type="hidden" name="RmopSignatory[0].RmopId" id="signatory1Value" />
                         <p class="TnR">Provisional Member</p>
                     </div>
                     <div class="grid-item">
-                        <h5 class="TnR" style="font-weight:bold; border:none; outline:none" id="signatorypm2"> DR. VAN PHILLIP BATON</h5>
+                        <h5 class="TnR" style="font-weight:bold; border:none; outline:none" id="signatory2">DR. VAN PHILLIP BATON</h5>
+                        <input type="hidden" name="RmopSignatory[1].RmopId" id="signatory2Value" />
                         <p class="TnR">Provisional Member</p>
                     </div>
                     <div class="grid-item" style="margin-right:150px;">
-                        <h5 class="TnR" style="font-weight:bold; border:none; outline:none" id="signatorym1">MR. RAMIL R. ABREA</h5>
+                        <h5 class="TnR" style="font-weight:bold; border:none; outline:none" id="signatory3">MR. RAMIL R. ABREA</h5>
+                        <input type="hidden" name="RmopSignatory[2].RmopId" id="signatory3Value" />
                         <p class="TnR">Member</p>
                     </div>
 
                     <div class="grid-item" style="margin-left:150px;" >
-                        <h5 class="TnR" style="font-weight:bold;border:none; outline:none" id="signatorym2">MR. ROLDAN A. CUBILLO</h5>
+                        <h5 class="TnR" style="font-weight:bold;border:none; outline:none" id="signatory4">MR. ROLDAN A. CUBILLO</h5>
+                        <input type="hidden" name="RmopSignatory[3].RmopId" id="signatory4Value" />
                         <p class="TnR">Member (DOH Union Rep)</p>
                     </div>
 
                     <div class="grid-item">
-                        <h5 class="TnR" style="font-weight:bold; border:none; outline:none" id="signatorym3">ATTY. JO DAVID Z. BORCES</h5>
+                        <h5 class="TnR" style="font-weight:bold; border:none; outline:none" id="signatory5">ATTY. JO DAVID Z. BORCES</h5>
+                        <input type="hidden" name="RmopSignatory[4].RmopId" id="signatory5Value" />
                         <p class="TnR">Member</p>
                         <br />
                         <br />
                         <br />
-                        <h5 class="TnR" style="font-weight:bold; border:none; outline:none" id="signatoryc">DR. JONATHAN NEIL V. ERASMO</h5>
+                        <h5 class="TnR" style="font-weight:bold; border:none; outline:none" id="signatory7">DR. JONATHAN NEIL V. ERASMO</h5>
+                        <input type="hidden" name="RmopSignatory[6].RmopId" id="signatory7Value" />
                         <p class="TnR">Chairperson</p>
                         <br />
                         <br />
                         <h5 class="TnR" style="margin-right:300px;">Approved:</h5>
                         <br />
-                        <h5 class="TnR" style="font-weight:bold; border:none; outline:none" id="signatoryd">JAIME S. BERNADAS, MD, MGM, CESO III</h5>
+                        <h5 class="TnR" style="font-weight:bold; border:none; outline:none" id="signatory8">JAIME S. BERNADAS, MD, MGM, CESO III</h5>
+                        <input type="hidden" name="RmopSignatory[7].RmopId" id="signatory8Value" />
                         <p class="TnR">Director IV</p>
                     </div>
 
                     <div class="grid-item" style="margin-right:150px;">
-                        <h5 class="TnR" style="font-weight:bold; border:none; outline:none" id="signatoryvc">DR. SOPHIA M. MANCAO</h5>
+                        <h5 class="TnR" style="font-weight:bold; border:none; outline:none" id="signatory6">DR. SOPHIA M. MANCAO</h5>
+                        <input type="hidden" name="RmopSignatory[5].RmopId" id="signatory6Value" />
                         <p class="TnR">Vice-Chairperson</p>
                     </div>
                 </div>
@@ -221,7 +228,7 @@
             <div class="p-3">
                 @if (Model.Count > 0)
                 {
-                    <table class="table table-striped" id="dataTable">
+                    <table class="table table-striped" id="rmopAta">
                         <thead>
                             <tr>
                                 <th scope="col">Bac No</th>
@@ -239,20 +246,20 @@
                                     <td>@item.PrNoOne</td>
                                     <td>@item.PrAmountOne.ToString("##,#00.00")</td>
                                     <td>
-                                        <button type="button" class="btn btn-xs btn-success addRemarks" data-toggle="modal" data-target=".add-remarks" data-id="@item.Id" data-remarks="@item.Remarks" title="Remarks">
+                                        <button type="button" class="btn btn-xs btn-success addRemarks" data-toggle="modal" data-target=".add-remarks" data-token="@item.Token" data-remarks="@item.Remarks" title="Remarks">
                                             <i class="ace-icon fa fa-sticky-note"></i>
                                         </button>
                                         <a class="btn btn-xs btn-success" target="_blank" href="@Url.Action("PrintAgencytoAgency","Procurement",new { id = @item.Id })" data-bs-toggle="print" title="Print">
                                             <i class="ace-icon fa fa-file-pdf-o"></i>
                                         </a>
-                                        <button class="btn btn-xs btn-success bacSignature" href="#" title="Forward to BAC" data-id="@item.Id"@if (item.IsForBac)
+                                        <button class="btn btn-xs btn-success bacSignature" href="#" title="Forward to BAC" data-token="@item.Token"@if (item.IsForBac)
                                         {
                                             <text>disabled</text>
                                         }>
                                             <i class="ace-icon fa fa-users"></i>
                                         </button>
 
-                                        <button class="btn btn-xs btn-success rdSignature" href="#" title="Forward to RD" data-id="@item.Id" @if (item.IsForRd)
+                                        <button class="btn btn-xs btn-success rdSignature" href="#" title="Forward to RD" data-token="@item.Token" @if (item.IsForRd)
                                         {
                                             <text>disabled</text>
                                         }>
@@ -263,18 +270,6 @@
                             }
                         </tbody>
                     </table>
-
-                    <script>
-                        $(document).ready(function () {
-                            $('#dataTable').DataTable({
-                                searching: true,
-                                paging: true,
-                                pageLength: 10,
-                                ordering: false,
-                                lengthChange: false
-                            });
-                        });
-                    </script>
                 }
             </div>
         </div>
@@ -282,8 +277,12 @@
 </div>
 
 <div class="modal fade add-remarks" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
+    <div class="modal-dialog">
         <div class="modal-content">
+            <div class="modal-header" style="background-color: #438EB9;">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title"><i class="fa fa-comment"></i>Add Remarks</h4>
+            </div>
             <div class="modal-body">
                 <form id="remarksForm">
                     <div class="form-group">
@@ -308,14 +307,23 @@
     $(document).ready(function () {
         var sourceData = @Json.Serialize(ViewBag.BacResNo);
         var prData = @Json.Serialize(ViewBag.Pr);
+        var signatoryData = @Json.Serialize(ViewBag.RmopSig);
+
+        $('#rmopAta').DataTable({
+            searching: true,
+            paging: true,
+            pageLength: 10,
+            ordering: false,
+            lengthChange: false
+        });
 
         $(".addRemarks").click(function (e) {
             e.preventDefault();
             var remarks = $(this).data('remarks');
             $('#remarksTextArea').val(remarks);
 
-            var id = $(this).data("id");
-            $("#saveChangesBtn").data("id", id);
+            var token = $(this).data("token");
+            $("#saveChangesBtn").data("token", token);
         });
 
         $('.addRemarks').on('hidden.bs.modal', function () {
@@ -323,13 +331,13 @@
         });
 
         $("#saveChangesBtn").click(function () {
-            var id = $(this).data("id");
+            var token = $(this).data("token");
             var remarks = $("#remarksForm textarea[name='Remarks']").val();
 
             $.ajax({
                 url: '@Url.Action("AddRemarks", "Procurement")',
                 type: "POST",
-                data: { id: id, remarks: remarks },
+                data: { token: token, remarks: remarks },
                 success: function (result) {
                     if (result.success) {
                         Lobibox.notify('success', {
@@ -358,85 +366,105 @@
 
         });
 
-        //PROVISIONAL MEMBER 1
-        $('#signatorypm1').editable({
+        //SIGNATORIES
+        $('#signatory1').editable({
             type: 'select',
-            source: sourceData,
+            source: signatoryData,
             title: 'Select Signatory',
             success: function (response, newValue) {
-                $('#signatorypm1').val(newValue);
+                var selectedSignatory = signatoryData.find(function (signatory) {
+                    return signatory.FullName == newValue;
+                });
+
+                $('#signatory1Value').val(newValue);
             }
         });
 
-        //PROVISIONAL MEMBER 2
-        $('#signatorypm2').editable({
+        $('#signatory2').editable({
             type: 'select',
-            source: sourceData,
+            source: signatoryData,
             title: 'Select Signatory',
             success: function (response, newValue) {
-                $('#signatorypm2').val(newValue);
+                var selectedSignatory = signatoryData.find(function (signatory) {
+                    return signatory.FullName == newValue;
+                });
+
+                $('#signatory2Value').val(newValue);
+            }
+        });
+        $('#signatory3').editable({
+            type: 'select',
+            source: signatoryData,
+            title: 'Select Signatory',
+            success: function (response, newValue) {
+                var selectedSignatory = signatoryData.find(function (signatory) {
+                    return signatory.FullName == newValue;
+                });
+
+                $('#signatory3Value').val(newValue);
+            }
+        });
+        $('#signatory4').editable({
+            type: 'select',
+            source: signatoryData,
+            title: 'Select Signatory',
+            success: function (response, newValue) {
+                var selectedSignatory = signatoryData.find(function (signatory) {
+                    return signatory.FullName == newValue;
+                });
+
+                $('#signatory4Value').val(newValue);
+            }
+        });
+        $('#signatory5').editable({
+            type: 'select',
+            source: signatoryData,
+            title: 'Select Signatory',
+            success: function (response, newValue) {
+                var selectedSignatory = signatoryData.find(function (signatory) {
+                    return signatory.FullName == newValue;
+                });
+
+                $('#signatory5Value').val(newValue);
+            }
+        });
+        $('#signatory6').editable({
+            type: 'select',
+            source: signatoryData,
+            title: 'Select Signatory',
+            success: function (response, newValue) {
+                var selectedSignatory = signatoryData.find(function (signatory) {
+                    return signatory.FullName == newValue;
+                });
+
+                $('#signatory6Value').val(newValue);
+            }
+        });
+        $('#signatory7').editable({
+            type: 'select',
+            source: signatoryData,
+            title: 'Select Signatory',
+            success: function (response, newValue) {
+                var selectedSignatory = signatoryData.find(function (signatory) {
+                    return signatory.FullName == newValue;
+                });
+
+                $('#signatory7Value').val(newValue);
+            }
+        });
+        $('#signatory8').editable({
+            type: 'select',
+            source: signatoryData,
+            title: 'Select Signatory',
+            success: function (response, newValue) {
+                var selectedSignatory = signatoryData.find(function (signatory) {
+                    return signatory.FullName == newValue;
+                });
+
+                $('#signatory8Value').val(newValue);
             }
         });
 
-        //MEMBER 1
-        $('#signatorym1').editable({
-            type: 'select',
-            source: sourceData,
-            title: 'Select Signatory',
-            success: function (response, newValue) {
-                $('#signatorym1').val(newValue);
-            }
-        });
-
-        //MEMBER 2
-        $('#signatorym2').editable({
-            type: 'select',
-            source: sourceData,
-            title: 'Select Signatory',
-            success: function (response, newValue) {
-                $('#signatorym2').val(newValue);
-            }
-        });
-
-        //MEMBER 3
-        $('#signatorym3').editable({
-            type: 'select',
-            source: sourceData,
-            title: 'Select Signatory',
-            success: function (response, newValue) {
-                $('#signatorym3').val(newValue);
-            }
-        });
-
-        //VICE CHAIRPERSON
-        $('#signatoryvc').editable({
-            type: 'select',
-            source: sourceData,
-            title: 'Select Signatory',
-            success: function (response, newValue) {
-                $('#signatoryvc').val(newValue);
-            }
-        });
-        
-        //CHAIR PERSON
-        $('#signatoryc').editable({
-            type: 'select',
-            source: sourceData,
-            title: 'Select Signatory',
-            success: function (response, newValue) {
-                $('#signatoryc').val(newValue);
-            }
-        });
-
-        //REGIONAL DIRECTOR
-        $('#signatoryd').editable({
-            type: 'select',
-            source: sourceData,
-            title: 'Select Signatory',
-            success: function (response, newValue) {
-                $('#signatoryd').val(newValue);
-            }
-        });
 
         // Initialize X-Editable
         $('#bacNo').editable({
@@ -507,13 +535,13 @@
         $(".bacSignature").on("click", function (e) {
             e.preventDefault();
 
-            var id = $(this).data("id");
-            console.log(id);
+            var token = $(this).data("token");
+            console.log(token);
 
             $.ajax({
                 url: "@Url.Action("BacSignature", "Procurement")",
                 type: "POST",
-                data: { id: id },
+                data: { token: token },
                 success: function (response) {
                     if (response.success) {
                         Lobibox.notify('success', {
@@ -546,12 +574,12 @@
         $(".rdSignature").on("click", function (e) {
             e.preventDefault();
 
-            var id = $(this).data("id");
+            var token = $(this).data("token");
 
             $.ajax({
                 url: "@Url.Action("RdSignature", "Procurement")",
                 type: "POST",
-                data: { id: id },
+                data: { token: token },
                 success: function (response) {
                     if (response.success) {
                         Lobibox.notify('success', {
@@ -584,7 +612,3 @@
         });
     });
 </script>
-
-
-
-

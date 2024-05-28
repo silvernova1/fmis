@@ -20,6 +20,7 @@ using fmis.Models.pr;
 using fmis.Models.ppmp;
 using fmis.Models.Procurement;
 using fmis.Models.Maiff;
+using fmis.Models.Employee;
 
 namespace fmis.Data
 {
@@ -107,11 +108,13 @@ namespace fmis.Data
         public DbSet<PrChecklist> PrChecklist { get; set; }
         public DbSet<BacResNo> BacResNo { get; set; }
         public DbSet<Rmop> Rmop { get; set; }
+        public DbSet<RmopSignatory> RmopSignatory { get; set; }
         public DbSet<RmopAta> RmopAta { get; set; }
         public DbSet<RmopDc> RmopDc { get; set; }
         public DbSet<RmopEc> RmopEc { get; set; }
         public DbSet<RmopLov> RmopLov { get; set; }
         public DbSet<RmopPb> RmopPb { get; set; }
+        public DbSet<RmopPbInfra> RmopPbInfra { get; set; }
         public DbSet<RmopPsDbm> RmopPsDbm { get; set; }
         public DbSet<RmopSs> RmopSs { get; set; }
         public DbSet<RmopSvp> RmopSvp { get; set; }
@@ -123,6 +126,8 @@ namespace fmis.Data
         public DbSet<Supplier> Supplier { get; set; }
         public DbSet<PuIndexing> PuIndexing { get; set; }
         public DbSet<PuUser> PuUser { get; set; }
+        public DbSet<Wfp> Wfp {  get; set; }
+        public DbSet<PoList> PoList {  get; set; }
 
 
 

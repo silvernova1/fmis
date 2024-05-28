@@ -31,11 +31,11 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="" style="font-weight:bold"> PO NO. </label>
-                                        <input type="text" class="form-control" name="PoNo" readonly value="@ViewBag.FormattedPoNo">
+                                        <input type="text" class="form-control" name="PoList[0].PoNo" value="@ViewBag.FormattedPoNo">
                                     </div>
                                     <div class="form-group" id="description-section" >
                                         <label style="font-weight:bold"> DESCRIPTION: </label>
-                                        <textarea type="text" class="form-control"> </textarea>
+                                        <textarea type="text" name="Description" class="form-control"> </textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -47,7 +47,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="" style="font-weight:bold"> PO DATE </label>
-                                        <input type="text" class="form-control" id="rpqdate" name="PoDate">
+                                        <input type="text" class="form-control" id="rpqdate" name="PoList[0].PoDate">
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -57,7 +57,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="" style="font-weight:bold">SUPPLIER </label>
-                                        <input type="text" class="form-control" name="Supplier" required>
+                                        <input type="text" class="form-control" name="PoList[0].Supplier" required>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -68,7 +68,7 @@
                                     <div class="form-group">
                                         <label for="" style="font-weight:bold">AMOUNT</label>
                                         <div class="input-group">
-                                            <input type="text" class="form-control" name="Amount" required>
+                                            <input type="text" class="form-control" name="PoList[0].Amount" required>
                                             <span class="input-group-btn" style="padding-left:6px;">
                                                 <button type="button" class="btn btn-success btn-xs" onclick="addDynamicForm()"> <span class="fa fa-plus"></span> </button>
                                             </span>
@@ -91,15 +91,14 @@
 <script>
 
     function refreshPage() {
-        // Reload the current page
         location.reload();
     }
 
 
     var descriptionAdded = false;
+    var dynamicFormIndex = 1;
 
     function addDynamicForm() {
-        // Create a new div element
         var dynamicFormDiv = document.createElement("div");
         dynamicFormDiv.classList.add("dynamic-form");
 
@@ -107,32 +106,31 @@
         var descriptionSection = document.getElementById('description-section');
         descriptionSection.classList.add('hidden');
 
-        // Add the HTML content to the newly created div
         dynamicFormDiv.innerHTML = `
             <div class="row">
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="" style="font-weight:bold">PO NO.</label>
-                        <input type="text" class="form-control" name="PoNo" readonly value="@ViewBag.FormattedPoNo">
+                            <input type="text" class="form-control" name="PoList[${dynamicFormIndex}].PoNo" value="@ViewBag.FormattedPoNo">
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="" style="font-weight:bold">PO DATE</label>
-                        <input type="text" class="form-control" id="rpqdate" name="PoDate">
+                                <input type="text" class="form-control" id="rpqdatedyn" name="PoList[${dynamicFormIndex}].PoDate">
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="" style="font-weight:bold">SUPPLIER</label>
-                        <input type="text" class="form-control" name="Supplier" required>
+                            <input type="text" class="form-control" name="PoList[${dynamicFormIndex}].Supplier" required>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="" style="font-weight:bold">AMOUNT</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" name="Amount" required>
+                            <input type="text" class="form-control" name="PoList[${dynamicFormIndex}].Amount" required>
                             <span class="input-group-btn" style="padding-left:6px;">
                                 <button type="button" class="btn btn-xs btn-danger close-btn"><span class="fa fa-trash"></span></button>
                             </span>
@@ -141,7 +139,6 @@
                 </div>
             </div>`;
 
-        // Add DESCRIPTION section only if it hasn't been added before
         if (!descriptionAdded) {
             dynamicFormDiv.innerHTML += `
                 <div class="row" id="description-section">
@@ -152,17 +149,21 @@
                         </div>
                     </div>
                 </div>`;
-            descriptionAdded = true; // Set the flag to true after adding DESCRIPTION section
+            descriptionAdded = true;
         }
 
-        // Get the original form and append the dynamicFormDiv below it
         var originalForm = document.getElementById("original-form");
         originalForm.parentNode.insertBefore(dynamicFormDiv, originalForm.nextSibling);
 
-        // Attach event listener to close button
+        $("#rpqdatedyn").datepicker({
+            dateFormat: "MM d, yy"
+        });
+
+        dynamicFormIndex++;
+
         var closeBtn = dynamicFormDiv.querySelector('.close-btn');
         closeBtn.addEventListener('click', function () {
-            dynamicFormDiv.remove(); // Remove the dynamic form when close button is clicked
+            dynamicFormDiv.remove();
         });
     }
 

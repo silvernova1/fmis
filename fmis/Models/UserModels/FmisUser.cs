@@ -12,7 +12,6 @@ namespace fmis.Models.UserModels
     {
 
         public int Id { get; set; }
-        //[Remote("IsUsernameUnique", "Users", ErrorMessage = "This username is already in use.")]
         public string Username { get; set; }
         public string Password { get; set; }
         public string Email { get; set; }

@@ -45,52 +45,160 @@ using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Database;
 using DocumentFormat.OpenXml.Office2021.DocumentTasks;
 using AutoMapper.Configuration.Annotations;
+using fmis.Models.Employee;
 
 namespace fmis.Controllers.Employee
 {
 	[Authorize(AuthenticationSchemes = "Scheme2", Roles = "accounting_user")]
 	public class PrController : Controller
-    {
-        private readonly PpmpContext _ppmpContext;
-        private readonly DtsContext _dts;
-        private readonly MyDbContext _context;
+	{
+		private readonly PpmpContext _ppmpContext;
+		private readonly DtsContext _dts;
+		private readonly MyDbContext _context;
 
-        public PrController(PpmpContext ppmpContext, DtsContext dts, MyDbContext context)
-        {
-            _ppmpContext = ppmpContext;
-            _dts = dts;
-            _context = context;
-        }
-        [Route("Employee/Pr")]
-        public async Task<IActionResult> Index()
-        {
-            ViewBag.filter = new FilterSidebar("end_user", "DV", "");
-            ExpenseDropDownList();
-            //ItemsDropDownList();
-            UsersDropDownList();
+		public PrController(PpmpContext ppmpContext, DtsContext dts, MyDbContext context)
+		{
+			_ppmpContext = ppmpContext;
+			_dts = dts;
+			_context = context;
+		}
+		[Route("Employee/Pr")]
+		public async Task<IActionResult> Index()
+		{
+			ViewBag.filter = new FilterSidebar("end_user", "DV", "");
+			ExpenseDropDownList();
+			//ItemsDropDownList();
+			UsersDropDownList();
 
-            var pr = await _context.Pr.Where(x=>x.UserId == UserId).Include(x => x.PrItems).ToListAsync();
+			var pr = await _context.Pr.Where(x => x.UserId == UserId).Include(x => x.PrItems).ToListAsync();
 
 			var puCheck = await _context.PuChecklist.Include(x => x.PrChecklist).ToListAsync();
 
-            var Query = from i in _ppmpContext.item
-                        orderby i.Id
-                        select new SelectListItem
-                        {
-                            Value = i.Id.ToString(),
-                            Text = i.Description
-                        };
+			var Query = from i in _ppmpContext.item
+						orderby i.Id
+						select new SelectListItem
+						{
+							Value = i.Id.ToString(),
+							Text = i.Description
+						};
 
-            IEnumerable<SelectListItem> itemList = Query.ToList();
+			IEnumerable<SelectListItem> itemList = Query.ToList();
 
-            ViewBag.ItemId = itemList;
+			ViewBag.ItemId = itemList;
 			//ViewBag.PrNo = _context.Pr.FirstOrDefault(x => x.UserId == UserId).Prno;
 
 
 			return View(pr);
+		}
+
+		[Route("Employee/Wfp")]
+		[HttpGet]
+		public async Task<IActionResult> Wfp(int userInput)
+		{
+			ViewBag.filter = new FilterSidebar("end_user", "DV", "");
+
+			var wfp = await _context.Wfp.ToListAsync();
+			ViewBag.userInput = userInput;
+
+            return View(wfp);
+		}  
+
+        [HttpPost]
+        public IActionResult AddItem(int userInput)
+        {
+			return Ok();
         }
 
-		[HttpGet]
+        [HttpPost]
+        public async Task<IActionResult> AddWfp(List<Wfp> models, [FromBody] int numberOfRows)
+        {
+
+            try
+            {
+                foreach (var model in models)
+                {
+                    await _context.Wfp.AddAsync(model);
+                }
+
+                await _context.SaveChangesAsync();
+
+                return Ok(models.Select(m => new { id = m.Id }));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        [HttpPost]
+		public async Task<IActionResult> UpdateWfp(Wfp model)
+		{
+            var existingWfp = await _context.Wfp.FindAsync(model.Id);
+            if (existingWfp == null)
+            {
+                return NotFound();
+            }
+			else
+			{
+                existingWfp.OutputFunction = model.OutputFunction;
+                existingWfp.Activity = model.Activity;
+                existingWfp.TimeFrame = model.TimeFrame;
+                existingWfp.Particular = model.Particular;
+                existingWfp.UacsCode = model.UacsCode;
+                existingWfp.SourceOfFund = model.SourceOfFund;
+                existingWfp.TotalCost = model.TotalCost;
+
+                _context.Wfp.Update(existingWfp);
+                await _context.SaveChangesAsync();
+
+                return Ok("Data updated successfully.");
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveData(List<Wfp> model)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage));
+                return BadRequest("Model validation failed: " + string.Join("; ", errors));
+            }
+
+            foreach (var wfp in model)
+            {
+                if (wfp.Id != 0)
+                {
+                    var existingWfp = await _context.Wfp.FindAsync(wfp.Id);
+                    if (existingWfp != null)
+                    {
+                        existingWfp.OutputFunction = wfp.OutputFunction;
+                        existingWfp.Activity = wfp.Activity;
+                        existingWfp.TimeFrame = wfp.TimeFrame;
+                        existingWfp.Particular = wfp.Particular;
+                        existingWfp.UacsCode = wfp.UacsCode;
+                        existingWfp.SourceOfFund = wfp.SourceOfFund;
+                        existingWfp.TotalCost = wfp.TotalCost;
+
+                        _context.Wfp.Update(existingWfp);
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+                }
+                else
+                {
+                    // New rows will have Id == 0, so add them
+                    await _context.Wfp.AddAsync(wfp);
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok("Data saved successfully.");
+        }
+
+        [HttpGet]
 		public IActionResult GetPr(int id)
 		{
 			return Ok();

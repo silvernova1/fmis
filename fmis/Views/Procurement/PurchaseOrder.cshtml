@@ -38,11 +38,12 @@
                                             <option>Select Abstract</option>
                                         </select>
                                     </div>
-                                    <div class="form-group">
+                                    <div id="poNoContainer"></div>
+                                    @* <div class="form-group">
                                         <label for="" style="font-weight:bold"> PO NO. </label>
-                                        <input type="text" class="form-control" id="poNo" name="PoNo">
-                                    </div>
-                                    <div class="form-group" id="description-section-update">
+                                        <input type="text" class="form-control" id="poNo">
+                                    </div> *@
+                                    <div class="form-group">
                                         <label for="" style="font-weight:bold"> DESCRIPTION </label>
                                         <textarea class="form-control" id="description" name="Description"></textarea>
                                     </div>
@@ -54,102 +55,40 @@
                                             <option>Select Pr No</option>
                                         </select>
                                     </div>
-                                    <div class="form-group">
+                                    <div id="poDateContainer"></div>
+                                    @* <div class="form-group">
                                         <label for="" style="font-weight:bold">  PO DATE </label>
-                                        <input type="text" class="form-control" id="poDate" name="PoDate">
-                                    </div>
+                                        <input type="text" class="form-control">
+                                    </div> *@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="" style="font-weight:bold"> PR DATE </label>
                                         <input type="text" class="form-control" id="prDate" name="prDate" readonly>
                                     </div>
-                                    <div class="form-group">
+                                    <div id="poSupplierContainer"></div>
+                                    @* <div class="form-group">
                                         <label for="" style="font-weight:bold">SUPPLIER </label>
-                                        <input type="text" class="form-control" id="supplier" name="Supplier">
-                                    </div>
+                                        <input type="text" class="form-control">
+                                    </div> *@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="" style="font-weight:bold">REMARKS</label>
                                         <input type="text" class="form-control" id="remarks" name="Remarks">
                                     </div>
-                                    <div class="form-group">
+                                    <div id="poAmountContainer"></div>
+                                    @* <div class="form-group">
                                         <label for="" style="font-weight:bold">AMOUNT</label>
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" id="amount" name="Amount">
-                                            <span class="input-group-btn" style="padding-left:6px;">
-                                                <button type="button" class="btn btn-success btn-xs" onclick="updateDynamicForm()"> <span class="fa fa-plus"></span> </button>
-                                            </span>
-                                        </div>
-                                    </div>
+                                        <input type="text" class="form-control">
+                                    </div> *@
                                 </div>
                             </div>
-                            @* <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="" style="font-weight:bold"> ABSTRACT NO. </label>
-                                        <select class="form-control" id="abstractNo" name="AbstractNo" asp-items="ViewBag.Abstract">
-                                            <option>Select Abstract</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="" style="font-weight:bold"> PO NO. </label>
-                                        <input type="text" class="form-control" id="poNo" name="PoNo">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="" style="font-weight:bold">  PO DATE </label>
-                                        <input type="text" class="form-control" id="poDate" name="PoDate">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="" style="font-weight:bold">SUPPLIER </label>
-                                        <input type="text" class="form-control" id="supplier" name="Supplier">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="" style="font-weight:bold">  AMOUNT </label>
-                                        <input type="text" class="form-control" id="amount" name="Amount">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="" style="font-weight:bold">  RMOP </label>
-                                        <select class="form-control" id="rmop" name="Rmop">
-                                            <option value="AGENCY TO AGENCY">AGENCY TO AGENCY</option>
-                                            <option value="DIRECT CONTRACTING (DRUGS AND MEDS)">DIRECT CONTRACTING (DRUGS AND MEDS)</option>
-                                            <option value="EMERGENCY CASES (DRUGS AND MEDS)">EMERGENCY CASES (DRUGS AND MEDS)</option>
-                                            <option value="LEASE OF VENUE (GOODS)">LEASE OF VENUE (GOODS)</option>
-                                            <option value="PUBLIC BIDDING (GOODS AND EQUIPMENT)">PUBLIC BIDDING (GOODS AND EQUIPMENT)</option>
-                                            <option value="PS-DBM">PS-DBM</option>
-                                            <option value="SCIENTIFIC SCHOLARLY">SCIENTIFIC SCHOLARLY</option>
-                                            <option value="SMALL VALUE PROCUREMENT (GOODS AND EQUIPMENT)">SMALL VALUE PROCUREMENT (GOODS AND EQUIPMENT)</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="" style="font-weight:bold"> PR NO  </label>
-                                        <select class="form-control" id="prNo" name="PrNo" asp-items="ViewBag.Pr">
-                                            <option>Select Pr No</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="" style="font-weight:bold"> PR DATE </label>
-                                        <input type="text" class="form-control" id="prDate" name="prDate" readonly>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="" style="font-weight:bold"> DESCRIPTION </label>
-                                        <textarea class="form-control" id="description" name="Description" ></textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="" style="font-weight:bold">REMARKS</label>
-                                        <input type="text" class="form-control" id="remarks" name="Remarks">
-                                    </div>
-                                </div>
-                            </div> *@
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-xs btn-primary" id="saveChanges">Update <span class="fa fa-check-square-o"></span> </button>
-                        <a data-dismiss="modal" class="btn btn-xs btn-danger" onclick="updaterefreshPage()">Cancel</a>
+                        <a data-dismiss="modal" class="btn btn-xs btn-danger">Cancel</a>
                     </div>
                 </form>
             </div>
@@ -171,31 +110,28 @@
                 ABSTRACT NO.
             </th>
             <th>
-               PO NO.
-            </th>
-            <th>
-               PO DATE
-            </th>
-            <th>
-                PR NO.
+                PR NO
             </th>
             <th>
                 PR DATE
             </th>
             <th>
-                DESCRITION
+                DESCRIPTION
+            </th>
+            <th>
+                REMARKS
+            </th>
+            <th>
+                PO NO
+            </th>
+            <th>
+                PO DATE
             </th>
             <th>
                 SUPPLIER
             </th>
             <th>
                 AMOUNT
-            </th>
-            <th>
-                RMOP
-            </th>
-            <th>
-                REMARKS
             </th>
             <th>
                 ACTIONS
@@ -212,31 +148,76 @@
                         @item.AbstractNo
                     </td>
                     <td>
-                        @item.PoNo
-                    </td>
-                    <td style="width: 150px">
-                        @item.PoDate.ToString("MMM d, yyyy")
-                    </td>
-                    <td>
                         @item.PrNo
                     </td>
                     <td style="width: 150px">
                         @item.PrDate.ToString("MMM d, yyyy")
                     </td>
                     <td>
-                        @item.Supplier
-                    </td>
-                    <td>
                         @item.Description
                     </td>
                     <td>
-                        @item.Amount
-                    </td>
-                    <td>
-                        @item.Rmop
-                    </td>
-                    <td>
                         @item.Remarks
+                    </td>
+                    <td>
+                        @if (item.PoList.Count > 1)
+                        {
+                            <select class="form-control">
+                                @foreach (var poList in item.PoList)
+                                {
+                                    <option>@poList.PoNo</option>
+                                }
+                            </select>
+                        }
+                        else
+                        {
+                            @item.PoList.FirstOrDefault().PoNo
+                        }
+                    </td>
+                    <td>
+                        @if (item.PoList.Count > 1)
+                        {
+                            <select class="form-control">
+                                @foreach (var poList in item.PoList)
+                                {
+                                    <option>@poList.PoDate.ToString("MMM d, yyyy")</option>
+                                }
+                            </select>
+                        }
+                        else
+                        {
+                            @item.PoList.FirstOrDefault().PoDate.ToString("MMM d, yyyy")
+                        }
+                    </td>
+                    <td>
+                        @if (item.PoList.Count > 1)
+                        {
+                            <select class="form-control">
+                                @foreach (var poList in item.PoList)
+                                {
+                                    <option>@poList.Supplier</option>
+                                }
+                            </select>
+                        }
+                        else
+                        {
+                            @item.PoList.FirstOrDefault().Supplier
+                        }
+                    </td>
+                    <td>
+                        @if (item.PoList.Count > 1)
+                        {
+                            <select class="form-control">
+                                @foreach (var poList in item.PoList)
+                                {
+                                    <option>@poList.Amount</option>
+                                }
+                            </select>
+                        }
+                        else
+                        {
+                            @item.PoList.FirstOrDefault().Amount
+                        }
                     </td>
                     <td>
                         <a class="btn btn-xs btn-primary btn-edit" data-id="@item.Id">
@@ -266,87 +247,6 @@
 
 
 <script>
-
-
-    function updaterefreshPage() {
-        // Reload the current page
-        location.reload();
-    }
-
-
-    var descriptionAdded = false;
-
-    function updateDynamicForm() {
-        // Create a new div element
-        var dynamicFormDiv = document.createElement("div");
-        dynamicFormDiv.classList.add("dynamic-form");
-
-
-        var descriptionSection = document.getElementById('description-section-update');
-        descriptionSection.classList.add('hidden');
-
-        // Add the HTML content to the newly created div
-        dynamicFormDiv.innerHTML = `
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label for="" style="font-weight:bold">PO NO.</label>
-                            <input type="text" class="form-control" name="PoNo" readonly value="@ViewBag.FormattedPoNo">
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label for="" style="font-weight:bold">PO DATE</label>
-                            <input type="text" class="form-control" id="rpqdate" name="PoDate">
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label for="" style="font-weight:bold">SUPPLIER</label>
-                            <input type="text" class="form-control" name="Supplier" required>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label for="" style="font-weight:bold">AMOUNT</label>
-                            <div class="input-group">
-                                <input type="text" class="form-control" name="Amount" required>
-                                <span class="input-group-btn" style="padding-left:6px;">
-                                    <button type="button" class="btn btn-xs btn-danger close-btn"><span class="fa fa-trash"></span></button>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>`;
-
-        // Add DESCRIPTION section only if it hasn't been added before
-        if (!descriptionAdded) {
-            dynamicFormDiv.innerHTML += `
-                    <div class="row" id="description-section">
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label style="font-weight:bold"> DESCRIPTION: </label>
-                                <textarea type="text" class="form-control"> </textarea>
-                            </div>
-                        </div>
-                    </div>`;
-            descriptionAdded = true; // Set the flag to true after adding DESCRIPTION section
-        }
-
-        // Get the original form and append the dynamicFormDiv below it
-        var originalForm = document.getElementById("original-form-update");
-        originalForm.parentNode.insertBefore(dynamicFormDiv, originalForm.nextSibling);
-
-        // Attach event listener to close button
-        var closeBtn = dynamicFormDiv.querySelector('.close-btn');
-        closeBtn.addEventListener('click', function () {
-            dynamicFormDiv.remove(); // Remove the dynamic form when close button is clicked
-        });
-    }
-
-
-
-
     var itemId;
     $(document).ready(function () {
         $(".btn-edit").click(function () {
@@ -358,15 +258,64 @@
                 data: { id: itemId },
                 success: function (data) {
                     $("#abstractNo").val(data.abstractNo);
-                    $("#poNo").val(data.poNo);
-                    $("#poDate").val(data.poDate);
                     $("#prNo").val(data.prNo);
                     $("#prDate").val(data.prDate);
-                    $("#supplier").val(data.supplier);
-                    $("#amount").val(data.amount);
                     $("#rmop").val(data.rmop);
                     $("#description").val(data.description);
                     $("#remarks").val(data.remarks);
+
+
+                    $("#poNoContainer").empty();
+                    data.poList.forEach(function (po) {
+                        var formGroup = $('<div class="form-group"></div>');
+                        var label = $('<label for="" style="font-weight:bold"> PO NO </label>');
+                        var input = $('<input type="text" class="form-control" id="poNo">');
+                        input.val(po.poNo);
+
+                        formGroup.append(label);
+                        formGroup.append(input);
+                        $("#poNoContainer").append(formGroup);
+                    });
+
+                    $("#poDateContainer").empty();
+                    data.poList.forEach(function (po) {
+                        var formGroup = $('<div class="form-group"></div>');
+                        var label = $('<label for="" style="font-weight:bold"> PO DATE </label>');
+                        var input = $('<input type="text" class="form-control poDate">');
+                        input.val(po.poDate);
+
+                        formGroup.append(label);
+                        formGroup.append(input);
+                        $("#poDateContainer").append(formGroup);
+                        input.datepicker({
+                            dateFormat: "MM d, yy"
+                        });
+                    });
+
+                    $("#poSupplierContainer").empty();
+                    data.poList.forEach(function (po) {
+                        var formGroup = $('<div class="form-group"></div>');
+                        var label = $('<label for="" style="font-weight:bold"> SUPPLIER </label>');
+                        var input = $('<input type="text" class="form-control" id="supplier">');
+                        input.val(po.supplier);
+
+                        formGroup.append(label);
+                        formGroup.append(input);
+                        $("#poSupplierContainer").append(formGroup);
+                    });
+
+                    $("#poAmountContainer").empty();
+                    data.poList.forEach(function (po) {
+                        var formGroup = $('<div class="form-group"></div>');
+                        var label = $('<label for="" style="font-weight:bold"> AMOUNT </label>');
+                        var input = $('<input type="text" class="form-control" id="amount">');
+                        input.val(po.amount);
+
+                        formGroup.append(label);
+                        formGroup.append(input);
+                        $("#poAmountContainer").append(formGroup);
+                    });
+
                     $("#editPo").modal("show");
                 }
             });
@@ -382,17 +331,23 @@
             var newData = {
                 Id: itemId,
                 AbstractNo: $("#abstractNo").val(),
-                PoNo: $("#poNo").val(),
-                PoDate: $("#poDate").val(),
                 PrNo: $("#prNo").val(),
                 PrDate: $("#prDate").val(),
-                Supplier: $("#supplier").val(),
-                Amount: $("#amount").val(),
                 Rmop: $("#rmop").val(),
                 Description: $("#description").val(),
                 Remarks: $("#remarks").val(),
+                PoList: []
                 
             };
+
+            $("#poNoContainer .form-group").each(function (index) {
+                var poNo = $(this).find('input[type="text"]').val();
+                var poListItemId = $(this).find('input[type="text"]').data('id');
+                var poDate = $("#poDateContainer .form-group").eq(index).find('input[type="text"]').val();
+                var supplier = $("#poSupplierContainer .form-group").eq(index).find('input[type="text"]').val();
+                var amount = $("#poAmountContainer .form-group").eq(index).find('input[type="text"]').val();
+                newData.PoList.push({ Id: poListItemId, PoNo: poNo, PoDate: poDate, Supplier: supplier, Amount: amount });
+            });
 
             $.ajax({
                 type: "POST",
@@ -420,8 +375,6 @@
                             location.reload();
                         }, 1000);
                     }
-                    //$("#editPo").modal("hide");
-                    //$('form')[0].reset();
                 }
             });
         });

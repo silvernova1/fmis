@@ -38,6 +38,8 @@ using OfficeOpenXml.FormulaParsing.Excel.Functions.Logical;
 using DocumentFormat.OpenXml.InkML;
 using Microsoft.AspNetCore.SignalR;
 using fmis.Hubs;
+using fmis.Data.Accounting;
+using Microsoft.Extensions.Logging;
 
 namespace fmis.Controllers.Procurement
 {
@@ -52,8 +54,9 @@ namespace fmis.Controllers.Procurement
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly fmisContext _dtsContext;
         private readonly IHubContext<PrStatus> _hubContext;
+        private readonly ILogger<ProcurementController> _logger;
 
-        public ProcurementController(MyDbContext context, IUserService userService, PpmpContext ppmpContext, DtsContext dts, IHttpContextAccessor httpContextAccessor, fmisContext dtsContext, IHubContext<PrStatus> hubContext)
+        public ProcurementController(MyDbContext context, IUserService userService, PpmpContext ppmpContext, DtsContext dts, IHttpContextAccessor httpContextAccessor, fmisContext dtsContext, IHubContext<PrStatus> hubContext, ILogger<ProcurementController> logger)
         {
             _context = context;
             _userService = userService;
@@ -62,7 +65,7 @@ namespace fmis.Controllers.Procurement
             _httpContextAccessor = httpContextAccessor;
             _dtsContext = dtsContext;
             _hubContext = hubContext;
-
+            _logger = logger;
         }
 
         #region PR TRACKING
@@ -128,14 +131,28 @@ namespace fmis.Controllers.Procurement
         #region SAVE CHECKLIST
         public IActionResult SaveChecklist(PuChecklist puChecklist)
         {
+            /*if (!ModelState.IsValid)
+            {
+                foreach (var modelState in ModelState.Values)
+                {
+                    foreach (var error in modelState.Errors)
+                    {
+                        _logger.LogError("Validation Error: {PropertyName} - {ErrorMessage}",
+                            modelState, error.ErrorMessage);
+                    }
+                }
+            }*/
+
             if (ModelState.IsValid)
             {
                 if (puChecklist.Prno != 0)
                 {
                     puChecklist.PrChecklist = puChecklist.PrChecklist.Where(x => x.IsChecked).ToList();
                     puChecklist.PrTrackingChecklist = DateTime.Now;
+                    puChecklist.Token = Guid.NewGuid().ToString();
 
-					_context.PuChecklist.Add(puChecklist);
+
+                    _context.PuChecklist.Add(puChecklist);
                     _context.SaveChanges();
 
                     var pr = _context.Pr.FirstOrDefault(x => x.Id == Convert.ToInt32(puChecklist.Prno));
@@ -168,7 +185,7 @@ namespace fmis.Controllers.Procurement
             ViewBag.filter = new FilterSidebar("Procurement", "Checklist", "Checklist1");
 
             PrDropDownList();
-            return View();
+            return View(_context.PuChecklist.ToList());
         }
         #endregion
 
@@ -472,7 +489,7 @@ namespace fmis.Controllers.Procurement
         [HttpGet]
         public IActionResult GetRmop(int id)
         {
-            var item = _context.Rmop.Find(id);
+            var item = _context.RmopSignatory.Find(id);
             return Json(item);
         }
         [HttpPost]
@@ -505,7 +522,8 @@ namespace fmis.Controllers.Procurement
         public IActionResult AgencyToAgency()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Rmop", "AgencyToAgency");
-            BacResNoDownList();
+            BacResNoDropDownList();
+            RmopSigDropDownList();
             PrDdl();
 
             return View(_context.RmopAta.ToList());
@@ -518,46 +536,134 @@ namespace fmis.Controllers.Procurement
                 if (model.BacNo != null)
                 {
                     var userId = _context.Pr.FirstOrDefault(x => x.Prno == model.PrNoOne).UserId;
+
                     model.UserId = userId;
+                    model.Token = Guid.NewGuid().ToString();
                     model.PrTrackingDate = DateTime.Now;
 
-                    _context.Add(model);
+                    _context.RmopAta.Add(model);
                     _context.SaveChanges();
 
-                    string htmlContent = $@"
-                    <div role='tabpanel' class='bs-stepper-pane fade active dstepper-block' id='rmopDate'>
-                        <div class='form-group'>
-                            <label for='inputMailForm'>{model.PrTrackingDate.ToString("MMM d, yyyy")}</label>
-                            <br />
-                            <br />
-                            <b>Remarks</b>
-                            <div class='invalid-feedback'>Sample Remarks</div>
-                        </div>
-                    </div>";
-
-                    _hubContext.Clients.All.SendAsync("PrUpdateRmop", model.PrNoOne, htmlContent);
                     return Json(new { success = true });
                 }
             }
             return Json(new { success = false });
         }
 
-        public IActionResult AddRemarks(int id, string remarks)
+        public IActionResult AddChecklistRemarks(string token, string remarks)
         {
-            var rmopAta = _context.RmopAta.FirstOrDefault(x=>x.Id == id);
+            var checkList1 = _context.PuChecklist.FirstOrDefault(x => x.Token == token && x.ChecklistNo == 1);
+
+            if(checkList1 != null)
+            {
+                checkList1.Remarks = remarks;
+                _context.PuChecklist.Update(checkList1);
+                _context.SaveChanges();
+
+                return Json(new { success = true });
+            }
+            else
+            {
+                return Json(new { success = false });
+            }
+        }
+
+        public IActionResult AddRemarks(string token, string remarks)
+        {
+            var rmopAta = _context.RmopAta.FirstOrDefault(x => x.Token == token);
+            var rmopDc = _context.RmopDc.FirstOrDefault(x => x.Token == token);
+            var rmopEc = _context.RmopEc.FirstOrDefault(x => x.Token == token);
+            var rmopLov = _context.RmopLov.FirstOrDefault(x => x.Token == token);
+            var rmopPb = _context.RmopPb.FirstOrDefault(x => x.Token == token);
+            var rmopPbInfra = _context.RmopPbInfra.FirstOrDefault(x => x.Token == token);
+            var rmopPsDbm = _context.RmopPsDbm.FirstOrDefault(x => x.Token == token);
+            var rmopSs = _context.RmopSs.FirstOrDefault(x => x.Token == token);
+            var rmopSvp = _context.RmopSvp.FirstOrDefault(x => x.Token == token);
 
             if(rmopAta != null)
             {
                 rmopAta.Remarks = remarks;
-
                 _context.RmopAta.Update(rmopAta);
                 _context.SaveChanges();
 
                 return Json(new { success = true });
             }
+            else if(rmopDc != null)
+            {
+                rmopDc.Remarks = remarks;
 
-            return Json(new { success = false });
+                _context.RmopDc.Update(rmopDc);
+                _context.SaveChanges();
 
+                return Json(new { success = true });
+            }
+            else if (rmopEc != null)
+            {
+                rmopEc.Remarks = remarks;
+
+                _context.RmopEc.Update(rmopEc);
+                _context.SaveChanges();
+
+                return Json(new { success = true });
+            }
+            else if (rmopLov != null)
+            {
+                rmopLov.Remarks = remarks;
+
+                _context.RmopLov.Update(rmopLov);
+                _context.SaveChanges();
+
+                return Json(new { success = true });
+            }
+            else if (rmopPb != null)
+            {
+                rmopPb.Remarks = remarks;
+
+                _context.RmopPb.Update(rmopPb);
+                _context.SaveChanges();
+
+                return Json(new { success = true });
+            }
+            else if (rmopPsDbm != null)
+            {
+                rmopPsDbm.Remarks = remarks;
+
+                _context.RmopPsDbm.Update(rmopPsDbm);
+                _context.SaveChanges();
+
+                return Json(new { success = true });
+            }
+            else if (rmopSs != null)
+            {
+                rmopSs.Remarks = remarks;
+
+                _context.RmopSs.Update(rmopSs);
+                _context.SaveChanges();
+
+                return Json(new { success = true });
+            }
+            else if (rmopSvp != null)
+            {
+                rmopSvp.Remarks = remarks;
+
+                _context.RmopSvp.Update(rmopSvp);
+                _context.SaveChanges();
+
+                return Json(new { success = true });
+            }
+            else if (rmopPbInfra != null)
+            {
+                rmopPbInfra.Remarks = remarks;
+
+                _context.RmopPbInfra.Update(rmopPbInfra);
+                _context.SaveChanges();
+
+                return Json(new { success = true });
+            }
+            else
+            {
+                return Json(new { success = false });
+            }
         }
 
         #endregion
@@ -567,7 +673,7 @@ namespace fmis.Controllers.Procurement
         public IActionResult DirectContracting()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Rmop", "DirectContracting");
-            BacResNoDownList();
+            BacResNoDropDownList();
             PrDdl();
 
             return View(_context.RmopDc.ToList());
@@ -579,6 +685,7 @@ namespace fmis.Controllers.Procurement
             {
                 if (model.BacNo != null)
                 {
+                    model.Token = Guid.NewGuid().ToString();
                     var userId = _context.Pr.FirstOrDefault(x => x.Prno == model.PrNoOne).UserId;
                     model.UserId = userId;
                     _context.Add(model);
@@ -598,7 +705,7 @@ namespace fmis.Controllers.Procurement
         public IActionResult EmergencyCases()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Rmop", "EmergencyCases");
-            BacResNoDownList();
+            BacResNoDropDownList();
             PrDdl();
 
             return View(_context.RmopEc.ToList());
@@ -612,6 +719,7 @@ namespace fmis.Controllers.Procurement
                 {
                     var userId = _context.Pr.FirstOrDefault(x => x.Prno == model.PrNoOne).UserId;
                     model.UserId = userId;
+                    model.Token = Guid.NewGuid().ToString();
                     _context.Add(model);
                     _context.SaveChanges();
 
@@ -629,7 +737,7 @@ namespace fmis.Controllers.Procurement
         public IActionResult LeaseOfVenue()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Rmop", "LeaseOfVenue");
-            BacResNoDownList();
+            BacResNoDropDownList();
             PrDdl();
 
             return View(_context.RmopLov.ToList());
@@ -643,7 +751,7 @@ namespace fmis.Controllers.Procurement
                 {
                     var userId = _context.Pr.FirstOrDefault(x => x.Prno == model.PrNoOne).UserId;
                     model.UserId = userId;
-
+                    model.Token = Guid.NewGuid().ToString();
                     _context.Add(model);
                     _context.SaveChanges();
 
@@ -660,28 +768,12 @@ namespace fmis.Controllers.Procurement
         public IActionResult PublicBidding()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Rmop", "PublicBidding");
-            BacResNoDownList();
+            BacResNoDropDownList();
             PrDdl();
 
 
             return View(_context.RmopPb.ToList());
         }
-
-
-        //RMOP PUBLIC BIDDING INFRA
-        #region
-        [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
-        public IActionResult PublicBiddingInfra()
-        {
-            ViewBag.filter = new FilterSidebar("Procurement", "Rmop", "PbInfra");
-            BacResNoDownList();
-            PrDdl();
-
-
-            return View(_context.RmopPb.ToList());
-        }
-        #endregion
-
 
         public IActionResult SaveRmopPb(RmopPb model)
         {
@@ -691,8 +783,43 @@ namespace fmis.Controllers.Procurement
                 {
                     var userId = _context.Pr.FirstOrDefault(x => x.Prno == model.PrNoOne).UserId;
                     model.UserId = userId;
+                    model.Token = Guid.NewGuid().ToString();
+                    _context.RmopPb.Add(model);
+                    _context.SaveChanges();
 
-                    _context.Add(model);
+                    return Json(new { success = true });
+                }
+            }
+
+            return Json(new { success = false });
+        }
+
+
+        //RMOP PUBLIC BIDDING INFRA
+        #region
+        [Authorize(AuthenticationSchemes = "Scheme4", Roles = "pu_admin")]
+        public IActionResult PublicBiddingInfra()
+        {
+            ViewBag.filter = new FilterSidebar("Procurement", "Rmop", "PbInfra");
+            BacResNoDropDownList();
+            PrDdl();
+
+
+            return View(_context.RmopPbInfra.ToList());
+        }
+        #endregion
+
+
+        public IActionResult SaveRmopPbInfra(RmopPbInfra model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.BacNo != null)
+                {
+                    var userId = _context.Pr.FirstOrDefault(x => x.Prno == model.PrNoOne).UserId;
+                    model.UserId = userId;
+                    model.Token = Guid.NewGuid().ToString();
+                    _context.RmopPbInfra.Add(model);
                     _context.SaveChanges();
 
                     return Json(new { success = true });
@@ -708,7 +835,7 @@ namespace fmis.Controllers.Procurement
         public IActionResult PsDbm()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Rmop", "PsDbm");
-            BacResNoDownList();
+            BacResNoDropDownList();
             PrDdl();
 
             return View(_context.RmopPsDbm.ToList());
@@ -721,8 +848,8 @@ namespace fmis.Controllers.Procurement
                 {
                     var userId = _context.Pr.FirstOrDefault(x => x.Prno == model.PrNoOne).UserId;
                     model.UserId = userId;
-
-                    _context.Add(model);
+                    model.Token = Guid.NewGuid().ToString();
+                    _context.RmopPsDbm.Add(model);
                     _context.SaveChanges();
 
                     return Json(new { success = true });
@@ -738,7 +865,7 @@ namespace fmis.Controllers.Procurement
         public IActionResult ScientificScholarly()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Rmop", "ScientificScholarly");
-            BacResNoDownList();
+            BacResNoDropDownList();
             PrDdl();
 
 
@@ -753,7 +880,7 @@ namespace fmis.Controllers.Procurement
                 {
                     var userId = _context.Pr.FirstOrDefault(x => x.Prno == model.PrNoOne).UserId;
                     model.UserId = userId;
-
+                    model.Token = Guid.NewGuid().ToString();
                     _context.Add(model);
                     _context.SaveChanges();
 
@@ -770,7 +897,7 @@ namespace fmis.Controllers.Procurement
         public IActionResult SmallValue()
         {
             ViewBag.filter = new FilterSidebar("Procurement", "Rmop", "SmallValue");
-            BacResNoDownList();
+            BacResNoDropDownList();
             PrDdl();
 
 
@@ -785,7 +912,7 @@ namespace fmis.Controllers.Procurement
                 {
                     var userId = _context.Pr.FirstOrDefault(x => x.Prno == model.PrNoOne).UserId;
                     model.UserId = userId;
-
+                    model.Token = Guid.NewGuid().ToString();
                     _context.Add(model);
                     _context.SaveChanges();
 
@@ -984,7 +1111,7 @@ namespace fmis.Controllers.Procurement
                 {
                     _context.AddReCanvass.Add(formData);
                     _context.SaveChanges();
-
+                     
                     return Json(new { success = true });
                 }
             }
@@ -1125,7 +1252,7 @@ namespace fmis.Controllers.Procurement
 
             ViewBag.FormattedPoNo = formattedPoNo;
 
-            return View(_context.Po.ToList());
+            return View(_context.Po.Include(x=>x.PoList).ToList());
         }
 
         public JsonResult GetDate(string prNo)
@@ -1143,39 +1270,24 @@ namespace fmis.Controllers.Procurement
         }
 
         [HttpPost]
-        public IActionResult SavePo(Po model)
+        public IActionResult SavePo(Po po)
         {
             if(ModelState.IsValid)
             {
-                if(!String.IsNullOrEmpty(model.PoNo))
-                {
-                    model.PrTrackingDate = DateTime.Now;
+                _context.Po.Add(po);
+                _context.SaveChanges();
 
-                    _context.Po.Add(model);
-                    _context.SaveChanges();
-
-					string htmlContent = $@"
-                    <div role='tabpanel' class='bs-stepper-pane fade active dstepper-block'>
-                        <div class='form-group' id='rmopDiv'>
-                            <label for='inputMailForm'>{model?.PoDate.ToString("MMM d, yyyy")}</label>
-                            <br />
-                            <br />
-                            <b>Remarks</b>
-                            <div class='invalid-feedback'>{model?.Remarks}</div>
-                        </div>
-                    </div>";
-
-					_hubContext.Clients.All.SendAsync("PrUpdatePo", model.PrNo, htmlContent);
-					return Json(new { success = true });
-                }
+                return Json(new { success = true });
             }
-
-            return Json(new { success = false });
+            else
+            {
+                return Json(new { success = false });
+            }
         }
 
         public IActionResult GetPo(int id)
         {
-            var item = _context.Po.Find(id);
+            var item = _context.Po.Include(x=>x.PoList).FirstOrDefault(x=>x.Id == id);
             if (item != null)
             {
                 string formattedPrDate = item.PrDate.ToString("MMM d, yyyy");
@@ -1184,17 +1296,19 @@ namespace fmis.Controllers.Procurement
                 var result = new
                 {
                     AbstractNo = item.AbstractNo,
-                    PoNo = item.PoNo,
-                    PoDate = formattedPoDate,
                     PrNo = item.PrNo,
                     PrDate = formattedPrDate,
                     Description = item.Description,
-                    Supplier = item.Supplier,
-                    Amount = item.Amount,
                     Rmop = item.Rmop,
-                    Remarks = item.Remarks
+                    Remarks = item.Remarks,
+                    PoList = item.PoList.Select(po => new
+                    {
+                        PoNo = po.PoNo,
+                        PoDate = po.PoDate.ToString("MMM d, yyyy"),
+                        Supplier = po.Supplier,
+                        Amount = po.Amount
+                    }).ToList()
                 };
-
                 return Json(result);
             }
 
@@ -1204,15 +1318,44 @@ namespace fmis.Controllers.Procurement
         [HttpPost]
         public IActionResult UpdatePo([FromBody] Po newData)
         {
-            if (ModelState.IsValid)
-            {
-                if(!String.IsNullOrEmpty(newData.PoNo))
-                {
-                    _context.Update(newData);
-                    _context.SaveChanges();
 
-                    return Json(new { success = true });
+            var item = _context.Po.Include(x => x.PoList).FirstOrDefault(x => x.Id == newData.Id);
+            if (item != null)
+            {
+                item.AbstractNo = newData.AbstractNo;
+                item.PrNo = newData.PrNo;
+                item.PrDate = newData.PrDate;
+                item.Description = newData.Description;
+                item.Rmop = newData.Rmop;
+                item.Remarks = newData.Remarks;
+
+                if (newData.PoList != null && item.PoList != null)
+                {
+                    var newItemPoLists = newData.PoList.ToList();
+                    var itemPoLists = item.PoList.ToList();
+
+                    for (int i = 0; i < newItemPoLists.Count && i < itemPoLists.Count; i++)
+                    {
+                        newItemPoLists[i].Id = itemPoLists[i].Id;
+                    }
                 }
+
+                foreach (var newItem in newData.PoList)
+                {
+                    var existingItem = item.PoList.FirstOrDefault(x => x.Id == newItem.Id);
+                    if (existingItem != null)
+                    {
+                        existingItem.PoNo = newItem.PoNo;
+                        existingItem.PoDate = newItem.PoDate;
+                        existingItem.Supplier = newItem.Supplier;
+                        existingItem.Amount = newItem.Amount;
+                    }
+                }
+
+
+                _context.SaveChanges();
+
+                return Json(new { success = true });
             }
 
             return Json(new { success = false });
@@ -1539,7 +1682,7 @@ namespace fmis.Controllers.Procurement
             }
         }
 
-        private void BacResNoDownList()
+        private void BacResNoDropDownList()
         {
             ViewBag.BacResNo = new SelectList((from bcn in _context.BacResNo.ToList()
                                                select new
@@ -1551,6 +1694,12 @@ namespace fmis.Controllers.Procurement
                                      "BacResNo",
                                      null);
 
+        }
+
+        private void RmopSigDropDownList()
+        {
+            var rmopList = _context.Rmop.Select(r => new { Id = r.Id, FullName = r.FullName, Description = r.Description }).ToList();
+            ViewBag.RmopSig = new SelectList(rmopList, "Id", "FullName");
         }
 
         private void CanvassDropDown()
@@ -2332,14 +2481,15 @@ namespace fmis.Controllers.Procurement
                 void AddCellWithContent(PdfPTable table, string content, bool isBold = false, int fontSize = 10, float cellHeight = 0f)
                 {
                     PdfPCell cell = new PdfPCell();
-                    cell.Border = Rectangle.NO_BORDER; // Remove the border
-                    cell.FixedHeight = cellHeight; // Set the height of the cell
+                    cell.Border = Rectangle.NO_BORDER;
+                    cell.FixedHeight = cellHeight;
+
                     AddContentToCell(cell, content, isBold, fontSize);
                     table.AddCell(cell);
                 }
 
                 PdfPTable nT = new PdfPTable(1);
-                nT.TotalWidth = PageSize.A4.Width - 20f; // Adjusted for margins
+                nT.TotalWidth = PageSize.A4.Width - 20f;
                 nT.LockedWidth = true;
 
                 AddCellWithContent(nT, "", false, 10, 10f);
@@ -2424,11 +2574,17 @@ namespace fmis.Controllers.Procurement
         #endregion
 
         #region SIGNATORIES
-        public IActionResult BacSignature(int id, int poid)
+        public IActionResult BacSignature(string token, int poid)
         {
-            var rmopAta = _context.RmopAta.FirstOrDefault(x => x.Id == id);
-
-            var abstractNo = _context.Abstract.FirstOrDefault(x=>x.Id == id);
+            var rmopAta = _context.RmopAta.FirstOrDefault(x => x.Token == token);
+            var rmopDc = _context.RmopDc.FirstOrDefault(x => x.Token == token);
+            var rmopEc = _context.RmopEc.FirstOrDefault(x => x.Token == token);
+            var rmopLov = _context.RmopLov.FirstOrDefault(x => x.Token == token);
+            var rmopPb = _context.RmopPb.FirstOrDefault(x => x.Token == token);
+            var rmopPbInfra = _context.RmopPbInfra.FirstOrDefault(x => x.Token == token);
+            var rmopPsDbm = _context.RmopPsDbm.FirstOrDefault(x => x.Token == token);
+            var rmopSs = _context.RmopSs.FirstOrDefault(x => x.Token == token);
+            var rmopSvp = _context.RmopSvp.FirstOrDefault(x => x.Token == token);
 
             var poNo = _context.Po.FirstOrDefault(x => x.Id == poid);
 
@@ -2438,6 +2594,78 @@ namespace fmis.Controllers.Procurement
                 rmopAta.IsForBac = true;
 
                 _context.RmopAta.Update(rmopAta);
+                _context.SaveChanges();
+
+                return Json(new { success = true, message = "RMOP forwarded to the BAC for signature." });
+            }
+            else if (rmopDc != null)
+            {
+                rmopDc.IsForBac = true;
+
+                _context.RmopDc.Update(rmopDc);
+                _context.SaveChanges();
+
+                return Json(new { success = true, message = "RMOP forwarded to the BAC for signature." });
+            }
+            else if (rmopEc != null)
+            {
+                rmopEc.IsForBac = true;
+
+                _context.RmopEc.Update(rmopEc);
+                _context.SaveChanges();
+
+                return Json(new { success = true, message = "RMOP forwarded to the BAC for signature." });
+            }
+            else if (rmopLov != null)
+            {
+                rmopLov.IsForBac = true;
+
+                _context.RmopLov.Update(rmopLov);
+                _context.SaveChanges();
+
+                return Json(new { success = true, message = "RMOP forwarded to the BAC for signature." });
+            }
+            else if (rmopPb != null)
+            {
+                rmopPb.IsForBac = true;
+
+                _context.RmopPb.Update(rmopPb);
+                _context.SaveChanges();
+
+                return Json(new { success = true, message = "RMOP forwarded to the BAC for signature." });
+            }
+            else if (rmopPbInfra != null)
+            {
+                rmopPbInfra.IsForBac = true;
+
+                _context.RmopPbInfra.Update(rmopPbInfra);
+                _context.SaveChanges();
+
+                return Json(new { success = true, message = "RMOP forwarded to the BAC for signature." });
+            }
+            else if (rmopPsDbm != null)
+            {
+                rmopPsDbm.IsForBac = true;
+
+                _context.RmopPsDbm.Update(rmopPsDbm);
+                _context.SaveChanges();
+
+                return Json(new { success = true, message = "RMOP forwarded to the BAC for signature." });
+            }
+            else if (rmopSs != null)
+            {
+                rmopSs.IsForBac = true;
+
+                _context.RmopSs.Update(rmopSs);
+                _context.SaveChanges();
+
+                return Json(new { success = true, message = "RMOP forwarded to the BAC for signature." });
+            }
+            else if (rmopSvp != null)
+            {
+                rmopSvp.IsForBac = true;
+
+                _context.RmopSvp.Update(rmopSvp);
                 _context.SaveChanges();
 
                 return Json(new { success = true, message = "RMOP forwarded to the BAC for signature." });
@@ -2453,25 +2681,107 @@ namespace fmis.Controllers.Procurement
             }
             else
             {
-                return Json(new { success = false, message = "ERROR saving to database." });
+                return Json(new { success = false, message = "ERROR updating the form." });
             }
         }
 
-        public IActionResult RdSignature(int id)
+        public IActionResult RdSignature(string token)
         {
-            var rmopAta = _context.RmopAta.FirstOrDefault(x => x.Id == id);
+            var rmopAta = _context.RmopAta.FirstOrDefault(x => x.Token == token);
+            var rmopDc = _context.RmopDc.FirstOrDefault(x => x.Token == token);
+            var rmopEc = _context.RmopEc.FirstOrDefault(x => x.Token == token);
+            var rmopLov = _context.RmopLov.FirstOrDefault(x => x.Token == token);
+            var rmopPb = _context.RmopPb.FirstOrDefault(x => x.Token == token);
+            var rmopPbInfra = _context.RmopPbInfra.FirstOrDefault(x => x.Token == token);
+            var rmopPsDbm = _context.RmopPsDbm.FirstOrDefault(x => x.Token == token);
+            var rmopSs = _context.RmopSs.FirstOrDefault(x => x.Token == token);
+            var rmopSvp = _context.RmopSvp.FirstOrDefault(x => x.Token == token);
 
-            if (rmopAta == null)
+            if (rmopAta != null)
             {
-                return NotFound();
+                rmopAta.IsForRd = true;
+
+                _context.RmopAta.Update(rmopAta);
+                _context.SaveChanges();
+
+                return Json(new { success = true, message = "RMOP forwarded to the RD for signature." });
             }
+            else if(rmopDc != null)
+            {
+                rmopDc.IsForRd = true;
 
-            rmopAta.IsForRd = true;
+                _context.RmopDc.Update(rmopDc);
+                _context.SaveChanges();
 
-            _context.RmopAta.Update(rmopAta);
-            _context.SaveChanges();
+                return Json(new { success = true, message = "RMOP forwarded to the RD for signature." });
+            }
+            else if (rmopEc != null)
+            {
+                rmopEc.IsForRd = true;
 
-            return Json(new { success = true, message = "RMOP forwarded to the RD for signature." });
+                _context.RmopEc.Update(rmopEc);
+                _context.SaveChanges();
+
+                return Json(new { success = true, message = "RMOP forwarded to the RD for signature." });
+            }
+            else if (rmopLov != null)
+            {
+                rmopLov.IsForRd = true;
+
+                _context.RmopLov.Update(rmopLov);
+                _context.SaveChanges();
+
+                return Json(new { success = true, message = "RMOP forwarded to the RD for signature." });
+            }
+            else if (rmopPb != null)
+            {
+                rmopPb.IsForRd = true;
+
+                _context.RmopPb.Update(rmopPb);
+                _context.SaveChanges();
+
+                return Json(new { success = true, message = "RMOP forwarded to the RD for signature." });
+            }
+            else if (rmopPbInfra != null)
+            {
+                rmopPbInfra.IsForRd = true;
+
+                _context.RmopPbInfra.Update(rmopPbInfra);
+                _context.SaveChanges();
+
+                return Json(new { success = true, message = "RMOP forwarded to the RD for signature." });
+            }
+            else if (rmopPsDbm != null)
+            {
+                rmopPsDbm.IsForRd = true;
+
+                _context.RmopPsDbm.Update(rmopPsDbm);
+                _context.SaveChanges();
+
+                return Json(new { success = true, message = "RMOP forwarded to the RD for signature." });
+            }
+            else if (rmopSs != null)
+            {
+                rmopSs.IsForRd = true;
+
+                _context.RmopSs.Update(rmopSs);
+                _context.SaveChanges();
+
+                return Json(new { success = true, message = "RMOP forwarded to the RD for signature." });
+            }
+            else if (rmopSvp != null)
+            {
+                rmopSvp.IsForRd = true;
+
+                _context.RmopSvp.Update(rmopSvp);
+                _context.SaveChanges();
+
+                return Json(new { success = true, message = "RMOP forwarded to the RD for signature." });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Error updating the status." });
+            }
         }
         #endregion
 
@@ -3687,7 +3997,54 @@ namespace fmis.Controllers.Procurement
         #endregion
 
         #region PRINT CHECKLIST 1
-        public IActionResult PrintChecklist1()
+
+        public IActionResult CreatePdf(string token)
+        {
+            string[] staticTexts = {
+                "Complete signatures incl. approval",
+                "Complete with PR #, date, unit cost and correct total cost"
+            };
+
+            // Create a memory stream to hold the PDF
+            using (MemoryStream ms = new MemoryStream())
+            {
+                // Create a new PDF document
+                Document document = new Document(PageSize.A4, 50, 50, 25, 25);
+                PdfWriter writer = PdfWriter.GetInstance(document, ms);
+
+                // Open the document to write content
+                document.Open();
+
+                // Draw rectangles and add static text
+                PdfContentByte canvas = writer.DirectContent;
+                float startX = 50;  // x position
+                float startY = 750; // y position
+                float rectWidth = 10;  // width of the rectangle
+                float rectHeight = 10; // height of the rectangle
+                float textOffsetX = 20; // offset for text
+
+                for (int i = 0; i < staticTexts.Length; i++)
+                {
+                    // Draw rectangle
+                    float rectY = startY - (i * 15); // Adjust y position for each rectangle
+                    canvas.Rectangle(startX, rectY, rectWidth, rectHeight);
+                    canvas.Stroke();
+
+                    // Add static text
+                    ColumnText.ShowTextAligned(canvas, Element.ALIGN_LEFT, new Phrase(staticTexts[i]), startX + textOffsetX, rectY + rectHeight - 10, 0);
+                }
+
+                // Close the document
+                document.Close();
+
+                // Return the generated PDF as a FileStreamResult
+                byte[] bytes = ms.ToArray();
+                // Set the Content-Disposition header to open the file in the browser
+                return File(bytes, "application/pdf", "RectanglesWithStaticText.pdf");
+            }
+        }
+
+        public IActionResult PrintChecklist1(string token)
         {
             using (MemoryStream stream = new System.IO.MemoryStream())
             {
@@ -3695,6 +4052,46 @@ namespace fmis.Controllers.Procurement
                 doc.SetMargins(30f, 30f, 30f, 30f);
                 PdfWriter writer = PdfWriter.GetInstance(doc, stream);
                 doc.Open();
+
+                var prNoId = _context.PuChecklist.FirstOrDefault(x => x.Token == token).Prno;
+                var prNo = _context.Pr.FirstOrDefault(x => x.Id == prNoId).Prno;
+                var prNoDate = _context.Pr.FirstOrDefault(x => x.Id == prNoId).PrnoDate;
+
+                var checklist1 = _context.PrChecklist.FirstOrDefault(x => x.PuChecklist.Token == token);
+
+                List<string> targetTexts = new List<string>
+                {
+                    "Complete signatures incl. approval",
+                    "Complete with PR #, date, unit cost and correct total cost",
+                    "Title of Activity",
+                    "Meals and meal type",
+                    "Number of EXPECTED pax",
+                    "Number of GUARANTEED pax",
+                    "Date/Period of Activity",
+                    "Specify - Meals and Accommodation",
+                    "Check-in and Check-out time",
+                    "Specify - Meals only",
+                    "Preferred Menu, if desired",
+                    "Specify - Venue and Meals only",
+                    "Specify - Accommodation only",
+                    "Room Sharing",
+                    "Specify - Venue only",
+                    "Location of venue/hotel/office",
+                    "Classification of hotel/venue",
+                    "Function room preference",
+                    "Funding source",
+                    "Specify others amenities, if applicable",
+                    "Others",
+                    "Complete signatures incl. approval",
+                    "Specs/details in CN match specs in PR",
+                    "Approved Realignment, If applicable",
+                    "Approved WFP/Supplemental WFP",
+                    "Approved PPMP/Supplemental PPMP",
+                    "Others",
+                    "REMARKS:",
+                    "COMPLETE",
+                    "Please comply with item(s) marked X on or before"
+                };
 
                 void CParagraph(string text, bool isBold = false, bool isUnderlined = false, float fontSize = 10f)
                 {
@@ -3726,26 +4123,30 @@ namespace fmis.Controllers.Procurement
 
                     Paragraph justifiedParagraph = new Paragraph();
 
+
+
                     PdfContentByte checkbox = writer.DirectContent;
                     for (int i = 0; i < 33; i++)
                     {
-                        if (i == 19 || i == 22  || i == 30 || i == 29) continue; // Exclude certain values
+                        if (i == 19 || i == 22 || i == 30 || i == 29) continue;
                         checkbox.SetLineWidth(1f);
                         checkbox.Rectangle(doc.Left - -112f, doc.Top - 173f - (i * 16f), 10f, 10f);
                         checkbox.Stroke();
 
-                        // Draw an X mark inside the rectangle
-                        checkbox.MoveTo(doc.Left - -112f + 1f, doc.Top - 173f - (i * 16f) + 1f); // Move to the starting point of the X mark inside the rectangle
-                        checkbox.LineTo(doc.Left - -112f + 9f, doc.Top - 173f - (i * 16f) + 9f); // Draw a line to create one part of the X
-                        checkbox.MoveTo(doc.Left - -112f + 1f, doc.Top - 173f - (i * 16f) + 9f); // Move to another starting point of the X mark inside the rectangle
-                        checkbox.LineTo(doc.Left - -112f + 9f, doc.Top - 173f - (i * 16f) + 1f); // Draw another line to create the other part of the X
-                        checkbox.Stroke(); // Stroke the lines to make them visible
+                        if(checklist1.IsChecked)
+                        {
+                            checkbox.MoveTo(doc.Left - -112f + 1f, doc.Top - 173f - (i * 16f) + 1f);
+                            checkbox.LineTo(doc.Left - -112f + 9f, doc.Top - 173f - (i * 16f) + 9f);
+                            checkbox.MoveTo(doc.Left - -112f + 1f, doc.Top - 173f - (i * 16f) + 9f);
+                            checkbox.LineTo(doc.Left - -112f + 9f, doc.Top - 173f - (i * 16f) + 1f);
+                            checkbox.Stroke();
+                        }
+
+
                     }
 
-                    // Add the text next to the checkbox
                     justifiedParagraph.Add(new Chunk(" " + text, font));
 
-                    // Set alignment based on centerAligned parameter
                     justifiedParagraph.Alignment = centerAligned ? Element.ALIGN_CENTER : Element.ALIGN_JUSTIFIED;
                     doc.Add(justifiedParagraph);
                 }
@@ -3758,19 +4159,16 @@ namespace fmis.Controllers.Procurement
                     PdfContentByte contentByte = writer.DirectContent;
                     contentByte.SetLineWidth(1f);
 
-                    // Calculate the left position to center the rectangle
                     float leftPosition = (PageSize.A4.Width - width) / 2;
 
-                    // Draw the rectangle using the calculated left position
                     contentByte.Rectangle(leftPosition, doc.Top - height, width, height);
                     contentByte.Stroke();
-                    
+
                 }
 
-                // Calculate the width of the text "P.U CHECKLIST #1"
                 var textWidth = new Chunk("P.U CHECKLIST #1", FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 20f)).GetWidthPoint();
-                float boxWidth = textWidth + 200; // Add some padding
-                float boxHeight = 40f; // Adjust the height as needed
+                float boxWidth = textWidth + 200;
+                float boxHeight = 40f;
                 DrawRectangle(boxWidth, boxHeight);
 
                 void DrawRectangleAtPosition(float width, float height, float leftPosition, float topPosition)
@@ -3778,23 +4176,18 @@ namespace fmis.Controllers.Procurement
                     PdfContentByte contentByte = writer.DirectContent;
                     contentByte.SetLineWidth(1f);
 
-                    // Draw the rectangle at the specified position
                     contentByte.Rectangle(leftPosition, topPosition - height, width, height);
                     contentByte.Stroke();
                 }
 
-                // Calculate the width of the text "SUPPORTING DOCUMENTS/DETAILS"
                 var supportingDocsTextWidth = new Chunk("SUPPORTING DOCUMENTS/DETAILS", FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 11f)).GetWidthPoint();
-                float supportingDocsBoxWidth = supportingDocsTextWidth + 180; // Add some padding
-                float supportingDocsBoxHeight = 15f; // Adjust the height as needed
+                float supportingDocsBoxWidth = supportingDocsTextWidth + 180;
+                float supportingDocsBoxHeight = 15f;
 
-                // Calculate the left position to center the rectangle
                 float supportingDocsLeftPosition = (PageSize.A4.Width - supportingDocsBoxWidth) / 2;
 
-                // Determine the top position for the rectangle based on the previous paragraph's position
-                float supportingDocsTopPosition = doc.Top - 129; // Adjust this value as needed
+                float supportingDocsTopPosition = doc.Top - 129;
 
-                // Draw the rectangle for "SUPPORTING DOCUMENTS/DETAILS"
                 DrawRectangleAtPosition(supportingDocsBoxWidth, supportingDocsBoxHeight, supportingDocsLeftPosition, supportingDocsTopPosition);
 
                 CParagraph("P.U CHECKLIST #1", isBold: true, fontSize: 20f);
@@ -3803,10 +4196,10 @@ namespace fmis.Controllers.Procurement
                 CParagraph("JOB ORDER FOR VENUE,", isBold: true, isUnderlined: true, fontSize: 11f);
                 CParagraph("MEALS, AND ACCOMMODATION", isBold: true, isUnderlined: true, fontSize: 11f);
 
-                CParagraph("PR NO. :    42424", isBold: false);
-                CParagraph("DATE : 42424242", isBold: false);
+                CParagraph($"PR NO. :    {prNo}", isBold: false);
+                CParagraph($"DATE :  {prNoDate.ToString("MMM dd, yyyy")}", isBold: false);
 
-                CParagraph("SUPPORTING DOCUMENTS/DETAILS", isBold: true, fontSize:11f);
+                CParagraph("SUPPORTING DOCUMENTS/DETAILS", isBold: true, fontSize: 11f);
 
                 CParagraph("\n");
                 JParagraph("                                             Complete signatures incl. approval");
@@ -3832,7 +4225,7 @@ namespace fmis.Controllers.Procurement
                 JParagraph("                                             Specify others amenities, if applicable");
                 JParagraph("                                             Others");
                 JParagraph("\n");
-             
+
                 JParagraph("                                             Complete signatures incl. approval");
                 JParagraph("                                             Specs/details in CN match specs in PR");
                 JParagraph("                                             Approved Realignment, If applicable");
@@ -3841,15 +4234,15 @@ namespace fmis.Controllers.Procurement
                 JParagraph("                                             Others");
                 JParagraph("\n");
                 JParagraph("                                       REMARKS: ");
-                JParagraph("                                             COMPLETE", isBold:true);
+                JParagraph("                                             COMPLETE", isBold: true);
                 JParagraph("                                             Please comply with item(s) marked X on or before", isBold: true);
                 JParagraph("\n");
 
 
-                JParagraph("                                             CHECKED/REVIEWED BY:", isItalic:true);
+                JParagraph("                                             CHECKED/REVIEWED BY:", isItalic: true);
                 CParagraph("\n");
                 JParagraph("                                                                        STEFANIE LORRAINE D. TRINIDAD");
-                JParagraph("                                                                                              Printed name and Signature", isItalic:true);
+                JParagraph("                                                                                              Printed name and Signature", isItalic: true);
                 CParagraph("\n");
 
                 doc.Close();
@@ -3905,6 +4298,8 @@ namespace fmis.Controllers.Procurement
                     Paragraph justifiedParagraph = new Paragraph();
 
                     PdfContentByte checkbox = writer.DirectContent;
+
+
                     for (int i = 0; i < 24; i++)
                     {
                         if (i == 5 || i == 13 || i == 20 || i == 21 ) continue; // Exclude certain values
